@@ -1,21 +1,14 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Tiptheverse</title>
-  <style>
-    html, body { height: 100%; margin: 0; }
-    body {
-      background: url("background.png") no-repeat center center fixed;
-      background-size: cover;
-    }
-  </style>
-</head>
-<body>
-  <h1>Do a Good Deed, Get Good Karma</h1>
-  <p>This is a voluntary one dollar gift being sent out into The Universe with no strings attached. 
-     It is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. 
-     The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible 
-     for any positive effects set in motion, just the ripple that your gift creates.</p>
-</body>
-</html>
+/* Background image (optional if you already set one) */
+body{ 
+  background: url('YOUR-IMAGE-URL') center/cover fixed no-repeat;
+}
+
+/* Dark overlay for readability */
+body::before{
+  content:""; position:fixed; inset:0; pointer-events:none;
+  background: linear-gradient(180deg, rgba(0,0,0,.38) 0%, rgba(0,0,0,.22) 35%, rgba(0,0,0,.15) 60%, rgba(0,0,0,.30) 100%);
+}
+
+/* Slight text lift */
+h1{ text-shadow: 0 6px 24px rgba(0,0,0,.45), 0 1px 0 rgba(0,0,0,.3); }
+p.sub{ text-shadow: 0 2px 8px rgba(0,0,0,.35); }
