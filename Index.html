@@ -58,3 +58,78 @@
   </footer>
 </body>
 </html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TipTheVerse</title>
+
+  <!-- You can move this CSS into style.css later if you prefer -->
+  <style>
+    /* Reset-ish */
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color: #111; }
+
+    /* Full-width hero background */
+    .hero {
+      min-height: 80vh;                      /* tall banner */
+      display: grid;
+      place-items: center;                    /* centers the inner content */
+      background-image: url("assets/tiptheverse_hero-title.png");
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+    }
+    /* Swap to mobile image on small screens */
+    @media (max-width: 640px) {
+      .hero {
+        background-image: url("assets/tiptheverse_mobile-title.png");
+        min-height: 70vh;
+      }
+    }
+
+    .hero-content { text-align: center; padding: 1rem 1.25rem; }
+    .cta {
+      display: inline-block;
+      padding: 0.9rem 1.3rem;
+      border-radius: 999px;
+      text-decoration: none;
+      font-weight: 600;
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      transition: transform .06s ease-in-out;
+    }
+    .cta:active { transform: scale(0.98); }
+
+    /* Simple body section so there’s something to scroll to */
+    .section {
+      max-width: 900px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HERO with ripple background -->
+  <section class="hero">
+    <div class="hero-content">
+      <!-- The title/tagline are baked into the image; this button is optional -->
+      <a class="cta" href="#how-it-works">How it works</a>
+    </div>
+  </section>
+
+  <!-- Your content -->
+  <section id="how-it-works" class="section">
+    <h2>How TipTheVerse Works</h2>
+    <ol>
+      <li>Scan the QR or visit the site.</li>
+      <li>Tip $1 — your dollar “creates ripples.”</li>
+      <li>We use the pool to fund surprise good deeds and post updates.</li>
+    </ol>
+  </section>
+
+</body>
+</html>
