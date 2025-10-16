@@ -8,7 +8,17 @@ about.html
   <title>About — Tiptheverse</title>
   <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
 
-  
+  <style>
+    /* Background matches your homepage */
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: url("/background.png") no-repeat center center fixed;
+      background-size: cover;
+      font-family: system-ui, Arial, sans-serif;
+      color: #111;
+      line-height: 1.6;
+    }
+
     /* Soft white scrim for readability on bright images */
     .scrim {
       position: fixed; inset: 0;
@@ -83,14 +93,7 @@ about.html
   </style>
 </head>
 <body>
-  body {
-  background: url("/about-bg.jpg") no-repeat center center fixed;
-  background-size: cover;
-  font-family: system-ui, Arial, sans-serif;
-  color: #111;
-  line-height: 1.6;
-}
-
+  <div class="scrim" aria-hidden="true"></div>
 
   <div class="wrap">
     <main class="card" role="main">
@@ -123,14 +126,4 @@ about.html
   </div>
 </body>
 </html>
-
-  <style>
-    html, body { height: 100%; margin: 0; }
-    body.about {
-      /* ⬇️ update the path if you put the image elsewhere */
-      background: url("/about-bg.jpg") no-repeat center center fixed;
-      background-size: cover;
-      font-family: system-ui, Arial, sans-serif;
-      color: #fff;
-    }
-    .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.46); pointer-eve
+   
