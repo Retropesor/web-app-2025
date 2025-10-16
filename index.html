@@ -5,44 +5,111 @@
   <title>Tiptheverse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <style>
-    /* ==== Base ==== */
+    /* Page basics */
     html, body { height: 100%; margin: 0; }
     body {
       background: #000 url("background.png") no-repeat center center fixed;
       background-size: cover;
-      color: #fff;
+      color: #ffffff;                /* force visible text */
       font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
-      /* If your bg is bright, uncomment the next line to keep text readable */
-      /* text-shadow: 0 1px 2px rgba(0,0,0,.6); */
+      text-shadow: 0 1px 2px rgba(0,0,0,.7); /* keep readable over bright areas */
     }
-    a { color: inherit; }
+    a { color: inherit; text-decoration: none; }
 
     .wrap { max-width: 980px; margin: 0 auto; padding: 24px 16px 64px; }
 
-    /* ==== Header & Buttons ==== */
+    /* Header + buttons */
     header { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .brand { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; opacity: .95; }
+    .brand { font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
     .actions { display: flex; gap: 12px; flex-wrap: wrap; }
     .btn {
-      display: inline-block;
-      padding: 10px 16px;
-      border: 1px solid rgba(255,255,255,.9);
-      border-radius: 999px;
-      text-decoration: none;
-      font-weight: 700;
-      background: rgba(0,0,0,.28);
-      transition: transform .06s ease, opacity .2s ease;
+      display: inline-block; padding: 10px 16px; border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.9); font-weight: 700;
+      background: rgba(0,0,0,.35); /* pill behind text so it’s always readable */
     }
-    .btn:hover { opacity: .92; transform: translateY(-1px); }
 
-    /* ==== Hero ==== */
+    /* Hero */
     .hero { padding: 10vh 0 2vh; }
     .headline {
-      font-size: clamp(28px, 6.5vw, 56px);
-      line-height: 1.05;
-      margin: 0 0 14px;
-      font-weight: 900;
-      letter-spacing: .02em;
-      text-transform: none;
+      font-size: clamp(28px, 6.5vw, 56px); line-height: 1.05;
+      margin: 0 0 14px; font-weight: 900; letter-spacing: .01em;
     }
-    .blurb
+    .blurb {
+      max-width: 65ch; line-height: 1.7; font-size: clamp(16px, 2.2vw, 18px);
+      margin: 12px 0 18px;
+    }
+
+    /* Disclaimer */
+    .disclaimer {
+      max-width: 70ch; margin: 18px 0 0; font-size: 0.95rem; line-height: 1.55; opacity: .95;
+    }
+    .disclaimer strong { font-weight: 700; }
+
+    /* Sections */
+    section { scroll-margin-top: 80px; }
+    .block { margin-top: 48px; }
+    .map-card { border-radius: 12px; overflow: hidden; border: 1px solid rgba(255,255,255,.2); background: rgba(0,0,0,.25); }
+    .map-card iframe { width: 100%; height: 440px; border: 0; display: block; }
+
+    /* Safety: nothing sits on top of content */
+    * { position: relative; z-index: 0; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="brand">Tiptheverse</div>
+      <nav class="actions">
+        <a class="btn" href="#give">Give $1</a>
+        <a class="btn" href="#map">Map</a>
+      </nav>
+    </header>
+
+    <main>
+      <!-- Headline + your paragraph -->
+      <section class="hero" id="top">
+        <h1 class="headline">do a good deed get good karma</h1>
+
+        <p class="blurb">
+          This isn’t a purchase or a promise—it’s motion. Drop $1, set a ripple, release it.
+          The Universe provides. When the return arrives, you may leave an anonymous line—
+          <em>ripple sent, return felt.</em> Or not; the Universe doesn’t keep score.
+          Just remember: every ripple knows its way home—and your note might be the nudge
+          that sends the next one back in your direction.
+        </p>
+
+        <p class="disclaimer">
+          <strong>Disclaimer:</strong> This is a voluntary one-dollar gift being sent out into
+          The Universe with no strings attached. It is not a raffle, purchase, or tax-deductible
+          donation. No rewards or refunds will be provided. The cosmos has a sense of humor:
+          any good that follows is on you. The Universe is not responsible for any positive effects
+          set in motion—only the ripple your gift creates.
+        </p>
+      </section>
+
+      <!-- Give section (hook up your QR or link here) -->
+      <section id="give" class="block">
+        <!-- Example placeholder (replace with your real link or QR):
+        <a class="btn" href="YOUR_PAYMENT_LINK" target="_blank" rel="noopener">Give $1</a>
+        -->
+      </section>
+
+      <!-- Map section -->
+      <section id="map" class="block">
+        <div class="map-card">
+          <iframe
+            title="Map"
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+            src="https://www.google.com/maps?q=Myrtle+Beach,+SC&output=embed"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <p style="margin:10px 0 0;">
+          <a class="btn" href="https://www.google.com/maps?q=Myrtle+Beach,+SC" target="_blank" rel="noopener">Open in Google Maps</a>
+        </p>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
