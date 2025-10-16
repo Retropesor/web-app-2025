@@ -1,0 +1,126 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>About — Tiptheverse</title>
+  <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
+
+  <style>
+    /* Background matches your homepage */
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: url("/background.png") no-repeat center center fixed;
+      background-size: cover;
+      font-family: system-ui, Arial, sans-serif;
+      color: #111;
+      line-height: 1.6;
+    }
+
+    /* Soft white scrim for readability on bright images */
+    .scrim {
+      position: fixed; inset: 0;
+      background: linear-gradient(to bottom, rgba(255,255,255,.70), rgba(255,255,255,.82));
+      pointer-events: none;
+    }
+
+    /* Centered layout */
+    .wrap {
+      position: relative; z-index: 1;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+    }
+
+    /* Content card */
+    .card {
+      width: min(900px, 92vw);
+      background: rgba(255,255,255,.94);
+      border-radius: 20px;
+      padding: clamp(20px, 4vw, 38px);
+      box-shadow: 0 20px 60px rgba(0,0,0,.18);
+    }
+
+    .eyebrow {
+      text-transform: uppercase;
+      letter-spacing: .18em;
+      font-size: .82rem;
+      opacity: .8;
+      margin-bottom: .25rem;
+    }
+    h1 {
+      margin: 0 0 .75rem 0;
+      line-height: 1.15;
+      font-size: clamp(28px, 4.6vw, 42px);
+    }
+    .lede {
+      font-size: clamp(16px, 2.2vw, 18px);
+      margin: 0 0 1rem 0;
+      opacity: .9;
+    }
+    .separator { height:1px; background: rgba(0,0,0,.1); margin: 20px 0; }
+    .body-copy p { margin: .7rem 0; font-size: clamp(15px, 2vw, 17px); }
+
+    /* Buttons */
+    .btn-row { display:flex; gap:12px; flex-wrap:wrap; margin-top: 18px; }
+    .btn {
+      display:inline-block; padding:12px 18px; border-radius:9999px; text-decoration:none;
+      background:#111; color:#fff; font-weight:600; letter-spacing:.2px;
+      box-shadow:0 6px 16px rgba(0,0,0,.25); transition:transform .08s ease, box-shadow .2s ease, opacity .2s ease;
+    }
+    .btn:hover { transform:translateY(-1px); box-shadow:0 10px 24px rgba(0,0,0,.32); }
+    .btn:active { transform:translateY(0); opacity:.9; }
+
+    .subtle { opacity:.75; font-size:.92rem; margin-top:.5rem; }
+    .foot {
+      margin-top: 20px; font-size: .9rem; opacity: .85;
+      border-top: 1px dashed rgba(0,0,0,.25); padding-top: 14px;
+    }
+
+    /* Small screens */
+    @media (max-width:480px){
+      .btn-row{ flex-direction: column; }
+      .btn{ text-align:center; }
+    }
+
+    /* iPhone fix: avoid jumpy fixed background */
+    @supports (-webkit-touch-callout: none) {
+      body { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+  <div class="scrim" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <main class="card" role="main">
+      <div class="eyebrow">TipTheVerse</div>
+      <h1>You aren’t here by accident.</h1>
+      <p class="lede">There’s no such thing as coincidence — you’ve always had the power. Manifestation is real.</p>
+
+      <div class="separator"></div>
+
+      <section class="body-copy" aria-label="About this ripple">
+        <p><strong>This isn’t a purchase or a promise — it’s motion.</strong> Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters, not the hand that sent it. When we let go of credit and recognition, the ripple grows freer, stronger, and more endless. That quiet motion can shift a day, inspire another act, and carry farther than we’ll ever see. <em>The Universe provides</em> in ways we can’t predict — sometimes sudden, sometimes subtle — but always circling back in its own time. A single small act, released without expectation, becomes part of something infinite.</p>
+        <p><em>Give without name. Receive without asking. Trust the ripple.</em></p>
+      </section>
+
+      <div class="btn-row" aria-label="Navigate">
+        <a class="btn" href="index.html">Back home</a>
+        <!-- Optional: put donation links here too
+        <a class="btn" href="https://cash.app/$YOURCASHNAME?amount=1" rel="noopener" target="_blank">Cash App</a>
+        <a class="btn" href="https://venmo.com/u/YOURVENMO" rel="noopener" target="_blank">Venmo</a>
+        <a class="btn" href="https://www.paypal.me/YOURPAYPAL/1" rel="noopener" target="_blank">PayPal</a>
+        -->
+      </div>
+
+      <p class="subtle">P.S. If you felt a nudge just now, that’s the ripple doing what it does.</p>
+
+      <div class="foot" aria-label="Disclaimer">
+        <p><strong>Disclaimer:</strong> This is a voluntary one dollar gift being sent out into The Universe with no strings attached. It is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
