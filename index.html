@@ -1,15 +1,145 @@
+<!DOCTYPE html>
+<!-- saved from url=(0024)https://tiptheverse.com/ -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  
+  <title>Tiptheverse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-/* Background image (optional if you already set one) */
-body{ 
-  background: url('YOUR-IMAGE-URL') center/cover fixed no-repeat;
-}
+  <!-- meta polish -->
+  <meta name="description" content="Start a ripple with $1. Small acts → big waves. Tiptheverse.">
+  <meta property="og:title" content="Tiptheverse">
+  <meta property="og:description" content="Do a Good Deed. Get Good Karma. Start a ripple with $1.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0b2742">
 
-/* Dark overlay for readability */
-body::before{
-  content:""; position:fixed; inset:0; pointer-events:none;
-  background: linear-gradient(180deg, rgba(0,0,0,.38) 0%, rgba(0,0,0,.22) 35%, rgba(0,0,0,.15) 60%, rgba(0,0,0,.30) 100%);
-}
+  <style>
+    /* Full-page background */
+    html, body { height: 100%; margin: 0; }
+    body {
+      background: url("/background.png") no-repeat center center fixed;
+      background-size: cover;
+      font-family: system-ui, Arial, sans-serif;
+      color: #fff;
+    }
 
-/* Slight text lift */
-h1{ text-shadow: 0 6px 24px rgba(0,0,0,.45), 0 1px 0 rgba(0,0,0,.3); }
-p.sub{ text-shadow: 0 2px 8px rgba(0,0,0,.35); }
+    /* Soft dark overlay so text pops */
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.32); /* bump to 0.40 if you want stronger contrast */
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Layout for centered content */
+    .wrap {
+      position: relative;
+      z-index: 1;              /* above overlay */
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+
+    .hero { max-width: 860px; margin: 0 auto; }
+
+    h1 {
+      font-size: clamp(28px, 6vw, 64px);
+      line-height: 1.1; margin: 0 0 10px;
+    }
+    .tag {
+      font-size: clamp(16px, 2.5vw, 22px);
+      margin: 0 0 22px; opacity: 0.95;
+    }
+
+    .actions {
+      display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.45);
+      color: #fff; text-decoration: none; font-weight: 600;
+    }
+    .btn:hover { background: rgba(255,255,255,0.28); }
+
+    /* About section */
+    #about {
+      position: relative; z-index: 1;
+      padding: 40px 20px 80px;
+      text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+    #about h2 { margin: 0 0 8px; }
+    #about p  { max-width: 820px; margin: 0 auto; }
+
+    /* Footer (disclaimer) */
+    footer {
+      position: fixed; left: 0; right: 0; bottom: 10px;
+      text-align: center; font-size: 12px; line-height: 1.4;
+      color: #fff; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.6);
+      z-index: 2; max-width: 90%; margin: 0 auto; padding: 0 10px;
+    }
+    footer p { margin: 4px 0; }
+
+    /* iPhone fix: avoid jumpy fixed background */
+    @supports (-webkit-touch-callout: none) {
+      body { background-attachment: scroll; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrap">
+    <main class="hero">
+      <h1>Do a Good Deed. Get Good Karma.</h1>
+      <p class="tag">Start a ripple with $1. Small acts → big waves.</p>
+
+      <!-- YOUR THREE BUTTONS -->
+      <div class="actions">
+        <!-- Replace href values with your real links -->
+        <a class="btn" href="https://cash.app/$YOURCASHNAME?amount=1" target="_blank" rel="noopener">
+          Set it in motion — $1
+        </a>
+        <a class="btn" href="https://venmo.com/u/YOURVENMO" target="_blank" rel="noopener">
+          Feed the cosmos — $1
+        </a>
+        <a class="btn" href="https://www.paypal.me/YOURPAYPAL/1" target="_blank" rel="noopener">
+          Nudge the good — $1
+        </a>
+      </div>
+
+      <p style="margin-top:18px;">
+        <a class="btn" href="https://tiptheverse.com/#about">Learn More</a>
+        <a class="btn" href="mailto:hello@tiptheverse.com">Contact</a>
+      </p>
+    </main>
+  </div>
+
+  <!-- About section that the "Learn More" button jumps to -->
+  <section id="about">
+    <h2>Why $1?</h2>
+    <p>
+      Small ripples become waves. Your $1 is a voluntary gift to The Universe—no strings attached—
+      meant to inspire unexpected kindness and momentum. Give a little, notice a lot.
+    </p>
+  </section>
+
+  <!-- Disclaimer + year -->
+  <footer>
+    <p>
+      This is a voluntary one dollar gift being sent out into The Universe with no strings attached.
+      It is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
+      The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
+      for any positive effects set in motion, just the ripple that your gift creates.
+    </p>
+    <p>© <span id="y">2025</span> Tiptheverse</p>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
+
+
+<div id="hl-aria-live-message-container" aria-live="polite" class="visually-hidden"></div><div id="hl-aria-live-alert-container" role="alert" aria-live="assertive" class="visually-hidden"></div></body></html>
