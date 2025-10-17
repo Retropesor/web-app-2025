@@ -5,46 +5,78 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About — Tiptheverse</title>
   <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
-  <style>/* subtle dark vignette so colors pop but text stays readable */
-.vignette {
-  position: fixed; inset: 0;
-  background: radial-gradient(80% 80% at 50% 40%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%);
-  pointer-events: none;
-  z-index: 0;
-}
+  <style>
+    html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
 
-    html, body <div class="vignette" aria-hidden="true"></div>
- { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
+    /* Subtle dark vignette so colors pop but text stays readable */
+    .vignette {
+      position: fixed; inset: 0;
+      background: radial-gradient(80% 80% at 50% 40%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
     /* Text & layout */
-    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; text-align: center; }
-    .card { max-width: 900px; width: 92vw; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.55); }
-    h1 { margin: 0 0 .75rem; line-height: 1.12; font-size: clamp(28px, 6vw, 60px); }
-    p { margin: 0 0 1rem; font-size: clamp(16px, 2.2vw, 20px); opacity: .96; }
-    .btn { display:inline-block; padding:12px 18px; border-radius:999px; background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.45); color:#fff; text-decoration:none; font-weight:600; }
+    .wrap {
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      position: relative;   /* keep content above the vignette */
+      z-index: 1;
+    }
+
+    .card {
+      max-width: 900px;
+      width: 92vw;
+      color: #fff;
+      text-shadow: 0 3px 18px rgba(0,0,0,.6);
+    }
+
+    h1 {
+      margin: 0 0 .75rem;
+      line-height: 1.12;
+      font-size: clamp(34px, 7vw, 64px);
+      font-weight: 800;
+    }
+
+    p {
+      margin: 0 0 1rem;
+      font-size: clamp(16px, 2.2vw, 20px);
+      opacity: .96;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      border: 1px solid rgba(255,255,255,.45);
+      color: #fff;
+      text-decoration: none;
+      font-weight: 600;
+    }
     .btn:hover { background: rgba(255,255,255,.28); }
+
     /* iPhone background fix */
     @supports (-webkit-touch-callout: none) { body { background-attachment: scroll; } }
   </style>
 </head>
+
 <body
   style="
     /* Fallback color + background image inline so it ALWAYS applies */
-    background: #050814 url('/about-bg.jpg?v=7') no-repeat center center fixed;
+    background: #050814 url('/about-bg.jpg?v=8') no-repeat center center fixed;
     background-size: cover;
   "
 >
+  <!-- ✨ Overlay goes in the BODY, not inside <style> -->
+  <div class="vignette" aria-hidden="true"></div>
+
   <div class="wrap">
     <main class="card" role="main">
       <h1>You aren’t here by accident.</h1>
       <p>There’s no such thing as coincidence — you’ve always had the power. Manifestation is real.</p>
 
-      <p><strong>This isn’t a purchase or a promise — it’s motion.</strong> Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters, not the hand that sent it. When we let go of credit and recognition, the ripple grows freer, stronger, and more endless. That quiet motion can shift a day, inspire another act, and carry farther than we’ll ever see. <em>The Universe provides</em> in ways we can’t predict — sometimes sudden, sometimes subtle — but always circling back in its own time. A single small act, released without expectation, becomes part of something infinite.</p>
-
-      <p style="font-style: italic; opacity: .9;">Give without name. Receive without asking. Trust the ripple.</p>
-
-      <p style="margin-top:18px;"><a class="btn" href="/">← Back home</a></p>
-    </main>
-  </div>
-</body>
-</html>
-
+      <p><strong>This isn’t a purchase or a promise — it’s motion.</strong> Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters, not the hand that sent it. When we let go of credit and recognition, the ripple grows freer, stronger, and more endless. That quiet motion can shift a day, inspire another act, and carry farther than we’ll ever see. <em>The Universe provide
