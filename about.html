@@ -5,8 +5,16 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About — Tiptheverse</title>
   <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
-  <style>
-    html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
+  <style>/* subtle dark vignette so colors pop but text stays readable */
+.vignette {
+  position: fixed; inset: 0;
+  background: radial-gradient(80% 80% at 50% 40%, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.45) 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+    html, body <div class="vignette" aria-hidden="true"></div>
+ { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
     /* Text & layout */
     .wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; text-align: center; }
     .card { max-width: 900px; width: 92vw; color: #fff; text-shadow: 0 2px 10px rgba(0,0,0,.55); }
