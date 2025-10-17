@@ -1,139 +1,66 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>About — Tiptheverse</title>
-  <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
-
+  <title>Tiptheverse</title>
+  <meta name="description" content="Start a ripple with $1 — Tiptheverse">
   <style>
-    html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
+    html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; scroll-behavior: smooth; }
 
-    /* Subtle dark vignette so colors pop but text stays readable */
-    .vignette {
-      position: fixed; inset: 0;
-      /* radial for center mood + linear to darken the bottom edge */
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.15) 55%, rgba(0,0,0,.46) 100%),
-        radial-gradient(85% 75% at 50% 35%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.38) 100%);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Text & layout */
-    .wrap {
-      min-height: 100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      text-align: center;
-      position: relative;   /* keep content above the vignette */
-      z-index: 1;
-    }
-
-    .card {
-      max-width: 900px;
-      width: 92vw;
+    body {
+      background: url("/background.png") no-repeat center center fixed;
+      background-size: cover;
       color: #fff;
-      text-shadow: 0 3px 18px rgba(0,0,0,.6);
+      text-align: center;
     }
 
-    h1 {
-      margin: 0 0 .75rem;
-      line-height: 1.12;
-      font-size: clamp(34px, 7vw, 64px);
-      font-weight: 800;
-    }
+    .wrap { min-height: 100vh; display: grid; place-items: center; padding: 24px; text-shadow: 0 2px 10px rgba(0,0,0,.55); }
 
-    h2 {
-      margin: 1.4rem 0 .5rem;
-      font-size: clamp(22px, 4.5vw, 30px);
-    }
+    h1 { font-size: clamp(28px, 6vw, 64px); margin: 0 0 10px; }
+    .tag { font-size: clamp(16px, 2.5vw, 22px); margin: 0 0 22px; }
 
-    p {
-      margin: 0 0 1rem;
-      font-size: clamp(16px, 2.2vw, 20px);
-      opacity: .96;
-    }
-
-    /* Button with subtle frosted look + glow */
+    .actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin:16px 0 96px; }
     .btn {
-      display:inline-block;
-      padding:12px 18px;
-      border-radius:999px;
-      color:#fff;
-      text-decoration:none;
-      font-weight:600;
-      background: rgba(255,255,255,.14);
-      border: 1px solid rgba(255,255,255,.55);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.28) inset,   /* thin inner ring */
-        0 8px 24px rgba(0,0,0,.35),              /* drop shadow */
-        0 0 14px rgba(255,255,255,.30);          /* soft outer glow */
-      backdrop-filter: blur(2px);
-      transition: background .2s ease, box-shadow .2s ease, transform .04s ease;
+      display:inline-block; padding:12px 18px; border-radius:999px;
+      background: rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.45);
+      color:#fff; text-decoration:none; font-weight:600;
     }
-    .btn:hover {
-      background: rgba(255,255,255,.22);
-      box-shadow:
-        0 0 0 1px rgba(255,255,255,.35) inset,
-        0 10px 28px rgba(0,0,0,.4),
-        0 0 18px rgba(255,255,255,.38);
-    }
-    .btn:active { transform: translateY(1px); }
+    .btn:hover { background: rgba(255,255,255,0.28); }
 
-    /* Bottom action buttons */
-    .about-actions {
-      margin: 36px 0 0;
-      display: flex;
-      justify-content: center;
-      gap: 16px;
-      flex-wrap: wrap;
+    footer {
+      position: fixed; left:0; right:0; bottom:10px; font-size:12px; opacity:.9;
+      text-shadow:0 1px 6px rgba(0,0,0,.6);
     }
-
-    /* iPhone background fix */
-    @supports (-webkit-touch-callout: none) { body { background-attachment: scroll; } }
   </style>
 </head>
-
-<body
-  style="
-    /* Fallback color + background image inline so it ALWAYS applies */
-    background: #050814 url('/about-bg.jpg?v=9') no-repeat center center fixed;
-    background-size: cover;
-  "
->
-  <!-- Overlay sits above the background image -->
-  <div class="vignette" aria-hidden="true"></div>
-
+<body>
   <div class="wrap">
-    <main class="card" role="main">
-      <h1>You aren’t here by accident.</h1>
-      <p>There’s no such thing as coincidence — you’ve always had the power. Manifestation is real.</p>
+    <main>
+      <h1>Do a Good Deed. Get Good Karma.</h1>
+      <p class="tag">Start a ripple with $1. Small acts → big waves.</p>
 
-      <p><strong>This isn’t a purchase or a promise — it’s motion.</strong> Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters, not the hand that sent it. When we let go of credit and recognition, the ripple grows freer, stronger, and more endless. That quiet motion can shift a day, inspire another act, and carry farther than we’ll ever see. <em>The Universe provides</em> in ways we can’t predict — sometimes sudden, sometimes subtle — but always circling back in its own time. A single small act, released without expectation, becomes part of something infinite.</p>
+      <!-- $1 buttons with ID so About can link here -->
+      <div id="pay" class="actions">
+        <a class="btn" href="/pay.html?m=cash">Set it in motion — $1 (Cash App)</a>
+        <a class="btn" href="/pay.html?m=venmo">Send a ripple — $1 (Venmo)</a>
+        <a class="btn" href="/pay.html?m=paypal">Open the portal — $1 (PayPal)</a>
+      </div>
 
-      <p style="font-style: italic; opacity: .9;">Give without name. Receive without asking. Trust the ripple.</p>
-
-      <h2>Why am I here?</h2>
-      <p>Because it knows who to send, what to bring, and when to deliver. You didn’t stumble here by accident. Something greater — the same quiet force that put this idea in motion — brought you here at the exact moment you were ready. Destiny isn’t always loud; sometimes it’s a whisper that nudges you toward a choice that feels almost obvious once you see it.</p>
-
-      <h2>How does it help?</h2>
-      <p>Because even the smallest ripple can move an ocean. A single dollar isn’t about the amount — it’s about the act. A thought alone can spark change in the unseen, but when you give in the physical world, the motion cannot be ignored. That dollar becomes a tangible signal, carrying your intention outward.</p>
-
-      <h2>Where does my gift go?</h2>
-      <p>You release it into the hands of the universe. You don’t have to decide who it reaches, or what it becomes. That’s not your burden. The Universe already knows who, what, and when. Your gift might be the spark someone needs, or it might circle back to you in a form you never could have predicted. The path isn’t yours to map, but the ripple always finds its way.</p>
-
-      <!-- Bottom buttons -->
-      <div class="about-actions">
-        <a class="btn" href="javascript:history.back()">← Go Back</a>
-        <!-- If your payment lives on a dedicated page: -->
-        <a class="btn" href="/pay.html">Tip The Verse — $1</a>
-        <!-- If you prefer to jump to the buttons on index instead, use this instead:
-        <a class="btn" href="/index.html#pay">Tip The Verse — $1</a>
-        -->
+      <!-- Links row -->
+      <div class="actions">
+        <a class="btn" href="/about.html">You already know</a>
+        <a class="btn" href="#">Map</a>
+        <a class="btn" href="/echoes.html">Echoes</a>
       </div>
     </main>
   </div>
+
+  <footer>
+    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
+    <p>© <span id="y"></span> Tiptheverse</p>
+  </footer>
+
+  <script>document.getElementById('y').textContent = new Date().getFullYear()</script>
 </body>
 </html>
