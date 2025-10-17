@@ -21,6 +21,16 @@
       font-family: system-ui, Arial, sans-serif;
       color: #fff;
     }
+/* Center the "You already know / Map / Echoes" row */
+.links{
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;   /* centers the whole group */
+  align-items:center;
+  margin:18px auto 0;       /* gives breathing room and centers block */
+  max-width:720px;
+}
 
     /* Soft dark overlay so text pops */
     .overlay {
@@ -120,16 +130,12 @@
 </div>
 
 
-<p style="margin-top:18px;">
+<!-- Centered links row -->
+<div class="links">
   <a class="btn" href="/about.html">You already know</a>
   <a class="btn" href="#">Map</a>
-</p>
-
- 
-
-<p style="margin-top:18px;">
   <a class="btn" href="/echoes.html">Echoes</a>
-</p>
+</div>
 
 
 
@@ -162,6 +168,7 @@
 
 
 <div id="hl-aria-live-message-container" aria-live="polite" class="visually-hidden"></div><div id="hl-aria-live-alert-container" role="alert" aria-live="assertive" class="visually-hidden"></div></body></html>
+
 
 
 
