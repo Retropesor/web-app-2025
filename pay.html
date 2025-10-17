@@ -1,85 +1,119 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Setting it in motion…</title>
-  <meta name="description" content="Drop $1, set a ripple.">
-  <style>
-    html, body { height:100%; margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; color:#fff; }
-    body { background: url("payment-bg.png") no-repeat center center fixed; background-size: cover; }
-    .vignette{
-      position:fixed; inset:0; pointer-events:none;
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.15) 55%, rgba(0,0,0,.46) 100%),
-        radial-gradient(85% 75% at 50% 35%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.38) 100%);
-    }
-    .wrap { min-height:100%; display:grid; place-items:center; padding:24px; text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.55); }
-    .card {
-      max-width:820px; width:100%;
-      backdrop-filter: blur(6px);
-      background: rgba(0,0,0,.28);
-      border: 1px solid rgba(255,255,255,.12);
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 10px 28px rgba(0,0,0,.35);
-    }
-    h1 { margin: 6px 0 8px; font-size: clamp(22px, 3.5vw, 28px); }
-    .line { opacity: .95; margin: 8px 0 14px; font-size: clamp(16px, 2.5vw, 20px); }
-    .buttons { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top: 8px; }
-    .btn {
-      display:inline-block; padding:12px 18px; border-radius:999px; font-weight:700; color:#fff; text-decoration:none;
-      background: rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.28);
-    }
-    .btn:hover { background: rgba(255,255,255,.22); }
-    .muted { opacity:.85; font-size: 13px; margin-top: 10px; }
-    @supports (-webkit-touch-callout:none){ body{ background-attachment: scroll; } }
-  </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1, viewport-fit=cover" />
+<title>Tiptheverse — $1</title>
+<meta name="description" content="Drop $1, set a ripple — Tiptheverse">
+<style>
+  html, body { height:100%; margin:0; font-family:system-ui, Arial, sans-serif; color:#fff; }
+  body { background:#050814; text-align:center; }
+  /* background image layer (safer on iOS) */
+  .bg{position:fixed; inset:0; z-index:-1; background:url("/background.png") center/cover no-repeat;}
+  @supports(-webkit-touch-callout:none){ .bg{position:absolute;} }
+
+  .wrap{min-height:100vh; display:grid; place-items:center; padding:24px; text-shadow:0 2px 10px rgba(0,0,0,.55);}
+  h1{font-size:clamp(26px,6vw,48px); margin:0 0 6px;}
+  .sub{opacity:.9; margin:0 0 14px}
+  .panel{max-width:960px; margin:0 auto; padding:16px}
+  .section{margin:20px auto 26px; padding:16px 14px; border-radius:16px; background:rgba(0,0,0,.22); backdrop-filter:blur(2px)}
+  .section h2{margin:0 0 10px; font-size:clamp(18px,4.8vw,28px)}
+  .actions{display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin:10px 0 0}
+  .btn{
+    display:inline-block; padding:12px 18px; border-radius:999px; font-weight:700;
+    background:rgba(255,255,255,.18); border:1px solid rgba(255,255,255,.55); color:#fff; text-decoration:none
+  }
+  .btn:hover{background:rgba(255,255,255,.28)}
+  .note{font-size:14px; opacity:.9; margin-top:8px}
+  .copyline{display:flex; gap:8px; justify-content:center; align-items:center; flex-wrap:wrap; margin-top:8px; font-size:14px}
+  .small{font-size:12px; opacity:.85; margin-top:8px}
+  .pill{padding:6px 10px; border-radius:999px; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.12)}
+</style>
 </head>
 <body>
-  <div class="vignette" aria-hidden="true"></div>
-  <div class="wrap">
-    <section class="card">
-      <h1>Setting it in motion…</h1>
-      <div id="line" class="line">You aren’t here by accident.</div>
+<div class="bg" aria-hidden="true"></div>
+<div class="wrap">
+  <main class="panel" role="main">
+    <h1>Drop $1, set a ripple.</h1>
+    <p class="sub">Choose your path. One dollar. One signal.</p>
 
-      <!-- Fallback buttons in case auto-redirect is blocked -->
-      <div class="buttons">
-        <a class="btn" href="https://cash.app/$TipTheVerse?amount=1&note=Start%20a%20ripple.">Cash App — $1</a>
-        <a class="btn" href="https://venmo.com/TipTheVerse?txn=pay&amount=1&note=Start%20a%20ripple.">Venmo — $1</a>
-        <a class="btn" href="https://paypal.me/tiptheverse/1">PayPal — $1</a>
+    <!-- CASH APP -->
+    <section id="cash" class="section" aria-labelledby="cash-title">
+      <h2 id="cash-title">Cash App</h2>
+      <!-- Opens your $cashtag profile (Cash App doesn’t reliably support ?amount= on all devices) -->
+      <div class="actions">
+        <a class="btn" id="cashBtn" target="_blank" rel="noopener">Open Cash App</a>
       </div>
-
-      <div class="muted">If nothing happens in a moment, tap a button above.</div>
+      <div class="note">Set the amount to <strong>$1</strong>. Add the note below (optional but nice):</div>
+      <div class="copyline">
+        <span id="noteText" class="pill">Tip The Verse — ripple</span>
+        <button class="btn" id="copyNote" type="button">Copy note</button>
+      </div>
+      <div class="small">If the app doesn’t open, make sure the Cash App is installed, or use PayPal/Venmo below.</div>
     </section>
-  </div>
 
-  <script>
-    // Rotating sayings
-    const LINES = [
-      "You aren’t here by accident.",
-      "There’s no such thing as coincidence.",
-      "Small motion, long echo.",
-      "A dollar is little. A ripple isn’t.",
-      "Release it and let the Universe handle the math.",
-      "You’ve always had the map in your hands."
-    ];
-    const show = () => { document.getElementById('line').textContent = LINES[Math.floor(Math.random()*LINES.length)]; };
-    show(); setInterval(show, 2200);
+    <!-- VENMO -->
+    <section id="venmo" class="section" aria-labelledby="venmo-title">
+      <h2 id="venmo-title">Venmo</h2>
+      <div class="actions">
+        <!-- Web deep link with prefilled amount+note (works on most devices; user must be logged in) -->
+        <a class="btn" id="venmoBtn" target="_blank" rel="noopener">Pay $1 on Venmo</a>
+      </div>
+      <div class="note">If Venmo asks, the note we use is: <span class="pill">Tip The Verse — ripple</span></div>
+    </section>
 
-    // Build payment links with $1 + note
-    const NOTE   = encodeURIComponent("Start a ripple.");
-    const amount = "1";
-    const links = {
-      cash:   `https://cash.app/$TipTheVerse?amount=${amount}&note=${NOTE}`,
-      venmo:  `https://venmo.com/TipTheVerse?txn=pay&amount=${amount}&note=${NOTE}`,
-      paypal: `https://paypal.me/tiptheverse/${amount}`
-    };
+    <!-- PAYPAL -->
+    <section id="paypal" class="section" aria-labelledby="paypal-title">
+      <h2 id="paypal-title">PayPal</h2>
+      <div class="actions">
+        <!-- PayPal.me supports amount in the URL -->
+        <a class="btn" id="paypalBtn" target="_blank" rel="noopener">Pay $1 on PayPal</a>
+      </div>
+      <div class="small">You’ll see $1 prefilled on PayPal.me.</div>
+    </section>
 
-    // Read ?m=cash|venmo|paypal and redirect after 1.5s
-    const m = new URLSearchParams(location.search).get('m');
-    const target = links[m] || null;
-    if (target) setTimeout(() => { location.href = target; }, 1500);
-  </script>
+    <div class="actions">
+      <a class="btn" href="/index.html">← Back to Tiptheverse</a>
+    </div>
+  </main>
+</div>
+
+<script>
+  // ====== SETTINGS: replace with your handles ======
+  const CASH_TAG   = $tiptheverse;              // no "$"
+  const VENMO_USER = @tiptheverse;
+  const PAYPAL_ME  = @tiptheverse;
+  const NOTE       = "Tip The Verse — ripple";
+
+  // Build links
+  const cashLink   = `https://cash.app/$${CASH_TAG}`;
+  // Venmo web deep link with amount + note
+  const venmoLink  = `https://venmo.com/${encodeURIComponent(VENMO_USER)}?txn=pay&amount=1&note=${encodeURIComponent(NOTE)}`;
+  // PayPal.me amount
+  const paypalLink = `https://paypal.me/${encodeURIComponent(PAYPAL_ME)}/1`;
+
+  document.getElementById("cashBtn").href   = cashLink;
+  document.getElementById("venmoBtn").href  = venmoLink;
+  document.getElementById("paypalBtn").href = paypalLink;
+
+  // Copy note helper
+  document.getElementById("copyNote").addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(NOTE);
+      document.getElementById("copyNote").textContent = "Copied!";
+      setTimeout(()=>{ document.getElementById("copyNote").textContent = "Copy note"; }, 1500);
+    } catch (e) {
+      alert("Copy failed—press and hold to select the text, then copy.");
+    }
+  });
+
+  // Focus section if a mode is provided (?m=cash|venmo|paypal)
+  const params = new URLSearchParams(location.search);
+  const m = params.get("m");
+  if (m) {
+    const el = document.getElementById(m.toLowerCase());
+    if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+</script>
 </body>
 </html>
