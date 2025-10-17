@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>About — Tiptheverse</title>
   <meta name="description" content="You aren’t here by accident. Start a ripple with $1 — Tiptheverse.">
+
   <style>
     html, body { height: 100%; margin: 0; font-family: system-ui, Arial, sans-serif; }
 
@@ -44,6 +45,11 @@
       font-weight: 800;
     }
 
+    h2 {
+      margin: 1.4rem 0 .5rem;
+      font-size: clamp(22px, 4.5vw, 30px);
+    }
+
     p {
       margin: 0 0 1rem;
       font-size: clamp(16px, 2.2vw, 20px);
@@ -65,6 +71,7 @@
         0 8px 24px rgba(0,0,0,.35),              /* drop shadow */
         0 0 14px rgba(255,255,255,.30);          /* soft outer glow */
       backdrop-filter: blur(2px);
+      transition: background .2s ease, box-shadow .2s ease, transform .04s ease;
     }
     .btn:hover {
       background: rgba(255,255,255,.22);
@@ -72,6 +79,16 @@
         0 0 0 1px rgba(255,255,255,.35) inset,
         0 10px 28px rgba(0,0,0,.4),
         0 0 18px rgba(255,255,255,.38);
+    }
+    .btn:active { transform: translateY(1px); }
+
+    /* Bottom action buttons */
+    .about-actions {
+      margin: 36px 0 0;
+      display: flex;
+      justify-content: center;
+      gap: 16px;
+      flex-wrap: wrap;
     }
 
     /* iPhone background fix */
@@ -97,44 +114,26 @@
       <p><strong>This isn’t a purchase or a promise — it’s motion.</strong> Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters, not the hand that sent it. When we let go of credit and recognition, the ripple grows freer, stronger, and more endless. That quiet motion can shift a day, inspire another act, and carry farther than we’ll ever see. <em>The Universe provides</em> in ways we can’t predict — sometimes sudden, sometimes subtle — but always circling back in its own time. A single small act, released without expectation, becomes part of something infinite.</p>
 
       <p style="font-style: italic; opacity: .9;">Give without name. Receive without asking. Trust the ripple.</p>
-<p style="font-style; italic;opacity:" ><h2>Why am I here?</h2>
-Because it knows who to send, what to bring, and when to deliver. You didn’t stumble here by accident. Something greater — the same quiet force that put this idea in motion — brought you here at the exact moment you were ready. Destiny isn’t always loud; sometimes it’s a whisper that nudges you toward a choice that feels almost obvious once you see it. </p>
-    
-   <h2>How does it help?</h2>
-Because even the smallest ripple can move an ocean. A single dollar isn’t about the amount — it’s about the act. A thought alone can spark change in the unseen, but when you give in the physical world, the motion cannot be ignored. That dollar becomes a tangible signal, carrying your intention outward.
 
-<h2>Where does my gift go?</h2>
-You release it into the hands of the universe. You don’t have to decide who it reaches, or what it becomes. That’s not your burden. The Universe already knows who, what, and when. Your gift might be the spark someone needs, or it might circle back to you in a form you never could have predicted. The path isn’t yours to map, but the ripple always finds its way.
-    </p>
+      <h2>Why am I here?</h2>
+      <p>Because it knows who to send, what to bring, and when to deliver. You didn’t stumble here by accident. Something greater — the same quiet force that put this idea in motion — brought you here at the exact moment you were ready. Destiny isn’t always loud; sometimes it’s a whisper that nudges you toward a choice that feels almost obvious once you see it.</p>
 
+      <h2>How does it help?</h2>
+      <p>Because even the smallest ripple can move an ocean. A single dollar isn’t about the amount — it’s about the act. A thought alone can spark change in the unseen, but when you give in the physical world, the motion cannot be ignored. That dollar becomes a tangible signal, carrying your intention outward.</p>
+
+      <h2>Where does my gift go?</h2>
+      <p>You release it into the hands of the universe. You don’t have to decide who it reaches, or what it becomes. That’s not your burden. The Universe already knows who, what, and when. Your gift might be the spark someone needs, or it might circle back to you in a form you never could have predicted. The path isn’t yours to map, but the ripple always finds its way.</p>
+
+      <!-- Bottom buttons -->
+      <div class="about-actions">
+        <a class="btn" href="javascript:history.back()">← Go Back</a>
+        <!-- If your payment lives on a dedicated page: -->
+        <a class="btn" href="/pay.html">Tip The Verse — $1</a>
+        <!-- If you prefer to jump to the buttons on index instead, use this instead:
+        <a class="btn" href="/index.html#pay">Tip The Verse — $1</a>
+        -->
+      </div>
     </main>
   </div>
-<!-- Place this right before the closing </body> tag on about.html -->
-<div class="about-actions">
-  <a class="btn" href="javascript:history.back()">← Go Back</a>
-  <a class="btn" href="/index.html#pay">Tip The Verse — $1</a>
-</div>
-
-<style>
-.about-actions {
-  margin: 40px 0;
-  display: flex;
-  justify-content: center;
-  gap: 16px;
-}
-.about-actions .btn {
-  display: inline-block;
-  padding: 12px 20px;
-  border-radius: 999px;
-  background: rgba(255,255,255,0.18);
-  border: 1px solid rgba(255,255,255,0.45);
-  color: #fff;
-  text-decoration: none;
-  font-weight: 600;
-}
-.about-actions .btn:hover {
-  background: rgba(255,255,255,0.28);
-}
-</style>
 </body>
 </html>
