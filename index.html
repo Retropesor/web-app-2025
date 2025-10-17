@@ -15,6 +15,51 @@
   <style>
     /* Full-page background */
     html, body { height: 100%; margin: 0; }
+    <script>
+  (function() {
+    const lines = [
+      "Small act. Real motion.",
+      "Drop $1, set a ripple.",
+      "Intent made visible.",
+      "You arrived right on time.",
+      "The universe heard you.",
+      "One dollar. One signal.",
+      "Tiny push, wide circles.",
+      "Give, and the current moves.",
+      "A thought becomes a sign.",
+      "Perfect timing isn’t loud.",
+      "You aren’t here by accident.",
+      "Ripples travel farther than we see.",
+      "The who/what/when is already known.",
+      "Release it and let it work.",
+      "Quiet motion, real results.",
+      "Act now; the map appears.",
+      "The return is never predictable.",
+      "Set it down; watch it move.",
+      "Your $1 can’t be ignored.",
+      "Trust the unfolding."
+    ];
+
+    const el = document.getElementById("ripple-rotator");
+    if (!el) return;
+
+    let i = 0;
+    const interval = 3400; // ms between changes
+
+    function nextLine() {
+      el.classList.add("is-fading");
+      setTimeout(() => {
+        i = (i + 1) % lines.length;
+        el.textContent = lines[i];
+        el.classList.remove("is-fading");
+      }, 420); // matches CSS fade time
+    }
+
+    // start after a beat so first line gets seen
+    setTimeout(() => { setInterval(nextLine, interval); }, 1200);
+  })();
+</script>
+
     body {
       background: url("/background.png") no-repeat center center fixed;
       background-size: cover;
@@ -102,11 +147,50 @@
 </head>
 <body>
   <div class="overlay"></div>
+.rotator-wrap {
+  margin: 0.25rem 0 0.75rem;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+#ripple-rotator {
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 420ms ease-in-out;
+}
+#ripple-rotator.is-fading { opacity: 0; }
 
   <div class="wrap">
     <main class="hero">
       <h1>Do a Good Deed. Get Good Karma.</h1>
       <p class="tag">Start a ripple with $1. Small acts → big waves.</p>
+<section class="ripple-intro">
+  <h2>You aren’t here by accident.</h2>
+  <p>The universe already knows the who, the what, and the when — your $1 is the signal.</p>
+
+  <div class="micro-answers">
+    <p><strong>Why $1?</strong> Small act, real motion. A thought stirs the unseen; a dollar makes the ripple undeniable.</p>
+    <p><strong>Where does it go?</strong> Into the current — the universe routes it where it’s needed, and ripples circle back in unexpected ways.</p>
+    <p><strong>Why am I here?</strong> Because timing is the message. You arrived when you were ready.</p>
+  </div>
+
+  <div class="cta">
+    <h3>Start the Ripple — $1</h3>
+    <p><em>One dollar. One signal. That’s all.</em></p>
+
+    <!-- Replace these with your actual links -->
+    <button onclick="window.open('YOUR-CASHAPP-LINK')">Start via Cash App</button>
+    <button onclick="window.open('YOUR-VENMO-LINK')">Start via Venmo</button>
+    <button onclick="window.open('YOUR-PAYPAL-LINK')">Start via PayPal</button>
+  </div>
+
+  <div class="secondary-links">
+    <a href="echoes.html">Echoes</a> · 
+    <a href="about.html">You Already Know</a>
+  </div>
+</section>
+<h3 class="rotator-wrap" aria-live="polite">
+  <span id="ripple-rotator">Small act. Real motion.</span>
+</h3>
 
      <!-- TipTheVerse — $1 buttons -->
 <div class="actions">
@@ -115,12 +199,18 @@
      rel="noopener">
     Set it in motion — $1 (Cash App)
   </a>
+<h3 class="rotator-wrap" aria-live="polite">
+  <span id="ripple-rotator">Small act. Real motion.</span>
+</h3>
 
   <a class="btn btn-venmo"
      href="/pay.html?m=venmo"
      rel="noopener">
     Send a ripple — $1 (Venmo)
   </a>
+<h3 class="rotator-wrap" aria-live="polite">
+  <span id="ripple-rotator">Small act. Real motion.</span>
+</h3>
 
   <a class="btn btn-paypal"
      href="/pay.html?m=paypal"
@@ -168,6 +258,7 @@
 
 
 <div id="hl-aria-live-message-container" aria-live="polite" class="visually-hidden"></div><div id="hl-aria-live-alert-container" role="alert" aria-live="assertive" class="visually-hidden"></div></body></html>
+
 
 
 
