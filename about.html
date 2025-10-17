@@ -109,5 +109,32 @@ You release it into the hands of the universe. You don’t have to decide who it
 
     </main>
   </div>
+<!-- Place this right before the closing </body> tag on about.html -->
+<div class="about-actions">
+  <a class="btn" href="javascript:history.back()">← Go Back</a>
+  <a class="btn" href="/index.html#pay">Tip The Verse — $1</a>
+</div>
+
+<style>
+.about-actions {
+  margin: 40px 0;
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+.about-actions .btn {
+  display: inline-block;
+  padding: 12px 20px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: #fff;
+  text-decoration: none;
+  font-weight: 600;
+}
+.about-actions .btn:hover {
+  background: rgba(255,255,255,0.28);
+}
+</style>
 </body>
 </html>
