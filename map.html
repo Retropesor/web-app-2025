@@ -3,286 +3,66 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TipTheVerse — Drop a Pin</title>
-  <meta name="description" content="Drop a pin, mark your ripple, and watch the clusters grow." />
-
-  <!-- Leaflet & Plugins -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-
-  <!-- MarkerCluster -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-  <!-- Heatmap plugin -->
-  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-
+  <title>TipTheVerse</title>
+  <meta name="description" content="Start a ripple with $1 — then watch where it lands." />
   <style>
-    :root{
-      --bg: #0b0f1a;         /* deep space */
-      --fg: #e8f0ff;         /* near-white */
-      --muted: #b8c4dd;      /* soft */
-      --accent: #67e8f9;     /* teal/aqua */
-      --accent-2: #f0abfc;   /* cosmic violet */
+    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    body {
+      background: url("background.png") no-repeat center center fixed;
+      background-size: cover;
+      color: #f7fbff;
     }
-    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, ui-sans-serif, Segoe UI, Roboto, Arial, sans-serif; }
-    .wrap { display: grid; grid-template-rows: auto 1fr; height: 100%; }
-
-    header {
-      padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,.08);
-      display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: center;
-      background: radial-gradient(1000px 400px at 10% -100%, rgba(103,232,249,.12), transparent),
-                  radial-gradient(900px 500px at 90% -120%, rgba(240,171,252,.10), transparent);
-      position: relative;
+    .vignette { position: fixed; inset: 0; pointer-events: none;
+      background:
+        linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,.55) 100%),
+        radial-gradient(85% 75% at 50% 35%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.4) 100%);
     }
-    .title { line-height: 1.2; }
-    .title h1 { margin: 0; font-weight: 700; font-size: clamp(18px, 3vw, 26px); letter-spacing: 0.2px; }
-    .title p { margin: 4px 0 0; color: var(--muted); font-size: clamp(12px, 2.4vw, 14px); }
+    .wrap { min-height: 100%; display: grid; grid-template-rows: 1fr auto; }
+    .hero { display: grid; place-items: center; padding: 40px 16px; text-align: center; }
+    .hero h1 { margin: 0 0 10px; font-weight: 800; letter-spacing: .2px; font-size: clamp(26px, 5vw, 48px); }
+    .hero p { margin: 8px auto 20px; max-width: 720px; color: #d6e2ff; font-size: clamp(14px, 2.4vw, 18px); }
 
-    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; justify-content: flex-end; }
-    .controls input[type="text"]{ background: #12182a; border: 1px solid rgba(255,255,255,.08); color: var(--fg); padding: 8px 10px; border-radius: 10px; min-width: 220px; }
-    .btn{
-      cursor: pointer; border: 1px solid rgba(255,255,255,.14); background: #12182a; color: var(--fg);
-      padding: 8px 12px; border-radius: 999px; font-weight: 600; font-size: 14px; letter-spacing: .2px;
-      transition: transform .08s ease, background .2s ease, border-color .2s ease;
-    }
-    .btn:hover{ transform: translateY(-1px); border-color: rgba(255,255,255,.25); background: #0e1425; }
-    .btn.primary{ border-color: rgba(103,232,249,.35); box-shadow: 0 0 0 2px rgba(103,232,249,.12) inset; }
+    .btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+    .btns a, .btns button { text-decoration: none; cursor: pointer; border: 1px solid rgba(255,255,255,.18); color: #f7fbff; background: rgba(10,14,24,.55);
+      padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; letter-spacing: .2px; backdrop-filter: blur(3px);
+      transition: transform .08s ease, background .2s ease, border-color .2s ease; }
+    .btns a:hover, .btns button:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.3); background: rgba(10,14,24,.72); }
+    .btns .primary { border-color: rgba(103,232,249,.38); box-shadow: 0 0 0 2px rgba(103,232,249,.12) inset; }
 
-    #map { width: 100%; height: 100%; }
-
-    /* Toast / tip */
-    .toast{ position: absolute; left: 50%; transform: translateX(-50%); top: 12px; z-index: 1100; background: rgba(8,12,24,.85); border: 1px solid rgba(255,255,255,.12); padding: 10px 14px; border-radius: 10px; font-size: 14px; backdrop-filter: blur(4px); }
-
-    /* Custom pulsing marker */
-    .pulse-marker{
-      width: 14px; height: 14px; border-radius: 50%; background: var(--accent);
-      box-shadow: 0 0 0 2px rgba(103,232,249,.4), 0 0 12px rgba(103,232,249,.8);
-      position: relative;
-    }
-    .pulse-marker::after{
-      content: ""; position: absolute; inset: -6px; border-radius: 50%;
-      border: 2px solid rgba(103,232,249,.8); opacity: 0; animation: ripple 1.4s ease-out forwards;
-    }
-    @keyframes ripple{
-      0%{ opacity: .8; transform: scale(.6); }
-      100%{ opacity: 0; transform: scale(2.2); }
-    }
-
-    /* Cluster color tuning */
-    .marker-cluster-small { background: rgba(103,232,249,.15); }
-    .marker-cluster-small div { background: rgba(103,232,249,.85); color: #00171f; }
-    .marker-cluster-medium { background: rgba(240,171,252,.15); }
-    .marker-cluster-medium div { background: rgba(240,171,252,.85); color: #1a0020; }
-    .marker-cluster-large { background: rgba(255,255,255,.18); }
-    .marker-cluster-large div { background: rgba(255,255,255,.92); color: #0b0f1a; }
-
-    /* Footer stats */
-    footer{ position: absolute; left: 0; right: 0; bottom: 10px; z-index: 900; display: flex; justify-content: center; }
-    .stats{ background: rgba(8,12,24,.78); border: 1px solid rgba(255,255,255,.1); padding: 8px 12px; border-radius: 999px; font-size: 13px; color: var(--muted); backdrop-filter: blur(4px); }
-    .stats strong{ color: var(--fg); }
-
-    /* Responsive tweaks */
-    @media (max-width: 640px){
-      .controls{ gap: 6px; }
-      .controls input[type="text"]{ min-width: 160px; }
-      .btn{ font-size: 13px; padding: 8px 10px; }
-    }
+    footer { padding: 14px; text-align: center; color: #c8d4f4; font-size: 12px; }
+    footer small { opacity: .9; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <header>
-      <div class="title">
-        <h1>Drop a Pin · Track the Ripple</h1>
-        <p>Collective thought leaves a mark. Add yours — and watch the clusters grow.</p>
-      </div>
-      <div class="controls">
-        <input id="searchInput" type="text" placeholder="Find a city (e.g., Myrtle Beach)" />
-        <button class="btn" id="searchBtn" title="Search and fly">Search</button>
-        <button class="btn primary" id="dropBtn" title="Place your ripple on the map">Drop a Pin</button>
-        <button class="btn" id="undoBtn" title="Remove your last local pin">Undo</button>
-        <button class="btn" id="resetBtn" title="Reset view">Reset View</button>
-        <button class="btn" id="heatBtn" title="Toggle heatmap">Heatmap</button>
-      </div>
-      <div id="toast" class="toast" style="display:none;">Tap the map to place your pin ✨</div>
-    </header>
+    <main class="hero">
+      <div>
+        <h1>Do a good deed — get good karma</h1>
+        <p>
+          This isn’t a purchase or a promise — it’s motion. Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters.
+        </p>
+        <div class="btns">
+          <!-- Payment CTAs (placeholder links) -->
+          <a class="primary" href="#cashapp">Set it in Motion (Cash App)</a>
+          <a href="#venmo">Venmo</a>
+          <a href="#paypal">PayPal</a>
 
-    <div id="map"></div>
+          <!-- Your site nav -->
+          <a href="map.html">Drop a Pin</a>
+          <a href="about.html">About</a>
+          <a href="echoes.html">Echoes</a>
+        </div>
+      </div>
+    </main>
+
     <footer>
-      <div class="stats"><span id="count">0</span> pins placed • last added <strong id="lastWhen">never</strong></div>
+      <small>
+        This is a voluntary one dollar gift sent into The Universe with no strings attached. It is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
+      </small>
     </footer>
   </div>
-
-  <script>
-    // =========================
-    // Basic Config / Backend hook
-    // =========================
-    // Optional: if later you add a Netlify Function (/.netlify/functions/pins)
-    // or any REST endpoint, set ENDPOINT to that URL and the app will POST new pins.
-    const ENDPOINT = null; // e.g., "/.netlify/functions/pins"
-
-    // Local persistence as a fallback (per-browser only)
-    const LS_KEY = 'ttv_pins_v1';
-
-    // =========================
-    // Map Setup
-    // =========================
-    const map = L.map('map', { worldCopyJump: true, minZoom: 2, zoomSnap: .25 });
-    const defaultView = { center: [20, 0], zoom: 2.4 };
-    map.setView(defaultView.center, defaultView.zoom);
-
-    // Basemap (Carto Voyager No Labels - dark-ish)
-    const tiles = L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager_nolabels/{z}/{x}/{y}{r}.png', {
-      attribution: '&copy; <a href="https://www.openstreetmap.org/">OSM</a> & Carto', maxZoom: 19
-    }).addTo(map);
-
-    // Cluster group
-    const clusters = L.markerClusterGroup({
-      showCoverageOnHover: false,
-      spiderfyOnEveryZoom: false,
-      maxClusterRadius: 52,
-    });
-    map.addLayer(clusters);
-
-    // Heat layer (starts hidden)
-    let heatLayer = L.heatLayer([], { radius: 22, blur: 16, maxZoom: 5, minOpacity: 0.25 });
-    let heatOn = false;
-
-    // =========================
-    // Utilities
-    // =========================
-    const qs = sel => document.querySelector(sel);
-    const toast = qs('#toast');
-    const countEl = qs('#count');
-    const lastWhenEl = qs('#lastWhen');
-
-    function fmtTime(d){
-      const dt = (d instanceof Date) ? d : new Date(d);
-      return dt.toLocaleString();
-    }
-
-    function loadPins(){
-      try { return JSON.parse(localStorage.getItem(LS_KEY)) || []; }
-      catch(e){ return []; }
-    }
-    function savePins(arr){ localStorage.setItem(LS_KEY, JSON.stringify(arr)); }
-
-    function addPulseMarker(lat, lng, when){
-      const icon = L.divIcon({ className: 'pulse-marker', iconSize: [14,14] });
-      const m = L.marker([lat, lng], { icon });
-      clusters.addLayer(m);
-      // update heat data
-      if(heatOn){ heatLayer.addLatLng([lat, lng, 0.5]); }
-      // small popup
-      m.bindPopup(`<strong>Ripple</strong><br>${lat.toFixed(3)}, ${lng.toFixed(3)}<br><small>${fmtTime(when)}</small>`);
-      return m;
-    }
-
-    function redrawAll(pins){
-      clusters.clearLayers();
-      heatLayer.setLatLngs([]);
-      pins.forEach(p => {
-        addPulseMarker(p.lat, p.lng, p.when);
-        if(heatOn){ heatLayer.addLatLng([p.lat, p.lng, 0.5]); }
-      });
-      countEl.textContent = String(pins.length);
-      lastWhenEl.textContent = pins.length ? fmtTime(pins[pins.length-1].when) : 'never';
-    }
-
-    // =========================
-    // Load existing local pins
-    // =========================
-    let PINS = loadPins();
-    redrawAll(PINS);
-
-    // =========================
-    // Interaction: Drop a Pin
-    // =========================
-    let placing = false;
-    function setPlacing(on){ placing = on; toast.style.display = on ? 'block' : 'none'; }
-
-    qs('#dropBtn').addEventListener('click', () => setPlacing(true));
-
-    map.on('click', async (e) => {
-      if(!placing) return;
-      setPlacing(false);
-      const { lat, lng } = e.latlng;
-      const when = Date.now();
-
-      // Create immediately
-      addPulseMarker(lat, lng, when);
-      PINS.push({ lat, lng, when });
-      savePins(PINS);
-      redrawAll(PINS);
-
-      // Fire-and-forget to backend if configured
-      if(ENDPOINT){
-        try{
-          await fetch(ENDPOINT, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ lat, lng, when }) });
-        }catch(err){ console.warn('Backend POST failed (continuing locally):', err); }
-      }
-    });
-
-    // =========================
-    // Undo last local pin
-    // =========================
-    qs('#undoBtn').addEventListener('click', () => {
-      if(!PINS.length) return;
-      PINS.pop();
-      savePins(PINS);
-      redrawAll(PINS);
-    });
-
-    // Reset view
-    qs('#resetBtn').addEventListener('click', () => {
-      map.setView(defaultView.center, defaultView.zoom, { animate: true });
-    });
-
-    // Toggle heatmap
-    qs('#heatBtn').addEventListener('click', () => {
-      heatOn = !heatOn;
-      if(heatOn){
-        heatLayer.setLatLngs(PINS.map(p => [p.lat, p.lng, 0.5]));
-        heatLayer.addTo(map);
-      } else {
-        map.removeLayer(heatLayer);
-      }
-    });
-
-    // =========================
-    // Optional: search by city (Nominatim)
-    // =========================
-    async function geocodeCity(q){
-      const url = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(q)}`;
-      const resp = await fetch(url, { headers: { 'Accept-Language': 'en' } });
-      if(!resp.ok) throw new Error('Search failed');
-      const data = await resp.json();
-      if(!data.length) return null;
-      const top = data[0];
-      return { lat: parseFloat(top.lat), lng: parseFloat(top.lon), label: top.display_name };
-    }
-
-    qs('#searchBtn').addEventListener('click', async () => {
-      const q = qs('#searchInput').value.trim();
-      if(!q) return;
-      try{
-        const hit = await geocodeCity(q);
-        if(hit){
-          map.flyTo([hit.lat, hit.lng], 8, { duration: 1.0 });
-        } else {
-          alert('No results found. Try a city + state/country.');
-        }
-      }catch(e){
-        alert('Search had a hiccup. Try again.');
-      }
-    });
-
-    // Enter presses search
-    qs('#searchInput').addEventListener('keydown', (e) => {
-      if(e.key === 'Enter') qs('#searchBtn').click();
-    });
-  </script>
+  <div class="vignette"></div>
 </body>
 </html>
+
+
