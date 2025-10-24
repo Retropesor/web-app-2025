@@ -331,17 +331,20 @@
     }
 
     function updateStats(pins) {
-      // Header total (visible at top) — respects time filter
-      document.getElementById('totalPinsHeaderValue').textContent = pins.length;
+      // Header total (visible at top) — guard for missing node
+      const topBadge = document.getElementById('totalPinsHeaderValue');
+      if (topBadge) topBadge.textContent = pins.length;
 
-      const total = pins.length;
-      document.getElementById('totalPins').textContent = total;
+      // Side-panel totals — guard for missing nodes
+      const totalEl = document.getElementById('totalPins');
+      if (totalEl) totalEl.textContent = pins.length;
 
+      const uniqueEl = document.getElementById('uniquePlaces');
       const counts = new Map();
       pins.forEach(p => counts.set(p.label, (counts.get(p.label) || 0) + 1));
-      document.getElementById('uniquePlaces').textContent = counts.size;
+      if (uniqueEl) uniqueEl.textContent = counts.size;
 
-      // Update Top Cities ticker (limit to 20, city-first labels only)
+      // Update Top Cities ticker (limit to 20)
       const top = Array.from(counts.entries())
         .filter(([label]) => label && /,/.test(label))
         .sort((a,b) => b[1]-a[1])
@@ -351,6 +354,40 @@
       if (track) {
         track.textContent = top.length ? `  ✦  ${top.join('   •   ')}   ` : 'No activity yet — be the first to drop a ripple!';
       }
+
+      // Side panel list (if present)
+      const list = document.getElementById('clusterList');
+      if (list) {
+        list.innerHTML = '';
+        const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
+        if (sorted.length === 0) {
+          const el = document.createElement('div');
+          el.className = 'cluster-item';
+          el.innerHTML = '<span class="where">No clusters yet</span><span class="count">—</span>';
+          list.appendChild(el);
+        } else {
+          sorted.forEach(([label, count]) => {
+            const el = document.createElement('div');
+            el.className = 'cluster-item';
+            el.innerHTML = `<span class="where">${label}</span><span class="count">×${count}</span>`;
+            list.appendChild(el);
+          });
+        }
+      }
+
+      // Overlays — guard against missing map/layers
+      if (typeof updateStateBadges === 'function') updateStateBadges(pins);
+      if (typeof heatLayer !== 'undefined' && heatLayer && typeof heatLayer.setLatLngs === 'function') {
+        const asHeat = pins.map(p => [p.lat, p.lng, 1]);
+        heatLayer.setLatLngs(asHeat);
+        const heatOn = document.getElementById('heatToggle');
+        if (heatOn && heatOn.checked) {
+          if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
+        } else if (map.hasLayer && map.hasLayer(heatLayer)) {
+          map.removeLayer(heatLayer);
+        }
+      }
+    }
 
       // Side panel list
       const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
@@ -625,9 +662,20 @@
     };
   }
   -->
+  <script>
+    // Minimal on-screen error banner to surface JS errors that can hide the map
+    (function attachErrorBanner(){
+      const banner = document.createElement('div');
+      banner.id = 'ttv-error-banner';
+      banner.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99999;background:#2a0f12;color:#ffd1d6;border:1px solid #61202a;padding:8px 10px;border-radius:8px;font:12px/1.2 system-ui;display:none;max-width:70vw';
+      document.body.appendChild(banner);
+      function show(msg){ banner.textContent = 'Error: ' + msg; banner.style.display = 'block'; }
+      window.addEventListener('error', (e)=> show(e.message||'Unknown error'));
+      window.addEventListener('unhandledrejection', (e)=> show((e.reason&&e.reason.message)||'Promise rejected'));
+    })();
+  </script>
 </body>
 </html>
-
 
 
 
