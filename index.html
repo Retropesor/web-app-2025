@@ -141,6 +141,40 @@
     @supports (-webkit-touch-callout: none) {
       body { background-attachment: scroll; }
     }
+    /* === Mobile polish (safe, no desktop changes) === */
+@media (max-width: 480px){
+  /* prevent sideways scroll and keep content above the footer */
+  html, body { overflow-x: hidden; }
+
+  /* give the content a bit more breathing room and account for iOS safe area */
+  .wrap{
+    min-height: calc(100svh - 90px); /* avoid being hidden under footer */
+    padding: 20px 16px 96px;         /* extra bottom so buttons aren’t cramped */
+  }
+
+  /* scale text a touch smaller so lines don’t wrap awkwardly */
+  h1{ font-size: clamp(22px, 8vw, 36px); }
+  .tag{ font-size: 14px; margin-bottom: 8px; }
+
+  /* ticker: slightly slower & tighter gap to avoid jumpiness */
+  .ticker{ --speed: 32s; margin: 4px auto 12px; }
+  .ticker-track{ gap: 18px; }
+
+  /* buttons: comfy tap targets but not huge */
+  .btn{ padding: 12px 16px; font-size: 15px; }
+  .links{ gap: 10px; }
+
+  /* footer: stop covering content on small screens */
+  footer{
+    position: static;                /* no longer fixed on mobile */
+    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
+    max-width: 100%;
+    opacity: .85;
+    font-size: 11px;
+    text-shadow: 0 1px 4px rgba(0,0,0,.45);
+  }
+}
+
   </style>
 </head>
 <body>
@@ -262,6 +296,7 @@
   </script>
 </body>
 </html>
+
 
 
 
