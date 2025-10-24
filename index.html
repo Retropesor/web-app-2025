@@ -3,236 +3,101 @@
 <head>
   <meta charset="utf-8">
   <title>Tiptheverse</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <!-- meta polish -->
   <meta name="description" content="Start a ripple with $1. Small ripples become waves. Tiptheverse.">
-  <meta property="og:title" content="Tiptheverse">
-  <meta property="og:description" content="Do a Good Deed. Get Good Karma. Start a ripple with $1.">
-  <meta property="og:type" content="website">
-  <meta name="theme-color" content="#0b2742">
 
   <style>
-    /* ===== Background ===== */
-    html { background:#000; }
-    html, body { height: 100%; margin: 0; overflow-x:hidden; } /* 🚑 stop side scroll */
-    *, *::before, *::after { box-sizing: border-box; }
-
-    body {
-      background: #000 url("background.png") no-repeat center center;
-      background-size: cover;
-      font-family: system-ui, Arial, sans-serif;
-      color: #fff;
-    }
-
-    .overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.32);
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    .wrap {
-      position: relative; z-index: 1;
-      min-height: 100svh; min-height:100vh;
-      display: grid;
-      place-items: center;
-      padding: 24px;
+    /* General reset and centering */
+    body, html {
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden; /* Prevent sideways scrolling */
+      font-family: Arial, sans-serif;
+      color: white;
       text-align: center;
-      text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
 
-    .hero { 
-      max-width: 860px; 
-      margin: 0 auto; 
-      width:100%;             /* 🚑 force hero to stay inside screen */
-      padding:0 12px;         /* 🚑 small inset so nothing spills over */
+    .hero, .content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      margin: 0 auto;
+      width: 100%;
     }
 
-    h1 {
-      font-size: clamp(28px, 6vw, 64px);
-      line-height: 1.1; margin: 0 0 10px;
-    }
-    .tag {
-      font-size: clamp(16px, 2.5vw, 22px);
-      margin: 0 0 10px; opacity: 0.95;
+    h1, h2, p {
+      margin: 0.5em 0;
     }
 
-    /* --- Ticker --- */
-    .ticker {
-      --speed: 28s;
-      overflow: hidden;
-      width:100%;              /* 🚑 keep inside viewport */
-      margin:6px auto 16px;
-      opacity:.9;
-    }
-    .ticker-track {
-      display:flex; gap:28px;
-      white-space:nowrap;
-      animation: ticker-scroll var(--speed) linear infinite;
-      padding:0 6px;           /* 🚑 tiny inset */
-    }
-    .ticker-item { font-size:.95rem; }
-    @keyframes ticker-scroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); }
+    button {
+      margin-top: 1em;
+      padding: 0.8em 1.5em;
+      border: none;
+      border-radius: 25px;
+      background: rgba(255,255,255,0.2);
+      color: white;
+      font-size: 1em;
+      cursor: pointer;
     }
 
-    .actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:8px; padding:0 8px; }
-    .btn {
-      display:inline-block; padding:12px 18px; border-radius:999px;
-      background: rgba(255,255,255,0.18);
-      border:1px solid rgba(255,255,255,0.45);
-      color:#fff; text-decoration:none; font-weight:600;
+    button:hover {
+      background: rgba(255,255,255,0.4);
     }
-    .btn:hover { background: rgba(255,255,255,0.28); }
-
-    .links{
-      display:flex; flex-wrap:wrap; gap:12px;
-      justify-content:center; align-items:center;
-      margin:18px auto 0; max-width:720px;
-      padding:0 8px; /* 🚑 keep inside screen */
-    }
-
-    .ripple-intro { margin:18px 0 20px; }
-    .ripple-intro p { margin:6px 0; }
-
-    .rotator-wrap { margin:0.25rem 0 0.75rem; font-weight:600; }
-    #ripple-rotator { display:inline-block; transition:opacity 420ms ease-in-out; }
-    #ripple-rotator.is-fading { opacity:0; }
-
-    #about {
-      padding:40px 20px 80px;
-      text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.55);
-    }
-    #about p { max-width:820px; margin:0 auto; }
 
     footer {
-      position:fixed; left:0; right:0; bottom:10px;
-      text-align:center; font-size:12px; line-height:1.4;
-      color:#fff; opacity:.9; text-shadow:0 1px 6px rgba(0,0,0,.6);
-      z-index:2; max-width:90%; margin:0 auto; padding:0 10px;
+      font-size: 0.8em;
+      opacity: 0.8;
+      margin-top: 2em;
     }
 
-    @supports (-webkit-touch-callout: none) {
-      body { background-attachment: scroll; }
+    /* On smaller screens force text center */
+    @media (max-width: 768px) {
+      h1, h2, p {
+        text-align: center;
+        margin-left: auto;
+        margin-right: auto;
+        width: 90%;
+      }
+
+      button {
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+      }
     }
   </style>
-  /* General centering */
-body, html {
-  margin: 0;
-  padding: 0;
-  overflow-x: hidden; /* Prevent sideways scrolling */
-}
-
-.hero, .content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-  margin: 0 auto;
-  width: 100%;
-}
-
-/* On smaller screens force text center */
-@media (max-width: 768px) {
-  .hero h1, 
-  .hero h2, 
-  .hero p, 
-  .content p {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-    width: 90%;
-  }
-  
-  button {
-    margin-left: auto;
-    margin-right: auto;
-    display: block;
-  }
-}
-
 </head>
-<body>
-  <div class="overlay"></div>
+<body style="background: url('background.png') no-repeat center center fixed; background-size: cover;">
 
-  <div class="wrap">
-    <main class="hero">
-      <h1>Do a Good Deed. Get Good Karma.</h1>
-      <p class="tag">Start a ripple with $1. Small ripples become waves.</p>
+  <div class="hero">
+    <h1>Do a Good Deed</h1>
+    <p>Start a ripple with $1</p>
+    <p>Top cities: Myrtle Beach • Phoenix • Charlotte</p>
 
-      <div class="ticker">
-        <div class="ticker-track">
-          <span class="ticker-item">Top cities: Myrtle Beach • Phoenix • Charleston • Wilmington • Columbia • Asheville • Savannah</span>
-          <span class="ticker-item">Most active hour: 7–8pm</span>
-          <span class="ticker-item">New pins today: 12</span>
-          <span class="ticker-item" aria-hidden="true">Top cities: Myrtle Beach • Phoenix • Charleston • Wilmington • Columbia • Asheville • Savannah</span>
-          <span class="ticker-item" aria-hidden="true">Most active hour: 7–8pm</span>
-          <span class="ticker-item" aria-hidden="true">New pins today: 12</span>
-        </div>
-      </div>
+    <h2>Why am I here?</h2>
+    <p>There is no accident — only ripples you create.</p>
 
-      <section class="ripple-intro">
-        <div class="micro-answers">
-          <p><strong>Why am I here?</strong> There is no accident in timing. You arrived when you were ready.</p>
-          <p><strong>How does this help?</strong> A thought sparks change; a dollar carries the intention.</p>
-          <p><strong>Where does it go?</strong> The Universe routes it where it’s needed, and it will circle back in unexpected ways.</p>
-        </div>
-      </section>
+    <h2>How does this help?</h2>
+    <p>A thought or action put into the world multiplies.</p>
 
-      <h3 class="rotator-wrap"><span id="ripple-rotator">Small act. Real motion.</span></h3>
+    <h2>Where does it go?</h2>
+    <p>The Universe responds, bouncing kindness back in waves.</p>
 
-      <div class="actions"><a class="btn" href="/pay.html" rel="noopener">Tip the 'Verse</a></div>
+    <button>You Already Know</button>
+  </div>
 
-      <div class="links">
-        <a class="btn" href="/about.html">You Already Know</a>
-        <a href="map.html" class="btn">Drop a Pin</a>
-        <a class="btn" href="/echoes.html">Echoes</a>
-      </div>
-
-      <section id="about">
-        <h2>Why $1?</h2>
-        <p>Your $1 is a voluntary gift to The Universe—no strings attached—meant to inspire unexpected kindness and momentum. Give a little, notice a lot.</p>
-      </section>
-    </main>
+  <div class="content">
+    <p>Your $1 is a voluntary gift to The Universe, meant to inspire unexpected kindness.</p>
   </div>
 
   <footer>
-    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
-    The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
-    for any positive effects set in motion, just the ripple that your gift creates.</p>
-    <p>© <span id="y">2025</span> Tiptheverse</p>
+    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
+    <p>© 2025 Tiptheverse</p>
   </footer>
 
-  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
-  <script>
-    (function() {
-      const lines = [
-        "Small act. Real motion.","Drop $1, set a ripple.","Intent made visible.",
-        "You arrived right on time.","The universe heard you.","One dollar. One signal.",
-        "Tiny push, wide circles.","Give, and the current moves.","A thought becomes a sign.",
-        "Perfect timing isn’t loud.","You aren’t here by accident.","Ripples travel farther than we see.",
-        "The who/what/when is already known.","Release it and let it work.","Quiet motion, real results.",
-        "Act now; the map appears.","The return is never predictable.","Set it down; watch it move.",
-        "Your $1 can’t be ignored.","Trust the unfolding."
-      ];
-      const el = document.getElementById("ripple-rotator");
-      if (!el) return;
-      let i = 0;
-      const interval = 7500;
-      function nextLine() {
-        el.classList.add("is-fading");
-        setTimeout(() => {
-          i = (i + 1) % lines.length;
-          el.textContent = lines[i];
-          el.classList.remove("is-fading");
-        }, 420);
-      }
-      setTimeout(() => { setInterval(nextLine, interval); }, 1200);
-    })();
-  </script>
 </body>
 </html>
 
