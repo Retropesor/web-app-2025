@@ -1,68 +1,329 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TipTheVerse</title>
-  <meta name="description" content="Start a ripple with $1 — then watch where it lands." />
+  <title>TipTheVerse — Ripples Map</title>
+  <meta name="description" content="Drop a ripple, see where the clusters form. Anonymous, city-level pins only." />
+
+  <!-- Leaflet core -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+
+  <!-- Marker clustering (optional but nice) -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css"
+  />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css"
+  />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
   <style>
-    html, body { height: 100%; margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
-    body {
-      background: url("background.png") no-repeat center center fixed;
-      background-size: cover;
-      color: #f7fbff;
+    :root {
+      --bg: #0b0b0b;
+      --fg: #f3f3f3;
+      --muted: #b8c2cc;
+      --accent: #3ec9ff;
+      --card: #141414;
+      --card2: #0f1115;
+      --br: 16px;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
     }
-    .vignette { position: fixed; inset: 0; pointer-events: none;
-      background:
-        linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,.18) 55%, rgba(0,0,0,.55) 100%),
-        radial-gradient(85% 75% at 50% 35%, rgba(0,0,0,.12) 0%, rgba(0,0,0,.4) 100%);
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--fg); font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif; }
+    .wrap { display: grid; grid-template-columns: 360px 1fr; grid-template-rows: auto 1fr; height: 100%; }
+    header { grid-column: 1 / -1; padding: 18px 20px; display: flex; gap: 14px; align-items: center; justify-content: space-between; background: linear-gradient(180deg, #0b0b0bcc, #0b0b0b00 90%); position: sticky; top: 0; z-index: 10; }
+
+    .brand { display: flex; align-items: center; gap: 12px; }
+    .logo { width: 38px; height: 38px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #5be7ff, #0066ff 60%, #001c3b); box-shadow: 0 0 18px rgba(62,201,255,.45), inset 0 0 28px rgba(255,255,255,.08); }
+    .title { font-weight: 700; letter-spacing: .3px; }
+    .subtitle { color: var(--muted); font-size: 14px; }
+
+    .controls { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    .controls input, .controls select, .controls button { height: 42px; border-radius: 10px; border: 1px solid #232323; background: var(--card); color: var(--fg); padding: 0 12px; }
+    .controls button { background: linear-gradient(180deg, #26b7ff, #0086ff); border: none; box-shadow: 0 10px 20px rgba(0, 134, 255, .25); cursor: pointer; font-weight: 600; }
+    .controls button.secondary { background: #1b1d22; border: 1px solid #242830; box-shadow: none; color: #e6eef8; }
+
+    aside { grid-row: 2; background: linear-gradient(180deg, var(--card2), #0c0f14); border-right: 1px solid #141821; padding: 14px; overflow: auto; }
+    .panel { background: linear-gradient(180deg, #12161d, #0e1117); border: 1px solid #1a2030; border-radius: var(--br); padding: 14px; box-shadow: var(--shadow); }
+    .panel h3 { margin: 6px 0 8px; font-size: 16px; color: #cfe7ff; }
+    .panel p { margin: 0 0 10px; color: var(--muted); font-size: 14px; }
+
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+    .stat { background: #0f1218; border: 1px solid #182033; border-radius: 12px; padding: 10px; text-align: center; }
+    .stat .n { font-size: 20px; font-weight: 700; }
+    .stat .k { font-size: 12px; color: var(--muted); }
+
+    .cluster-list { margin: 6px 0 0; display: grid; gap: 8px; }
+    .cluster-item { background: #0f1218; border: 1px solid #182033; border-radius: 10px; padding: 10px; display: flex; align-items: center; justify-content: space-between; }
+    .cluster-item .where { font-weight: 600; }
+    .cluster-item .count { opacity: .9; }
+
+    #map { grid-row: 2; height: calc(100vh - 76px); width: 100%; }
+
+    .cta { font-size: 14px; color: #b7d8ff; }
+
+    /* small screens */
+    @media (max-width: 900px) {
+      .wrap { grid-template-columns: 1fr; grid-template-rows: auto auto 1fr; }
+      aside { grid-row: 3; }
+      #map { grid-row: 4; height: 60vh; }
     }
-    .wrap { min-height: 100%; display: grid; grid-template-rows: 1fr auto; }
-    .hero { display: grid; place-items: center; padding: 40px 16px; text-align: center; }
-    .hero h1 { margin: 0 0 10px; font-weight: 800; letter-spacing: .2px; font-size: clamp(26px, 5vw, 48px); }
-    .hero p { margin: 8px auto 20px; max-width: 720px; color: #d6e2ff; font-size: clamp(14px, 2.4vw, 18px); }
-
-    .btns { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
-    .btns a, .btns button { text-decoration: none; cursor: pointer; border: 1px solid rgba(255,255,255,.18); color: #f7fbff; background: rgba(10,14,24,.55);
-      padding: 10px 16px; border-radius: 999px; font-weight: 700; font-size: 14px; letter-spacing: .2px; backdrop-filter: blur(3px);
-      transition: transform .08s ease, background .2s ease, border-color .2s ease; }
-    .btns a:hover, .btns button:hover { transform: translateY(-1px); border-color: rgba(255,255,255,.3); background: rgba(10,14,24,.72); }
-    .btns .primary { border-color: rgba(103,232,249,.38); box-shadow: 0 0 0 2px rgba(103,232,249,.12) inset; }
-
-    footer { padding: 14px; text-align: center; color: #c8d4f4; font-size: 12px; }
-    footer small { opacity: .9; }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <main class="hero">
-      <div>
-        <h1>Do a good deed — get good karma</h1>
-        <p>
-          This isn’t a purchase or a promise — it’s motion. Drop $1, set a ripple, release it. The gift is anonymous because the act itself is what matters.
-        </p>
-        <div class="btns">
-          <!-- Payment CTAs (placeholder links) -->
-          <a class="primary" href="#cashapp">Set it in Motion (Cash App)</a>
-          <a href="#venmo">Venmo</a>
-          <a href="#paypal">PayPal</a>
-
-          <!-- Your site nav -->
-          <a href="map.html">Drop a Pin</a>
-          <a href="about.html">About</a>
-          <a href="echoes.html">Echoes</a>
+    <header>
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <div class="title">TipTheVerse — Ripples Map</div>
+          <div class="subtitle">Collective thought has power — see where the ripples are forming.</div>
         </div>
       </div>
-    </main>
 
-    <footer>
-      <small>
-        This is a voluntary one dollar gift sent into The Universe with no strings attached. It is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
-      </small>
-    </footer>
+      <div class="controls" role="group" aria-label="Drop a ripple controls">
+        <label class="visually-hidden" for="stateSel">State</label>
+        <select id="stateSel" title="Select state (optional)">
+          <option value="">State (optional)</option>
+          <option>SC</option>
+          <option>NC</option>
+          <option>VA</option>
+          <option>MD</option>
+          <option>DE</option>
+          <option>PA</option>
+          <option>NY</option>
+          <option>NJ</option>
+          <option>GA</option>
+          <option>FL</option>
+          <option>CA</option>
+          <option>TX</option>
+          <option>IL</option>
+        </select>
+
+        <input id="cityInput" list="cityHints" placeholder="Type your city (e.g., Myrtle Beach)" />
+        <datalist id="cityHints">
+          <option value="Myrtle Beach"></option>
+          <option value="Conway"></option>
+          <option value="Little River"></option>
+          <option value="North Myrtle Beach"></option>
+          <option value="Longs"></option>
+          <option value="Wilmington"></option>
+          <option value="Virginia Beach"></option>
+          <option value="Assateague"></option>
+          <option value="New York"></option>
+          <option value="Los Angeles"></option>
+          <option value="Chicago"></option>
+          <option value="Austin"></option>
+          <option value="Philadelphia"></option>
+          <option value="Washington"></option>
+        </datalist>
+
+        <button id="dropBtn">Drop a Ripple</button>
+        <button id="clickModeBtn" class="secondary" title="Place a pin by clicking the map">Click-to-Drop</button>
+        <button id="clearBtn" class="secondary" title="Remove pins saved on this device">Clear (this device)</button>
+      </div>
+    </header>
+
+    <aside>
+      <div class="panel">
+        <h3>How it works</h3>
+        <p>Pick a city (and optional state) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse.
+        You can also use <em>Click-to-Drop</em> and place a pin anywhere on the map.</p>
+        <p class="cta">This prototype saves pins to <strong>your device</strong> only (localStorage). If you want everyone to see the same pins, export and wire to a simple backend later.</p>
+      </div>
+
+      <div class="panel" style="margin-top:12px">
+        <h3>At a glance</h3>
+        <div class="stats">
+          <div class="stat"><div class="n" id="totalPins">0</div><div class="k">Total pins</div></div>
+          <div class="stat"><div class="n" id="uniquePlaces">0</div><div class="k">Unique places</div></div>
+        </div>
+        <h3>Ripple clusters</h3>
+        <div id="clusterList" class="cluster-list"></div>
+      </div>
+    </aside>
+
+    <div id="map" role="application" aria-label="Ripples map"></div>
   </div>
-  <div class="vignette"></div>
+
+  <script>
+    // --- Minimal city → coordinate dictionary (expand anytime) ---
+    const CITY_COORDS = new Map([
+      ["Myrtle Beach, SC", [33.6891, -78.8867]],
+      ["North Myrtle Beach, SC", [33.823, -78.6800]],
+      ["Conway, SC", [33.8358, -79.0478]],
+      ["Little River, SC", [33.8732, -78.6147]],
+      ["Longs, SC", [33.9427, -78.7347]],
+      ["Wilmington, NC", [34.2257, -77.9447]],
+      ["Virginia Beach, VA", [36.8529, -75.9780]],
+      ["Assateague, MD", [38.0930, -75.2065]],
+      ["Washington, DC", [38.9072, -77.0369]],
+      ["Philadelphia, PA", [39.9526, -75.1652]],
+      ["New York, NY", [40.7128, -74.0060]],
+      ["Los Angeles, CA", [34.0522, -118.2437]],
+      ["Chicago, IL", [41.8781, -87.6298]],
+      ["Austin, TX", [30.2672, -97.7431]],
+    ]);
+
+    // Utility: build a label from city + state (if provided)
+    function placeLabel(city, state) {
+      let c = (city || "").trim();
+      let s = (state || "").trim();
+      if (!c && !s) return "Unknown";
+      if (!c && s) return s;
+      if (c && !s) {
+        // Try to auto-attach known state from dictionary if city matches a key prefix
+        for (const key of CITY_COORDS.keys()) {
+          if (key.toLowerCase().startsWith(c.toLowerCase()+",")) return key;
+        }
+        return c; // city only
+      }
+      return `${c}, ${s}`;
+    }
+
+    // Map init
+    const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
+
+    // Basemap tiles
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      maxZoom: 19,
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    // Clustering group
+    const clusterGroup = L.markerClusterGroup();
+    map.addLayer(clusterGroup);
+
+    // Storage helpers
+    const STORAGE_KEY = 'ttv_ripples_v1';
+    function loadPins() {
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
+    }
+    function savePins(pins) { localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
+
+    // Render pins from storage
+    function renderPins() {
+      clusterGroup.clearLayers();
+      const pins = loadPins();
+      pins.forEach(p => {
+        const m = L.marker([p.lat, p.lng]);
+        m.bindPopup(`<b>${p.label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
+        clusterGroup.addLayer(m);
+      });
+      updateStats(pins);
+    }
+
+    // Stats + clusters side panel
+    function updateStats(pins) {
+      const total = pins.length;
+      document.getElementById('totalPins').textContent = total;
+
+      const counts = new Map();
+      pins.forEach(p => counts.set(p.label, (counts.get(p.label) || 0) + 1));
+      document.getElementById('uniquePlaces').textContent = counts.size;
+
+      // Sort by count desc
+      const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
+      const list = document.getElementById('clusterList');
+      list.innerHTML = '';
+      if (sorted.length === 0) {
+        const el = document.createElement('div');
+        el.className = 'cluster-item';
+        el.innerHTML = '<span class="where">No clusters yet</span><span class="count">—</span>';
+        list.appendChild(el);
+      } else {
+        sorted.forEach(([label, count]) => {
+          const el = document.createElement('div');
+          el.className = 'cluster-item';
+          el.innerHTML = `<span class="where">${label}</span><span class="count">×${count}</span>`;
+          list.appendChild(el);
+        });
+      }
+    }
+
+    // Drop logic
+    function dropRipple(lat, lng, label, zoomTo = true) {
+      const pins = loadPins();
+      const p = { lat, lng, label, ts: Date.now() };
+      pins.push(p);
+      savePins(pins);
+      const m = L.marker([lat, lng]).bindPopup(`<b>${label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
+      clusterGroup.addLayer(m);
+      if (zoomTo) map.setView([lat, lng], Math.max(map.getZoom(), 6));
+      updateStats(pins);
+      m.openPopup();
+    }
+
+    // Controls
+    const stateSel = document.getElementById('stateSel');
+    const cityInput = document.getElementById('cityInput');
+    document.getElementById('dropBtn').addEventListener('click', () => {
+      const city = cityInput.value.trim();
+      const state = stateSel.value.trim();
+      const label = placeLabel(city, state);
+
+      // Known dictionary? use it
+      if (CITY_COORDS.has(label)) {
+        const [lat, lng] = CITY_COORDS.get(label);
+        dropRipple(lat, lng, label);
+        return;
+      }
+
+      // Try matching by city only against dictionary keys (graceful fallback)
+      for (const [key, coords] of CITY_COORDS.entries()) {
+        if (city && key.toLowerCase().startsWith(city.toLowerCase()+",")) {
+          dropRipple(coords[0], coords[1], key);
+          return;
+        }
+      }
+
+      // If unknown: enable click-to-drop mode with this label
+      alert('City not in quick list — click on the map to place your ripple anywhere.');
+      enableClickMode(label);
+    });
+
+    // Click-to-drop mode
+    let clickModeLabel = null;
+    function enableClickMode(label = null) {
+      clickModeLabel = label || placeLabel(cityInput.value, stateSel.value) || 'Somewhere';
+      document.getElementById('clickModeBtn').classList.add('active');
+    }
+    function disableClickMode() {
+      clickModeLabel = null;
+      document.getElementById('clickModeBtn').classList.remove('active');
+    }
+    document.getElementById('clickModeBtn').addEventListener('click', () => {
+      if (clickModeLabel) { disableClickMode(); } else { enableClickMode(); }
+    });
+
+    map.on('click', (e) => {
+      if (!clickModeLabel) return;
+      dropRipple(e.latlng.lat, e.latlng.lng, clickModeLabel);
+      disableClickMode();
+    });
+
+    // Clear local pins
+    document.getElementById('clearBtn').addEventListener('click', () => {
+      if (confirm('Remove all pins saved on this device?')) {
+        localStorage.removeItem(STORAGE_KEY);
+        renderPins();
+      }
+    });
+
+    // First render
+    renderPins();
+  </script>
 </body>
 </html>
-
-
