@@ -312,6 +312,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function renderPins() {
+      window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
+
       clusterGroup.clearLayers();
       let pins = await fetchGlobalPins();
       let offline = false;
@@ -678,6 +680,7 @@ document.addEventListener('DOMContentLoaded', () => {
   </script>
 </body>
 </html>
+
 
 
 
