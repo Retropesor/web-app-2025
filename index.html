@@ -14,48 +14,37 @@
 
   <style>
     /* ===== Background fix (minimal change) ===== */
-    html { background:#000; }                 /* prevents iOS bottom gray */
+    html { background:#000; }                 
     html, body { height: 100%; margin: 0; }
-    body {
-      /* Prevent any horizontal slide on mobile */
-*, *::before, *::after { box-sizing: border-box; }
-html, body { overflow-x: hidden; }
 
-      /* Use a RELATIVE path and remove 'fixed' */
+    /* global guards */
+    *, *::before, *::after { box-sizing: border-box; }
+    html, body { overflow-x: hidden; }
+
+    body {
       background: #000 url("background.png") no-repeat center center;
       background-size: cover;
       font-family: system-ui, Arial, sans-serif;
       color: #fff;
     }
 
-    /* Center the "You Already Know / Drop a Pin / Echoes" row */
     .links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      justify-content:center;
-      align-items:center;
-      margin:18px auto 0;
-      max-width:720px;
+      display:flex; flex-wrap:wrap; gap:12px;
+      justify-content:center; align-items:center;
+      margin:18px auto 0; max-width:720px;
     }
 
-    /* Soft dark overlay so text pops */
     .overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.32);
-      pointer-events: none;
-      z-index: 0;
+      pointer-events: none; z-index: 0;
     }
 
-    /* Layout for centered content */
     .wrap {
-      position: relative;
-      z-index: 1;              /* above overlay */
-      min-height: 100svh;      /* mobile-safe viewport */
-      display: grid;
-      place-items: center;
-      padding: 24px;
-      text-align: center;
+      position: relative; z-index: 1;
+      min-height: 100svh; min-height: 100vh;
+      display: grid; place-items: center;
+      padding: 24px; text-align: center;
       text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
 
@@ -70,114 +59,71 @@ html, body { overflow-x: hidden; }
       margin: 0 0 10px; opacity: 0.95;
     }
 
-   /* --- Lightweight Ticker (mobile-safe) --- */
-.ticker {
-  --speed: 28s;
-  overflow: hidden;
-  max-width: 860px;
-  margin: 6px auto 16px;
-  opacity: .9;
-  /* removed mask-image to avoid mobile paint/overflow issues */
-}
-.ticker-track {
-  display: flex;
-  gap: 28px;
-  white-space: nowrap;
-  will-change: transform;
-  animation: ticker-scroll var(--speed) linear infinite;
-}
-.ticker-item { font-size: .95rem; }
-@keyframes ticker-scroll {
-  from { transform: translateX(0); }
-  to   { transform: translateX(-50%); } /* duplicate items for seamless loop */
-}
-@media (prefers-reduced-motion: reduce){
-  .ticker-track { animation: none; }
-}
+    /* --- Ticker --- */
+    .ticker {
+      --speed: 28s;
+      overflow: hidden;
+      max-width: 860px;
+      margin: 6px auto 16px;
+      opacity: .9;
+    }
+    .ticker-track {
+      display: flex; gap: 28px;
+      white-space: nowrap;
+      animation: ticker-scroll var(--speed) linear infinite;
+    }
+    .ticker-item { font-size: .95rem; }
+    @keyframes ticker-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
 
-
-    .actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    .actions { display:inline-flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
     .btn {
-      display: inline-block;
-      padding: 12px 18px;
-      border-radius: 999px;
+      display:inline-block; padding:12px 18px; border-radius:999px;
       background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.45);
-      color: #fff; text-decoration: none; font-weight: 600;
+      border:1px solid rgba(255,255,255,0.45);
+      color:#fff; text-decoration:none; font-weight:600;
     }
     .btn:hover { background: rgba(255,255,255,0.28); }
 
-    /* Micro-answers / intro */
-    .ripple-intro { margin: 18px 0 20px; }
-    .ripple-intro p { margin: 6px 0; }
+    .ripple-intro { margin:18px 0 20px; }
+    .ripple-intro p { margin:6px 0; }
 
-    /* Rotator styles (unchanged) */
-    .rotator-wrap {
-      margin: 0.25rem 0 0.75rem;
-      font-weight: 600;
-      letter-spacing: .2px;
-    }
-    #ripple-rotator {
-      display: inline-block;
-      opacity: 1;
-      transition: opacity 420ms ease-in-out;
-    }
-    #ripple-rotator.is-fading { opacity: 0; }
+    .rotator-wrap { margin:0.25rem 0 0.75rem; font-weight:600; }
+    #ripple-rotator { display:inline-block; transition:opacity 420ms ease-in-out; }
+    #ripple-rotator.is-fading { opacity:0; }
 
-    /* About section */
     #about {
-      position: relative; z-index: 1;
-      padding: 40px 20px 80px;
-      text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,.55);
+      position:relative; z-index:1;
+      padding:40px 20px 80px;
+      text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.55);
     }
-    #about h2 { margin: 0 0 8px; }
-    #about p  { max-width: 820px; margin: 0 auto; }
+    #about h2{ margin:0 0 8px; }
+    #about p { max-width:820px; margin:0 auto; }
 
-    /* Footer (disclaimer) */
     footer {
-      position: fixed; left: 0; right: 0; bottom: 10px;
-      text-align: center; font-size: 12px; line-height: 1.4;
-      color: #fff; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.6);
-      z-index: 2; max-width: 90%; margin: 0 auto; padding: 0 10px;
+      position:fixed; left:0; right:0; bottom:10px;
+      text-align:center; font-size:12px; line-height:1.4;
+      color:#fff; opacity:.9; text-shadow:0 1px 6px rgba(0,0,0,.6);
+      z-index:2; max-width:90%; margin:0 auto; padding:0 10px;
     }
-   footer p { margin: 4px 0; }
+    footer p { margin:4px 0; }
 
-/* iPhone fix: avoid jumpy fixed background */
-@supports (-webkit-touch-callout: none) {
-  body { background-attachment: scroll; }
-}
+    @supports (-webkit-touch-callout: none) {
+      body { background-attachment: scroll; }
+    }
 
-/* === Mobile polish (safe, no desktop changes) === */
-@media (max-width: 768px){
-  .wrap{
-    min-height: 100vh;                 /* fallback */
-    min-height: calc(100svh - 90px);   /* modern */
-    padding: 20px 16px 96px;
-  }
-}
-
-
-  h1{ font-size: clamp(22px, 8vw, 36px); }
-  .tag{ font-size: 14px; margin-bottom: 8px; }
-
-  .ticker{ --speed: 32s; margin: 4px auto 12px; }
-  .ticker-track{ gap: 18px; }
-
-  .btn{ padding: 12px 16px; font-size: 15px; }
-  .links{ gap: 10px; }
-
-  footer{
-    position: static;
-    padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-    max-width: 100%;
-    opacity: .85;
-    font-size: 11px;
-    text-shadow: 0 1px 4px rgba(0,0,0,.45);
-  }
-}
-
-
-
+    @media (max-width: 768px){
+      .wrap{ min-height:100vh; min-height:calc(100svh - 90px); padding:20px 16px 96px; }
+      h1{ font-size: clamp(26px, 8vw, 42px); }
+      .tag{ font-size:15px; margin-bottom:8px; }
+      .ticker{ --speed: 32s; margin:4px auto 12px; }
+      .ticker-track{ gap:18px; }
+      .btn{ padding:12px 16px; font-size:15px; }
+      .links{ gap:10px; }
+      footer{ position:static; padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px)); max-width:100%; font-size:11px; opacity:.85; }
+    }
   </style>
 </head>
 <body>
@@ -185,19 +131,14 @@ html, body { overflow-x: hidden; }
 
   <div class="wrap">
     <main class="hero">
-      <!-- Header (unchanged) -->
       <h1>Do a Good Deed. Get Good Karma.</h1>
       <p class="tag">Start a ripple with $1. Small ripples become waves.</p>
-  
 
-
-      <!-- Ticker (added) -->
-      <div class="ticker" aria-hidden="false">
+      <div class="ticker">
         <div class="ticker-track">
           <span class="ticker-item">Top cities: Myrtle Beach • Phoenix • Charleston • Wilmington • Columbia • Asheville • Savannah</span>
           <span class="ticker-item">Most active hour: 7–8pm</span>
           <span class="ticker-item">New pins today: 12</span>
-          <!-- duplicate for seamless loop -->
           <span class="ticker-item" aria-hidden="true">Top cities: Myrtle Beach • Phoenix • Charleston • Wilmington • Columbia • Asheville • Savannah</span>
           <span class="ticker-item" aria-hidden="true">Most active hour: 7–8pm</span>
           <span class="ticker-item" aria-hidden="true">New pins today: 12</span>
@@ -212,97 +153,50 @@ html, body { overflow-x: hidden; }
         </div>
       </section>
 
-      <!-- Rotating one-liner (unchanged element) -->
-      <h3 class="rotator-wrap" aria-live="polite">
-        <span id="ripple-rotator">Small act. Real motion.</span>
-      </h3>
+      <h3 class="rotator-wrap"><span id="ripple-rotator">Small act. Real motion.</span></h3>
 
-      <!-- ONE pay button (replaces the 3) -->
-      <div class="actions">
-        <a class="btn" href="/pay.html" rel="noopener">Tip the ’Verse</a>
-      </div>
+      <div class="actions"><a class="btn" href="/pay.html" rel="noopener">Tip the ’Verse</a></div>
 
-      <!-- Other buttons/links (unchanged) -->
       <div class="links">
         <a class="btn" href="/about.html">You Already Know</a>
         <a href="map.html" class="btn">Drop a Pin</a>
         <a class="btn" href="/echoes.html">Echoes</a>
       </div>
 
-      <!-- About section (unchanged) -->
       <section id="about">
         <h2>Why $1?</h2>
-        <p>
-          Your $1 is a voluntary gift to The Universe—no strings attached—
-          meant to inspire unexpected kindness and momentum. Give a little, notice a lot.
-        </p>
+        <p>Your $1 is a voluntary gift to The Universe—no strings attached—meant to inspire unexpected kindness and momentum. Give a little, notice a lot.</p>
       </section>
     </main>
   </div>
 
-  <!-- Disclaimer + year (unchanged) -->
   <footer>
-    <p>
-      This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
-      The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
-      for any positive effects set in motion, just the ripple that your gift creates.
-    </p>
+    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
     <p>© <span id="y">2025</span> Tiptheverse</p>
   </footer>
 
-  <!-- Year updater (unchanged) -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
-
-  <!-- Rotator script (only change: slower 7.5s) -->
+  <script>document.getElementById('y').textContent = new Date().getFullYear();</script>
   <script>
     (function() {
       const lines = [
-        "Small act. Real motion.",
-        "Drop $1, set a ripple.",
-        "Intent made visible.",
-        "You arrived right on time.",
-        "The universe heard you.",
-        "One dollar. One signal.",
-        "Tiny push, wide circles.",
-        "Give, and the current moves.",
-        "A thought becomes a sign.",
-        "Perfect timing isn’t loud.",
-        "You aren’t here by accident.",
-        "Ripples travel farther than we see.",
-        "The who/what/when is already known.",
-        "Release it and let it work.",
-        "Quiet motion, real results.",
-        "Act now; the map appears.",
-        "The return is never predictable.",
-        "Set it down; watch it move.",
-        "Your $1 can’t be ignored.",
-        "Trust the unfolding."
+        "Small act. Real motion.","Drop $1, set a ripple.","Intent made visible.","You arrived right on time.","The universe heard you.","One dollar. One signal.","Tiny push, wide circles.","Give, and the current moves.","A thought becomes a sign.","Perfect timing isn’t loud.","You aren’t here by accident.","Ripples travel farther than we see.","The who/what/when is already known.","Release it and let it work.","Quiet motion, real results.","Act now; the map appears.","The return is never predictable.","Set it down; watch it move.","Your $1 can’t be ignored.","Trust the unfolding."
       ];
-
       const el = document.getElementById("ripple-rotator");
       if (!el) return;
-
-      let i = 0;
-      const interval = 7500; // slower: 7.5s
-
+      let i = 0; const interval = 7500;
       function nextLine() {
         el.classList.add("is-fading");
         setTimeout(() => {
           i = (i + 1) % lines.length;
           el.textContent = lines[i];
           el.classList.remove("is-fading");
-        }, 420); // matches CSS fade time
+        }, 420);
       }
-
       setTimeout(() => { setInterval(nextLine, interval); }, 1200);
     })();
   </script>
 </body>
 </html>
-
-
 
 
 
