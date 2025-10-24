@@ -93,12 +93,7 @@
         <div>
           <div class="title">TipTheVerse — Ripples Map</div>
           <div class="subtitle">Collective thought has power — see where the ripples are forming.</div>
-        </div>
-        <!-- Total pins badge (more visible at top) -->
-        <div id="totalPinsHeader" class="pill" style="margin-left:12px" title="Total pins (filtered by time window)">
-          <strong>Total:</strong> <span id="totalPinsHeaderValue">0</span>
-        </div>
-      </div>
+        </div></div>
 
       <!-- Top cities ticker -->
       <div id="ticker" class="ticker" aria-live="polite" title="Top cities right now (respects time filter)">
@@ -332,8 +327,7 @@
 
     function updateStats(pins) {
       // Header total (visible at top) — guard for missing node
-      const topBadge = document.getElementById('totalPinsHeaderValue');
-      if (topBadge) topBadge.textContent = pins.length;
+      
 
       // Side-panel totals — guard for missing nodes
       const totalEl = document.getElementById('totalPins');
@@ -607,6 +601,7 @@
 
     // First render + ensure map sizes correctly after layout
     renderPins().then(() => setTimeout(() => map.invalidateSize(), 250));
+    window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
   </script>
 
   <!-- =========================
@@ -676,6 +671,4 @@
   </script>
 </body>
 </html>
-
-
 
