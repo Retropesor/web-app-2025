@@ -17,6 +17,10 @@
     html { background:#000; }                 /* prevents iOS bottom gray */
     html, body { height: 100%; margin: 0; }
     body {
+      /* Prevent any horizontal slide on mobile */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { overflow-x: hidden; }
+
       /* Use a RELATIVE path and remove 'fixed' */
       background: #000 url("background.png") no-repeat center center;
       background-size: cover;
@@ -66,14 +70,14 @@
       margin: 0 0 10px; opacity: 0.95;
     }
 
-    /* --- Lightweight Ticker (mobile-safe) --- */
+   /* --- Lightweight Ticker (mobile-safe) --- */
 .ticker {
   --speed: 28s;
   overflow: hidden;
   max-width: 860px;
   margin: 6px auto 16px;
   opacity: .9;
-  /* removed mask-image to avoid mobile paint issues */
+  /* removed mask-image to avoid mobile paint/overflow issues */
 }
 .ticker-track {
   display: flex;
@@ -144,13 +148,14 @@
 }
 
 /* === Mobile polish (safe, no desktop changes) === */
-@media (max-width: 480px){
-  html, body { overflow-x: hidden; margin:0; padding:0; }
-
+@media (max-width: 768px){
   .wrap{
-    min-height: 100vh;
+    min-height: 100vh;                 /* fallback */
+    min-height: calc(100svh - 90px);   /* modern */
     padding: 20px 16px 96px;
   }
+}
+
 
   h1{ font-size: clamp(22px, 8vw, 36px); }
   .tag{ font-size: 14px; margin-bottom: 8px; }
@@ -296,6 +301,7 @@
   </script>
 </body>
 </html>
+
 
 
 
