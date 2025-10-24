@@ -1,31 +1,33 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Tiptheverse</title>
+  <title>TipTheVerse</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <meta name="description" content="Start a ripple with $1. Small ripples become waves. Tiptheverse.">
+  <!-- meta polish -->
+  <meta name="description" content="Start a ripple with $1. Small ripples become waves. TipTheVerse.">
 
   <style>
-    /* General reset and centering */
-    body, html {
+    body {
       margin: 0;
       padding: 0;
-      overflow-x: hidden; /* Prevent sideways scrolling */
       font-family: Arial, sans-serif;
       color: white;
       text-align: center;
+      background: url('background.png') no-repeat center center fixed;
+      background-size: cover;
     }
 
-    .hero, .content {
+    .overlay {
+      background: rgba(0,0,0,0.6);
+      padding: 20px;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
-      text-align: center;
-      margin: 0 auto;
-      width: 100%;
     }
 
     h1, h2, p {
@@ -53,53 +55,40 @@
       margin-top: 2em;
     }
 
-    /* On smaller screens force text center */
+    /* 📱 Mobile-only fix */
     @media (max-width: 768px) {
-      h1, h2, p {
+      body {
+        overflow-x: hidden;
+      }
+      .overlay, .overlay * {
         text-align: center;
         margin-left: auto;
         margin-right: auto;
-        width: 90%;
-      }
-
-      button {
-        margin-left: auto;
-        margin-right: auto;
-        display: block;
+        width: 100%;
       }
     }
   </style>
 </head>
-<body style="background: url('background.png') no-repeat center center fixed; background-size: cover;">
+<body>
+  <div class="overlay">
+    <h1>Do a Good Deed, Get Good Karma</h1>
+    <p>Start a ripple with $1. Small ripples become waves.</p>
 
-  <div class="hero">
-    <h1>Do a Good Deed</h1>
-    <p>Start a ripple with $1</p>
-    <p>Top cities: Myrtle Beach • Phoenix • Charlotte</p>
+    <button onclick="window.location.href='payment.html'">Set it in Motion</button>
 
-    <h2>Why am I here?</h2>
-    <p>There is no accident — only ripples you create.</p>
-
-    <h2>How does this help?</h2>
-    <p>A thought or action put into the world multiplies.</p>
-
-    <h2>Where does it go?</h2>
-    <p>The Universe responds, bouncing kindness back in waves.</p>
-
-    <button>You Already Know</button>
+    <footer>
+      <p>This is a voluntary $1 gift to The Universe. Not a purchase, not a raffle, not tax deductible. No rewards or refunds. Any good that follows is on you.</p>
+    </footer>
   </div>
-
-  <div class="content">
-    <p>Your $1 is a voluntary gift to The Universe, meant to inspire unexpected kindness.</p>
-  </div>
-
-  <footer>
-    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
-    <p>© 2025 Tiptheverse</p>
-  </footer>
-
 </body>
 </html>
+
+
+
+
+
+
+
 
 
 
