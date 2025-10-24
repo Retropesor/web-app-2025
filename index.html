@@ -118,6 +118,42 @@
       body { background-attachment: scroll; }
     }
   </style>
+  /* General centering */
+body, html {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Prevent sideways scrolling */
+}
+
+.hero, .content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  margin: 0 auto;
+  width: 100%;
+}
+
+/* On smaller screens force text center */
+@media (max-width: 768px) {
+  .hero h1, 
+  .hero h2, 
+  .hero p, 
+  .content p {
+    text-align: center;
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+  }
+  
+  button {
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+  }
+}
+
 </head>
 <body>
   <div class="overlay"></div>
@@ -199,6 +235,7 @@
   </script>
 </body>
 </html>
+
 
 
 
