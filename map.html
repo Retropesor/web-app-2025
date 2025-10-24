@@ -97,20 +97,41 @@
         <label class="visually-hidden" for="stateSel">State</label>
         <select id="stateSel" title="Select state (optional)">
           <option value="">State (optional)</option>
-          <option>SC</option>
-          <option>NC</option>
-          <option>VA</option>
-          <option>MD</option>
-          <option>DE</option>
-          <option>PA</option>
-          <option>NY</option>
-          <option>NJ</option>
-          <option>GA</option>
-          <option>FL</option>
-          <option>CA</option>
-          <option>TX</option>
-          <option>IL</option>
+          <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
+          <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
+          <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
+          <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
+          <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
+          <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
+          <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
+          <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
+          <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
+          <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
+          <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
+          <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
+          <option>WI</option><option>WY</option>
+          <option>DC</option>
         </select>
+
+        <input id="cityInput" list="cityHints" placeholder="Type your city (e.g., Myrtle Beach)" />
+        <datalist id="cityHints">
+          <option value="Myrtle Beach"></option>
+          <option value="Conway"></option>
+          <option value="Little River"></option>
+          <option value="North Myrtle Beach"></option>
+          <option value="Longs"></option>
+          <option value="Wilmington"></option>
+          <option value="Virginia Beach"></option>
+          <option value="Assateague"></option>
+          <option value="New York"></option>
+          <option value="Los Angeles"></option>
+          <option value="Chicago"></option>
+          <option value="Austin"></option>
+          <option value="Philadelphia"></option>
+          <option value="Washington"></option>
+        </datalist>
+
+        <input id="countryInput" placeholder="Country (optional, e.g., United States)" />
 
         <input id="cityInput" list="cityHints" placeholder="Type your city (e.g., Myrtle Beach)" />
         <datalist id="cityHints">
@@ -139,9 +160,9 @@
     <aside>
       <div class="panel">
         <h3>How it works</h3>
-        <p>Pick a city (and optional state) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse.
+        <p>Pick a city (and optional state/country) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse.
         You can also use <em>Click-to-Drop</em> and place a pin anywhere on the map.</p>
-        <p class="cta">This prototype saves pins to <strong>your device</strong> only (localStorage). If you want everyone to see the same pins, export and wire to a simple backend later.</p>
+        <p class="cta">Pins are saved to <strong>your device</strong> (localStorage). For a global, shared map, we can switch this to a tiny serverless backend later.</p>
       </div>
 
       <div class="panel" style="margin-top:12px">
@@ -177,17 +198,15 @@
       ["Austin, TX", [30.2672, -97.7431]],
     ]);
 
-    // Utility: build a label from city + state (if provided)
-    function placeLabel(city, state) {
-      let c = (city || "").trim();
-      let s = (state || "").trim();
-      if (!c && !s) return "Unknown";
-      if (!c && s) return s;
-      if (c && !s) {
-        // Try to auto-attach known state from dictionary if city matches a key prefix
-        for (const key of CITY_COORDS.keys()) {
-          if (key.toLowerCase().startsWith(c.toLowerCase()+",")) return key;
-        }
+    // Utility: build a label from city + state + country (if provided)
+    function placeLabel(city, state, country) {
+      const parts = [];
+      if (city && city.trim()) parts.push(city.trim());
+      if (state && state.trim()) parts.push(state.trim());
+      if (country && country.trim()) parts.push(country.trim());
+      if (parts.length === 0) return "Unknown";
+      return parts.join(', ');
+    }
         return c; // city only
       }
       return `${c}, ${s}`;
@@ -269,10 +288,37 @@
     // Controls
     const stateSel = document.getElementById('stateSel');
     const cityInput = document.getElementById('cityInput');
-    document.getElementById('dropBtn').addEventListener('click', () => {
+    const countryInput = document.getElementById('countryInput');
+
+    // Nominatim geocoder (global)
+    async function geocode(query) {
+      const url = new URL('https://nominatim.openstreetmap.org/search');
+      url.searchParams.set('q', query);
+      url.searchParams.set('format', 'json');
+      url.searchParams.set('limit', '1');
+      url.searchParams.set('addressdetails', '0');
+      try {
+        const res = await fetch(url.toString(), {
+          headers: { 'Accept-Language': 'en', 'User-Agent': 'TipTheVerse-Ripples-Map/1.0 (public site)' }
+        });
+        if (!res.ok) throw new Error('Geocoder unavailable');
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          const item = data[0];
+          return { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
+        }
+        return null;
+      } catch (e) {
+        console.warn(e);
+        return null;
+      }
+    }
+
+    document.getElementById('dropBtn').addEventListener('click', async () => {
       const city = cityInput.value.trim();
       const state = stateSel.value.trim();
-      const label = placeLabel(city, state);
+      const country = countryInput.value.trim();
+      const label = placeLabel(city, state, country);
 
       // Known dictionary? use it
       if (CITY_COORDS.has(label)) {
@@ -289,16 +335,27 @@
         }
       }
 
-      // If unknown: enable click-to-drop mode with this label
-      alert('City not in quick list — click on the map to place your ripple anywhere.');
+      // Global geocode
+      if (city || state || country) {
+        const q = label;
+        const pos = await geocode(q);
+        if (pos) { dropRipple(pos.lat, pos.lng, label); return; }
+      }
+
+      // If still unknown: enable click-to-drop mode with this label
+      alert('Could not locate that place automatically — click on the map to place your ripple anywhere.');
       enableClickMode(label);
     });
 
     // Click-to-drop mode
     let clickModeLabel = null;
     function enableClickMode(label = null) {
-      clickModeLabel = label || placeLabel(cityInput.value, stateSel.value) || 'Somewhere';
+      clickModeLabel = label || placeLabel(cityInput.value, stateSel.value, countryInput.value) || 'Somewhere';
       document.getElementById('clickModeBtn').classList.add('active');
+    }
+    function disableClickMode() {
+      clickModeLabel = null;
+      document.getElementById('clickModeBtn').classList.remove('active');
     }
     function disableClickMode() {
       clickModeLabel = null;
@@ -327,3 +384,4 @@
   </script>
 </body>
 </html>
+
