@@ -1,234 +1,222 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <title>Tiptheverse</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-
-  <!-- meta polish -->
-  <meta name="description" content="Start a ripple with $1. Small ripples become waves. Tiptheverse.">
-  <meta property="og:title" content="Tiptheverse">
-  <meta property="og:description" content="Do a Good Deed. Get Good Karma. Start a ripple with $1.">
-  <meta property="og:type" content="website">
-  <meta name="theme-color" content="#0b2742">
-
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TipTheVerse</title>
+  <meta name="description" content="Start a ripple with $1. Small acts → big ripples. TipTheVerse.">
   <style>
-    /* Full-page background */
-    html, body { height: 100%; margin: 0; }
-    body {
-      background: url("/background.png") no-repeat center center fixed;
-      background-size: cover;
-      font-family: system-ui, Arial, sans-serif;
-      color: #fff;
+    /* === BASE === */
+    body,html {
+      margin:0; padding:0;
+      font-family: system-ui, sans-serif;
+      background:#000;
+      color:#fff;
+      min-height:100%;
+    }
+    h1 {
+      font-size:2rem;
+      margin-bottom:1rem;
     }
 
-    /* Center the "You Already Know / Drop a Pin / Echoes" row */
-    .links{
-      display:flex;
-      flex-wrap:wrap;
-      gap:12px;
-      justify-content:center;
-      align-items:center;
-      margin:18px auto 0;
-      max-width:720px;
-    }
-
-    /* Soft dark overlay so text pops */
-    .overlay {
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,0.32); /* bump to 0.40 if you want stronger contrast */
-      pointer-events: none;
-      z-index: 0;
-    }
-
-    /* Layout for centered content */
-    .wrap {
+    /* === BACKGROUND === */
+    .tv-hero{
       position: relative;
-      z-index: 1;              /* above overlay */
-      min-height: 100vh;
+      min-height: 100svh; 
       display: grid;
       place-items: center;
-      padding: 24px;
+      background-image: url('background.png'); /* replace with your file */
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color:#000; 
       text-align: center;
-      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+    .tv-hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background: linear-gradient(180deg, rgba(0,0,0,.20) 0%, rgba(0,0,0,.35) 80%, rgba(0,0,0,.55) 100%);
+      pointer-events:none;
+    }
+    .tv-hero-inner{
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 24px;
+      width:min(92vw,700px);
+      justify-items:center;
     }
 
-    .hero { max-width: 860px; margin: 0 auto; }
-
-    h1 {
-      font-size: clamp(28px, 6vw, 64px);
-      line-height: 1.1; margin: 0 0 10px;
-    }
-    .tag {
-      font-size: clamp(16px, 2.5vw, 22px);
-      margin: 0 0 22px; opacity: 0.95;
+    /* === SAYINGS === */
+    #rippleRotator {
+      font-size:1.25rem;
+      font-style: italic;
+      opacity:.9;
+      min-height: 2em;
+      transition: opacity .6s;
     }
 
-    .actions {
-      display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center;
+    /* === RIPPLE ENERGY METER === */
+    .ripple-meter{
+      width: 100%;
+      max-width: 520px;
+      background: rgba(0,0,0,.45);
+      backdrop-filter: blur(4px);
+      border: 1px solid rgba(255,255,255,.18);
+      border-radius: 14px;
+      padding: 14px 16px;
+      color: #fff;
     }
-    .btn {
-      display: inline-block;
-      padding: 12px 18px;
+    .meter-label{ font-size:.95rem; margin-bottom:6px; opacity:.9; }
+    .meter-row{ display:flex; align-items:center; gap:12px; }
+    .meter-bar{
+      flex:1; height: 10px; border-radius: 999px;
+      background: rgba(255,255,255,.18);
+      overflow: hidden; position: relative;
+    }
+    .meter-bar .fill{
+      position:absolute; left:0; top:0; bottom:0;
+      width:0%;
+      background: linear-gradient(90deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
+      border-radius: inherit;
+      transform-origin: left center;
+      animation: barPulse 2.8s ease-in-out infinite;
+    }
+    @keyframes barPulse{
+      0%,100% { filter: brightness(1); }
+      50% { filter: brightness(1.15); }
+    }
+    .meter-value{ min-width:120px; font-variant-numeric: tabular-nums; font-size:.9rem; }
+
+    /* === RIPPLE CTA BUTTON === */
+    .ripple-cta{
+      position: relative;
+      display: inline-grid;
+      place-items: center;
+      padding: 14px 28px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.18);
-      border: 1px solid rgba(255,255,255,0.45);
-      color: #fff; text-decoration: none; font-weight: 600;
+      text-decoration: none;
+      color:#111;
+      background:#fff;
+      font-weight:700;
+      letter-spacing:.02em;
+      overflow:hidden;
+      isolation:isolate;
+      box-shadow:0 8px 20px rgba(0,0,0,.25);
     }
-    .btn:hover { background: rgba(255,255,255,0.28); }
-
-    /* Micro-answers / intro */
-    .ripple-intro { margin: 18px 0 20px; }
-    .ripple-intro p { margin: 6px 0; }
-
-    /* Rotator styles */
-    .rotator-wrap {
-      margin: 0.25rem 0 0.75rem;
-      font-weight: 600;
-      letter-spacing: .2px;
+    .ripple-cta span{ position:relative; z-index:2; }
+    .ripple-cta .ring{
+      position:absolute; z-index:1;
+      border:2px solid rgba(255,255,255,.75);
+      border-radius:999px;
+      width:100px; height:100px;
+      opacity:0; 
+      animation:ripple 4.8s ease-out infinite;
+      pointer-events:none;
     }
-    #ripple-rotator {
-      display: inline-block;
-      opacity: 1;
-      transition: opacity 420ms ease-in-out;
+    .r1{ animation-delay:0s; }
+    .r2{ animation-delay:1.2s; }
+    .r3{ animation-delay:2.4s; }
+    @keyframes ripple{
+      0%{opacity:0; transform:scale(.6);}
+      8%{opacity:.35;}
+      70%{opacity:.10;}
+      100%{opacity:0; transform:scale(3.2);}
     }
-    #ripple-rotator.is-fading { opacity: 0; }
 
-    /* About section */
-    #about {
-      position: relative; z-index: 1;
-      padding: 40px 20px 80px;
-      text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,.55);
-    }
-    #about h2 { margin: 0 0 8px; }
-    #about p  { max-width: 820px; margin: 0 auto; }
-
-    /* Footer (disclaimer) */
     footer {
-      position: fixed; left: 0; right: 0; bottom: 10px;
-      text-align: center; font-size: 12px; line-height: 1.4;
-      color: #fff; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.6);
-      z-index: 2; max-width: 90%; margin: 0 auto; padding: 0 10px;
+      margin-top:2rem;
+      font-size:.75rem;
+      opacity:.7;
+      text-align:center;
+      padding:1rem;
     }
-    footer p { margin: 4px 0; }
 
-    /* iPhone fix: avoid jumpy fixed background */
-    @supports (-webkit-touch-callout: none) {
-      body { background-attachment: scroll; }
+    @media (prefers-reduced-motion: reduce){
+      .ripple-cta .ring, .meter-bar .fill { animation:none; }
     }
   </style>
 </head>
 <body>
-  <div class="overlay"></div>
 
-  <div class="wrap">
-    <main class="hero">
-      <h1>Do a Good Deed. Get Good Karma.</h1>
-      <p class="tag">Start a ripple with $1. Small ripples become waves.</p>
+<section class="tv-hero">
+  <div class="tv-hero-inner">
 
-      <section class="ripple-intro">
-       
+    <h1>TipTheVerse</h1>
+    <div id="rippleRotator"></div>
 
-        <div class="micro-answers">
-          <p><strong>Why am I here?</strong> There is no accident in timing. You arrived when you were ready.</p>
-          <p><strong>How does this help?</strong> A thought sparks change; a dollar carries the intention.</p>
-          <p><strong>Where does it go?</strong> The Universe routes it where it’s needed, and it will circle back in unexpected ways.</p>
-          
-        </div>
-      </section>
-
-      <!-- Rotating one-liner (ONE copy only) -->
-      <h3 class="rotator-wrap" aria-live="polite">
-        <span id="ripple-rotator">Small act. Real motion.</span>
-      </h3>
-
-      <!-- $1 buttons -->
-      <div class="actions">
-        <a class="btn btn-cash" href="/pay.html?m=cash"   rel="noopener">Set it in motion — $1 (Cash App)</a>
-        <a class="btn btn-venmo" href="/pay.html?m=venmo" rel="noopener">Send a ripple — $1 (Venmo)</a>
-        <a class="btn btn-paypal" href="/pay.html?m=paypal" rel="noopener">Tip The 'Verse — $1 (PayPal)</a>
+    <!-- Ripple Energy Meter -->
+    <div class="ripple-meter">
+      <div class="meter-label">Ripple Energy</div>
+      <div class="meter-row">
+        <div class="meter-bar"><span class="fill"></span></div>
+        <div class="meter-value"><span id="rippleCount">0</span> and counting</div>
       </div>
+      <div style="margin-top:6px; font-size:.8rem; opacity:.7;">Anonymous community activity</div>
+    </div>
 
-      <!-- Centered links row -->
-      <div class="links">
-        <a class="btn" href="/about.html">You Already Know</a>
-        <a href="map.html" class="btn">Drop a Pin</a>
-        <a class="btn" href="/echoes.html">Echoes</a>
-      </div>
+    <!-- Tip Button -->
+    <a class="ripple-cta" href="/pay.html" id="tipButton">
+      <span>Tip the ’Verse</span>
+      <span class="ring r1"></span>
+      <span class="ring r2"></span>
+      <span class="ring r3"></span>
+    </a>
 
-      <!-- About section -->
-      <section id="about">
-        <h2>Why $1?</h2>
-        <p>
-          Your $1 is a voluntary gift to The Universe—no strings attached—
-          meant to inspire unexpected kindness and momentum. Give a little, notice a lot.
-        </p>
-      </section>
-    </main>
+    <footer>
+      $1 gift — voluntary, anonymous, no refunds — just ripples.
+    </footer>
   </div>
+</section>
 
-  <!-- Disclaimer + year -->
-  <footer>
-    <p>
-      This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
-      The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
-      for any positive effects set in motion, just the ripple that your gift creates.
-    </p>
-    <p>© <span id="y">2025</span> Tiptheverse</p>
-  </footer>
+<script>
+/* === Sayings Rotator === */
+const sayings = [
+  "Small acts → big ripples.",
+  "Let one good thing echo.",
+  "Give a dollar, start a wave."
+];
+let i=0;
+const rotEl=document.getElementById('rippleRotator');
+function showNext(){
+  rotEl.style.opacity=0;
+  setTimeout(()=>{
+    rotEl.textContent=sayings[i%sayings.length];
+    rotEl.style.opacity=1;
+    i++;
+  },500);
+}
+showNext();
+setInterval(showNext,7500); // 7.5 seconds each
 
-  <!-- Year updater -->
-  <script>
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
+/* === Ripple Energy Minimum Meter === */
+(function(){
+  const MIN_DISPLAY=7; 
+  const MAX_FILL_AT=200;
+  const REAL_COUNT=0; 
+  const localBoost=parseInt(localStorage.getItem('tv_localBoost')||'0',10);
+  const visible=Math.max(MIN_DISPLAY, REAL_COUNT+localBoost);
+  const elCount=document.getElementById('rippleCount');
+  if(elCount){
+    const capped=visible>=MAX_FILL_AT ? (MAX_FILL_AT+'+') : visible;
+    elCount.textContent=capped;
+  }
+  const pct=Math.max(8, Math.min(100, Math.round((visible/MAX_FILL_AT)*100)));
+  const fill=document.querySelector('.meter-bar .fill');
+  if(fill){ fill.style.width=pct+'%'; }
+  const btn=document.getElementById('tipButton');
+  if(btn){
+    btn.addEventListener('click',()=>{
+      localStorage.setItem('tv_localBoost', String(localBoost+1));
+    });
+  }
+})();
+</script>
 
-  <!-- Rotator script (place scripts down here, not inside <style>) -->
-  <script>
-    (function() {
-      const lines = [
-        "Small act. Real motion.",
-        "Drop $1, set a ripple.",
-        "Intent made visible.",
-        "You arrived right on time.",
-        "The universe heard you.",
-        "One dollar. One signal.",
-        "Tiny push, wide circles.",
-        "Give, and the current moves.",
-        "A thought becomes a sign.",
-        "Perfect timing isn’t loud.",
-        "You aren’t here by accident.",
-        "Ripples travel farther than we see.",
-        "The who/what/when is already known.",
-        "Release it and let it work.",
-        "Quiet motion, real results.",
-        "Act now; the map appears.",
-        "The return is never predictable.",
-        "Set it down; watch it move.",
-        "Your $1 can’t be ignored.",
-        "Trust the unfolding."
-      ];
-
-      const el = document.getElementById("ripple-rotator");
-      if (!el) return;
-
-      let i = 0;
-      const interval = 3800; // ms between changes
-
-      function nextLine() {
-        el.classList.add("is-fading");
-        setTimeout(() => {
-          i = (i + 1) % lines.length;
-          el.textContent = lines[i];
-          el.classList.remove("is-fading");
-        }, 420); // matches CSS fade time
-      }
-
-      // start after a beat so first line gets seen
-      setTimeout(() => { setInterval(nextLine, interval); }, 1200);
-    })();
-  </script>
 </body>
 </html>
+
+
 
 
 
