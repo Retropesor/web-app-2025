@@ -136,27 +136,21 @@
       color: #fff; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.6);
       z-index: 2; max-width: 90%; margin: 0 auto; padding: 0 10px;
     }
-    footer p { margin: 4px 0; }
+   footer p { margin: 4px 0; }
 
-    /* iPhone fix: avoid jumpy fixed background */
-    @supports (-webkit-touch-callout: none) {
-      body { background-attachment: scroll; }
-    }
-   /* === Mobile polish (safe, no desktop changes) === */
-@media (max-width: 768px){
-  html, body { overflow-x: hidden; }
-
- .wrap {
-  position: relative;
-  z-index: 1;              /* above overlay */
-  min-height: 100svh;      /* modern mobile unit */
-  min-height: 100vh;       /* fallback for older/mobile browsers */
-  display: grid;
-  place-items: center;
-  padding: 24px;
-  text-align: center;
-  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+/* iPhone fix: avoid jumpy fixed background */
+@supports (-webkit-touch-callout: none) {
+  body { background-attachment: scroll; }
 }
+
+/* === Mobile polish (safe, no desktop changes) === */
+@media (max-width: 480px){
+  html, body { overflow-x: hidden; margin:0; padding:0; }
+
+  .wrap{
+    min-height: 100vh;
+    padding: 20px 16px 96px;
+  }
 
   h1{ font-size: clamp(22px, 8vw, 36px); }
   .tag{ font-size: 14px; margin-bottom: 8px; }
@@ -168,13 +162,15 @@
   .links{ gap: 10px; }
 
   footer{
-    position: static; /* prevents overlap */
+    position: static;
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
     max-width: 100%;
     opacity: .85;
     font-size: 11px;
     text-shadow: 0 1px 4px rgba(0,0,0,.45);
   }
+}
+
 
 
   </style>
@@ -300,6 +296,7 @@
   </script>
 </body>
 </html>
+
 
 
 
