@@ -19,13 +19,13 @@
       margin-bottom:1rem;
     }
 
-    /* === BACKGROUND === */
+    /* === BACKGROUND FIX === */
     .tv-hero{
       position: relative;
-      min-height: 100svh; 
+      min-height: 100svh; /* full mobile height */
       display: grid;
       place-items: center;
-      background-image: url('background.png'); /* replace with your file */
+      background-image: url('background.png'); /* replace with your actual image */
       background-size: cover;
       background-position: center;
       background-repeat: no-repeat;
@@ -164,58 +164,7 @@
     </a>
 
     <footer>
-      $1 gift — voluntary, anonymous, no refunds — just ripples.
-    </footer>
-  </div>
-</section>
-
-<script>
-/* === Sayings Rotator === */
-const sayings = [
-  "Small acts → big ripples.",
-  "Let one good thing echo.",
-  "Give a dollar, start a wave."
-];
-let i=0;
-const rotEl=document.getElementById('rippleRotator');
-function showNext(){
-  rotEl.style.opacity=0;
-  setTimeout(()=>{
-    rotEl.textContent=sayings[i%sayings.length];
-    rotEl.style.opacity=1;
-    i++;
-  },500);
-}
-showNext();
-setInterval(showNext,7500); // 7.5 seconds each
-
-/* === Ripple Energy Minimum Meter === */
-(function(){
-  const MIN_DISPLAY=7; 
-  const MAX_FILL_AT=200;
-  const REAL_COUNT=0; 
-  const localBoost=parseInt(localStorage.getItem('tv_localBoost')||'0',10);
-  const visible=Math.max(MIN_DISPLAY, REAL_COUNT+localBoost);
-  const elCount=document.getElementById('rippleCount');
-  if(elCount){
-    const capped=visible>=MAX_FILL_AT ? (MAX_FILL_AT+'+') : visible;
-    elCount.textContent=capped;
-  }
-  const pct=Math.max(8, Math.min(100, Math.round((visible/MAX_FILL_AT)*100)));
-  const fill=document.querySelector('.meter-bar .fill');
-  if(fill){ fill.style.width=pct+'%'; }
-  const btn=document.getElementById('tipButton');
-  if(btn){
-    btn.addEventListener('click',()=>{
-      localStorage.setItem('tv_localBoost', String(localBoost+1));
-    });
-  }
-})();
-</script>
-
-</body>
-</html>
-
+      $1 gift — voluntary, anonymous, no refunds
 
 
 
