@@ -217,6 +217,10 @@
     }
 
     // Map init
+    <script>
+document.addEventListener('DOMContentLoaded', () => {
+  // (everything that creates the map and layers should be inside this block)
+
     const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
 
     // Basemap tiles
@@ -671,4 +675,5 @@
   </script>
 </body>
 </html>
+
 
