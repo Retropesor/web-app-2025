@@ -14,330 +14,88 @@
 
 <style>
 /* Full-page background */
+html { background:#000; }  /* fallback fixes iOS gray */
 html, body { height: 100%; margin: 0; }
 body {
-/* FIX: correct filename case + relative path + solid fallback */
-background: #000 url("Background.png") no-repeat center center fixed;
-background-size: cover;
-font-family: system-ui, Arial, sans-serif;
-color: #fff;
+  background: #000 url("background.png") no-repeat center center;
+  background-size: cover;
+  font-family: system-ui, Arial, sans-serif;
+  color: #fff;
 }
 
 /* Center the "You Already Know / Drop a Pin / Echoes" row */
 .links{
-display:flex;
-flex-wrap:wrap;
-gap:12px;
-justify-content:center;
-align-items:center;
-margin:18px auto 0;
-max-width:720px;
+  display:flex;
+  flex-wrap:wrap;
+  gap:12px;
+  justify-content:center;
+  align-items:center;
+  margin:18px auto 0;
+  max-width:720px;
 }
 
 /* Soft dark overlay so text pops */
 .overlay {
-position: fixed; inset: 0;
-background: rgba(0,0,0,0.32);
-pointer-events: none;
-z-index: 0;
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.32);
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* Layout for centered content */
 .wrap {
-position: relative;
-z-index: 1; /* above overlay */
-/* FIX: mobile-safe viewport to avoid gray gap on iOS */
-min-height: 100svh;
-display: grid;
-place-items: center;
-padding: 24px;
-text-align: center;
-text-shadow: 0 2px 10px rgba(0,0,0,.55);
+  position: relative;
+  z-index: 1;
+  min-height: 100svh; /* mobile-safe */
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
 }
 
 .hero { max-width: 860px; margin: 0 auto; }
 
 h1 {
-font-size: clamp(28px, 6vw, 64px);
-line-height: 1.1; margin: 0 0 10px;
+  font-size: clamp(28px, 6vw, 64px);
+  line-height: 1.1; margin: 0 0 10px;
 }
 .tag {
-font-size: clamp(16px, 2.5vw, 22px);
-margin: 0 0 22px; opacity: 0.95;
+  font-size: clamp(16px, 2.5vw, 22px);
+  margin: 0 0 22px; opacity: 0.95;
 }
 
 /* Buttons */
 .actions { display: grid; place-items: center; margin-top: 6px; }
 .btn {
-display: inline-block;
-padding: 12px 18px;
-border-radius: 999px;
-background: rgba(255,255,255,0.18);
-border: 1px solid rgba(255,255,255,0.45);
-color: #fff; text-decoration: none; font-weight: 600;
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 999px;
+  background: rgba(255,255,255,0.18);
+  border: 1px solid rgba(255,255,255,0.45);
+  color: #fff; text-decoration: none; font-weight: 600;
 }
 .btn:hover { background: rgba(255,255,255,0.28); }
 
 /* Rotator styles */
 .rotator-wrap {
-margin: 0.25rem 0 0.75rem;
-font-weight: 600;
-letter-spacing: .2px;
+  margin: 0.25rem 0 0.75rem;
+  font-weight: 600;
+  letter-spacing: .2px;
 }
 #ripple-rotator {
-display: inline-block;
-opacity: 1;
-transition: opacity 420ms ease-in-out;
+  display: inline-block;
+  opacity: 1;
+  transition: opacity 420ms ease-in-out;
 }
 #ripple-rotator.is-fading { opacity: 0; }
 
 /* Ripple Energy meter */
 .ripple-meter{
-width: 100%;
-max-width: 560px;
-background: rgba(0,0,0,.45);
-backdrop-filter: blur(4px);
-border: 1px solid rgba(255,255,255,.18);
-border-radius: 14px;
-padding: 14px 16px;
-color: #fff;
-margin: 14px auto 10px;
-}
-.meter-label{ font-size:.95rem; margin-bottom:6px; opacity:.9; }
-.meter-row{ display:flex; align-items:center; gap:12px; }
-.meter-bar{
-flex:1; height: 10px; border-radius: 999px;
-background: rgba(255,255,255,.18);
-overflow: hidden; position: relative;
-}
-.meter-bar .fill{
-position:absolute; left:0; top:0; bottom:0;
-width:0%;
-background: linear-gradient(90deg, rgba(255,255,255,.85), rgba(255,255,255,.55));
-border-radius: inherit;
-transform-origin: left center;
-animation: barPulse 2.8s ease-in-out infinite;
-}
-@keyframes barPulse{ 0%,100%{filter:brightness(1)} 50%{filter:brightness(1.15)} }
-.meter-value{ min-width: 140px; font-variant-numeric: tabular-nums; font-size:.95rem; opacity:.95; }
-.meter-note{ margin-top:6px; font-size:.8rem; opacity:.7; }
+  width: 100%;
+  max-width: 560px;
 
-/* Ripple CTA button with aura */
-.ripple-cta{
-position: relative;
-display: inline-grid;
-place-items: center;
-padding: 14px 28px;
-border-radius: 999px;
-text-decoration: none;
-color: #111;
-background: #fff;
-font-weight: 700;
-letter-spacing: .02em;
-overflow: hidden;
-isolation: isolate;
-box-shadow: 0 8px 20px rgba(0,0,0,.25);
-margin-top: 4px;
-}
-.ripple-cta span{ position: relative; z-index: 2; }
-.ripple-cta .ring{
-position: absolute; z-index: 1;
-border: 2px solid rgba(255,255,255,.75);
-border-radius: 999px;
-width: 100px; height: 100px;
-opacity: 0;
-animation: ripple 4.8s ease-out infinite;
-pointer-events: none;
-}
-.r1{ animation-delay: 0s; }
-.r2{ animation-delay: 1.2s; }
-.r3{ animation-delay: 2.4s; }
-@keyframes ripple{
-0%{opacity:0; transform:scale(.6);}
-8%{opacity:.35;}
-70%{opacity:.10;}
-100%{opacity:0; transform:scale(3.2);}
-}
 
-/* About section */
-#about {
-position: relative; z-index: 1;
-padding: 40px 20px 80px;
-text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,.55);
-}
-#about h2 { margin: 0 0 8px; }
-#about p { max-width: 820px; margin: 0 auto; }
-
-/* Footer (disclaimer) */
-footer {
-position: fixed; left: 0; right: 0; bottom: 10px;
-text-align: center; font-size: 12px; line-height: 1.4;
-color: #fff; opacity: .9; text-shadow: 0 1px 6px rgba(0,0,0,.6);
-z-index: 2; max-width: 90%; margin: 0 auto; padding: 0 10px;
-}
-footer p { margin: 4px 0; }
-
-/* iPhone fix: avoid jumpy fixed background */
-@supports (-webkit-touch-callout: none) {
-body { background-attachment: scroll; }
-}
-
-/* Respect reduced motion */
-@media (prefers-reduced-motion: reduce){
-.ripple-cta .ring, .meter-bar .fill { animation: none; }
-}
-</style>
-</head>
-<body>
-<div class="overlay"></div>
-
-<div class="wrap">
-<main class="hero">
-<h1>Do a Good Deed. Get Good Karma.</h1>
-<p class="tag">Start a ripple with $1. Small ripples become waves.</p>
-
-<section class="ripple-intro">
-<div class="micro-answers">
-<p><strong>Why am I here?</strong> There is no accident in timing. You arrived when you were ready.</p>
-<p><strong>How does this help?</strong> A thought sparks change; a dollar carries the intention.</p>
-<p><strong>Where does it go?</strong> The Universe routes it where it’s needed, and it will circle back in unexpected ways.</p>
-</div>
-</section>
-
-<!-- Rotating one-liner -->
-<h3 class="rotator-wrap" aria-live="polite">
-<span id="ripple-rotator">Small act. Real motion.</span>
-</h3>
-
-<!-- Ripple Energy Meter (with safe minimum) -->
-<div class="ripple-meter" aria-live="polite">
-<div class="meter-label">Ripple Energy</div>
-<div class="meter-row">
-<div class="meter-bar"><span class="fill"></span></div>
-<div class="meter-value"><span id="rippleCount">0</span> and counting</div>
-</div>
-<div class="meter-note">Anonymous community activity</div>
-</div>
-
-<!-- Single Tip button with ripple aura -->
-<div class="actions">
-<a class="ripple-cta" href="/pay.html" id="tipButton" rel="noopener">
-<span>Tip the ’Verse</span>
-<span class="ring r1"></span>
-<span class="ring r2"></span>
-<span class="ring r3"></span>
-</a>
-</div>
-
-<!-- Centered links row (kept as-is) -->
-<div class="links">
-<a class="btn" href="/about.html">You Already Know</a>
-<a href="map.html" class="btn">Drop a Pin</a>
-<a class="btn" href="/echoes.html">Echoes</a>
-</div>
-
-<!-- About section -->
-<section id="about">
-<h2>Why $1?</h2>
-<p>
-Your $1 is a voluntary gift to The Universe—no strings attached—
-meant to inspire unexpected kindness and momentum. Give a little, notice a lot.
-</p>
-</section>
-</main>
-</div>
-
-<!-- Disclaimer + year -->
-<footer>
-<p>
-This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
-The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
-for any positive effects set in motion, just the ripple that your gift creates.
-</p>
-<p>© <span id="y">2025</span> Tiptheverse</p>
-</footer>
-
-<!-- Year updater -->
-<script>
-document.getElementById('y').textContent = new Date().getFullYear();
-</script>
-
-<!-- Rotator script (slower: 7.5s) -->
-<script>
-(function() {
-const lines = [
-"Small act. Real motion.",
-"Drop $1, set a ripple.",
-"Intent made visible.",
-"You arrived right on time.",
-"The universe heard you.",
-"One dollar. One signal.",
-"Tiny push, wide circles.",
-"Give, and the current moves.",
-"A thought becomes a sign.",
-"Perfect timing isn’t loud.",
-"You aren’t here by accident.",
-"Ripples travel farther than we see.",
-"The who/what/when is already known.",
-"Release it and let it work.",
-"Quiet motion, real results.",
-"Act now; the map appears.",
-"The return is never predictable.",
-"Set it down; watch it move.",
-"Your $1 can’t be ignored.",
-"Trust the unfolding."
-];
-
-const el = document.getElementById("ripple-rotator");
-if (!el) return;
-
-let i = 0;
-const interval = 7500; // 7.5s between changes
-
-function nextLine() {
-el.classList.add("is-fading");
-setTimeout(() => {
-i = (i + 1) % lines.length;
-el.textContent = lines[i];
-el.classList.remove("is-fading");
-}, 420); // matches CSS fade
-}
-
-// show first, then start cycling
-setTimeout(() => { setInterval(nextLine, interval); }, 1200);
-})();
-</script>
-
-<!-- Ripple Energy logic with safe minimum -->
-<script>
-(function(){
-const MIN_DISPLAY = 7; // 👈 floor so it never looks empty
-const MAX_FILL_AT = 200; // bar looks ~full here
-const REAL_COUNT = 0; // replace with live count when you have it
-
-const localBoost = parseInt(localStorage.getItem('tv_localBoost') || '0', 10);
-const visible = Math.max(MIN_DISPLAY, REAL_COUNT + localBoost);
-
-const elCount = document.getElementById('rippleCount');
-if(elCount){
-const capped = visible >= MAX_FILL_AT ? (MAX_FILL_AT + '+') : visible;
-elCount.textContent = capped;
-}
-
-const pct = Math.max(8, Math.min(100, Math.round((visible / MAX_FILL_AT) * 100)));
-const fill = document.querySelector('.meter-bar .fill');
-if(fill){ fill.style.width = pct + '%'; }
-
-const btn = document.getElementById('tipButton');
-if(btn){
-btn.addEventListener('click', function(){
-localStorage.setItem('tv_localBoost', String(Math.min(localBoost + 1, 99999)));
-});
-}
-})();
-</script>
-</body>
-</html>
 
 
 
