@@ -217,182 +217,167 @@
     }
 
     // Map init
-    <script>
+   <script>
 document.addEventListener('DOMContentLoaded', () => {
-  // (everything that creates the map and layers should be inside this block)
+  // --- Minimal city → coordinate dictionary (expand anytime) ---
+  const CITY_COORDS = new Map([
+    ["Myrtle Beach, SC", [33.6891, -78.8867]],
+    ["North Myrtle Beach, SC", [33.823, -78.6800]],
+    ["Conway, SC", [33.8358, -79.0478]],
+    ["Little River, SC", [33.8732, -78.6147]],
+    ["Longs, SC", [33.9427, -78.7347]],
+    ["Wilmington, NC", [34.2257, -77.9447]],
+    ["Virginia Beach, VA", [36.8529, -75.9780]],
+    ["Assateague, MD", [38.0930, -75.2065]],
+    ["Washington, DC", [38.9072, -77.0369]],
+    ["Philadelphia, PA", [39.9526, -75.1652]],
+    ["New York, NY", [40.7128, -74.0060]],
+    ["Los Angeles, CA", [34.0522, -118.2437]],
+    ["Chicago, IL", [41.8781, -87.6298]],
+    ["Austin, TX", [30.2672, -97.7431]],
+  ]);
 
-    const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
+  // Utility: build a label from city + state + country (if provided)
+  function placeLabel(city, state, country) {
+    const parts = [];
+    if (city && city.trim()) parts.push(city.trim());
+    if (state && state.trim()) parts.push(state.trim());
+    if (country && country.trim()) parts.push(country.trim());
+    if (parts.length === 0) return "Unknown";
+    return parts.join(', ');
+  }
 
-    // Basemap tiles
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '© OpenStreetMap contributors'
-    }).addTo(map);
+  // Map init
+  const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
 
-    // Clustering group
-    const clusterGroup = L.markerClusterGroup();
-    map.addLayer(clusterGroup);
+  // Basemap tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
 
-    // Heatmap layer (initially off)
-    let heatLayer = L.heatLayer([], { radius: 22, blur: 18, maxZoom: 11 });
+  // Clustering group
+  const clusterGroup = L.markerClusterGroup();
+  map.addLayer(clusterGroup);
 
-    // --- State badge layer (US) ---
-    const stateBadgeLayer = L.layerGroup().addTo(map);
+  // Heatmap layer (initially off)
+  let heatLayer = L.heatLayer([], { radius: 22, blur: 18, maxZoom: 11 });
 
-    // Approximate state centroids for labels
-    const STATE_CENTROIDS = {
-      AL:[32.8067,-86.7911], AK:[64.2008,-149.4937], AZ:[34.0489,-111.0937], AR:[35.2010,-91.8318],
-      CA:[36.7783,-119.4179], CO:[39.5501,-105.7821], CT:[41.6032,-73.0877], DE:[38.9108,-75.5277],
-      FL:[27.6648,-81.5158], GA:[32.1656,-82.9001], HI:[19.8968,-155.5828], ID:[44.0682,-114.7420],
-      IL:[40.6331,-89.3985], IN:[40.2672,-86.1349], IA:[41.8780,-93.0977], KS:[39.0119,-98.4842],
-      KY:[37.8393,-84.2700], LA:[30.9843,-91.9623], ME:[45.2538,-69.4455], MD:[39.0458,-76.6413],
-      MA:[42.4072,-71.3824], MI:[44.3148,-85.6024], MN:[46.7296,-94.6859], MS:[32.3547,-89.3985],
-      MO:[37.9643,-91.8318], MT:[46.8797,-110.3626], NE:[41.4925,-99.9018], NV:[38.8026,-116.4194],
-      NH:[43.1939,-71.5724], NJ:[40.0583,-74.4057], NM:[34.5199,-105.8701], NY:[43.2994,-74.2179],
-      NC:[35.7596,-79.0193], ND:[47.5515,-101.0020], OH:[40.4173,-82.9071], OK:[35.4676,-97.5164],
-      OR:[43.8041,-120.5542], PA:[41.2033,-77.1945], RI:[41.5801,-71.4774], SC:[33.8361,-81.1637],
-      SD:[43.9695,-99.9018], TN:[35.5175,-86.5804], TX:[31.9686,-99.9018], UT:[39.3210,-111.0937],
-      VT:[44.5588,-72.5778], VA:[37.4316,-78.6569], WA:[47.7511,-120.7401], WV:[38.5976,-80.4549],
-      WI:[43.7844,-88.7879], WY:[43.0759,-107.2903], DC:[38.9072,-77.0369]
-    };
+  // --- State badge layer (US) ---
+  const stateBadgeLayer = L.layerGroup().addTo(map);
 
-    function stateFromLabel(label){
-      const parts = (label || '').split(',').map(s=>s.trim());
-      if (parts.length >= 2){
-        const st = parts[1].toUpperCase();
-        if (STATE_CENTROIDS[st]) return st;
-        if (/district of columbia/i.test(parts[1])) return 'DC';
-      }
-      return null;
+  // Approximate state centroids for labels
+  const STATE_CENTROIDS = {
+    AL:[32.8067,-86.7911], AK:[64.2008,-149.4937], AZ:[34.0489,-111.0937], AR:[35.2010,-91.8318],
+    CA:[36.7783,-119.4179], CO:[39.5501,-105.7821], CT:[41.6032,-73.0877], DE:[38.9108,-75.5277],
+    FL:[27.6648,-81.5158], GA:[32.1656,-82.9001], HI:[19.8968,-155.5828], ID:[44.0682,-114.7420],
+    IL:[40.6331,-89.3985], IN:[40.2672,-86.1349], IA:[41.8780,-93.0977], KS:[39.0119,-98.4842],
+    KY:[37.8393,-84.2700], LA:[30.9843,-91.9623], ME:[45.2538,-69.4455], MD:[39.0458,-76.6413],
+    MA:[42.4072,-71.3824], MI:[44.3148,-85.6024], MN:[46.7296,-94.6859], MS:[32.3547,-89.3985],
+    MO:[37.9643,-91.8318], MT:[46.8797,-110.3626], NE:[41.4925,-99.9018], NV:[38.8026,-116.4194],
+    NH:[43.1939,-71.5724], NJ:[40.0583,-74.4057], NM:[34.5199,-105.8701], NY:[43.2994,-74.2179],
+    NC:[35.7596,-79.0193], ND:[47.5515,-101.0020], OH:[40.4173,-82.9071], OK:[35.4676,-97.5164],
+    OR:[43.8041,-120.5542], PA:[41.2033,-77.1945], RI:[41.5801,-71.4774], SC:[33.8361,-81.1637],
+    SD:[43.9695,-99.9018], TN:[35.5175,-86.5804], TX:[31.9686,-99.9018], UT:[39.3210,-111.0937],
+    VT:[44.5588,-72.5778], VA:[37.4316,-78.6569], WA:[47.7511,-120.7401], WV:[38.5976,-80.4549],
+    WI:[43.7844,-88.7879], WY:[43.0759,-107.2903], DC:[38.9072,-77.0369]
+  };
+
+  function stateFromLabel(label){
+    const parts = (label || '').split(',').map(s=>s.trim());
+    if (parts.length >= 2){
+      const st = parts[1].toUpperCase();
+      if (STATE_CENTROIDS[st]) return st;
+      if (/district of columbia/i.test(parts[1])) return 'DC';
     }
+    return null;
+  }
 
-    function updateStateBadges(pins){
-      stateBadgeLayer.clearLayers();
-      const counts = {};
-      pins.forEach(p=>{ const st = stateFromLabel(p.label); if(st) counts[st] = (counts[st]||0)+1; });
-      Object.entries(counts).forEach(([st, n])=>{
-        const c = STATE_CENTROIDS[st]; if(!c) return;
-        const html = `<div style="
-          background:#1a2333; border:1px solid #294066; color:#d9ecff;
-          padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px;
-          box-shadow:0 6px 16px rgba(0,0,0,.35); white-space:nowrap;">
-          ${st}: ${n}
-        </div>`;
-        const icon = L.divIcon({ html, className:'ttv-state-badge', iconSize:null });
-        L.marker([c[0], c[1]], { icon, interactive:false }).addTo(stateBadgeLayer);
-      });
+  function updateStateBadges(pins){
+    stateBadgeLayer.clearLayers();
+    const counts = {};
+    pins.forEach(p=>{ const st = stateFromLabel(p.label); if(st) counts[st] = (counts[st]||0)+1; });
+    Object.entries(counts).forEach(([st, n])=>{
+      const c = STATE_CENTROIDS[st]; if(!c) return;
+      const html = `<div style="
+        background:#1a2333; border:1px solid #294066; color:#d9ecff;
+        padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px;
+        box-shadow:0 6px 16px rgba(0,0,0,.35); white-space:nowrap;">
+        ${st}: ${n}
+      </div>`;
+      const icon = L.divIcon({ html, className:'ttv-state-badge', iconSize:null });
+      L.marker([c[0], c[1]], { icon, interactive:false }).addTo(stateBadgeLayer);
+    });
+  }
+
+  const STORAGE_KEY = 'ttv_ripples_v1';
+  const API = '/.netlify/functions/pins';
+
+  async function fetchGlobalPins() {
+    try {
+      const res = await fetch(API);
+      if (!res.ok) throw new Error('bad');
+      const data = await res.json();
+      return Array.isArray(data) ? data : [];
+    } catch (e) {
+      console.warn('Global pins unavailable, falling back to local only');
+      return null; // signal offline
     }
+  }
 
-    const STORAGE_KEY = 'ttv_ripples_v1';
-    const API = '/.netlify/functions/pins';
+  function loadPinsLocal() { try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
+  function savePinsLocal(pins) { localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
 
-    async function fetchGlobalPins() {
-      try {
-        const res = await fetch(API);
-        if (!res.ok) throw new Error('bad');
-        const data = await res.json();
-        return Array.isArray(data) ? data : [];
-      } catch (e) {
-        console.warn('Global pins unavailable, falling back to local only');
-        return null; // signal offline
-      }
+  function getFilteredPins(pins){
+    const v = (document.getElementById('timeWindow')?.value || 'all');
+    if (v === 'all') return pins;
+    const now = Date.now();
+    const delta = v === '24h' ? 24*3600e3 : v === '7d' ? 7*24*3600e3 : 30*24*3600e3;
+    return pins.filter(p => (now - (p.ts || 0)) <= delta);
+  }
+
+  async function renderPins() {
+    clusterGroup.clearLayers();
+    let pins = await fetchGlobalPins();
+    let offline = false;
+    if (!pins) { pins = loadPinsLocal(); offline = true; }
+    pins = getFilteredPins(pins);
+    pins.forEach(p => {
+      const m = L.marker([p.lat, p.lng]);
+      m.bindPopup(`<b>${p.label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
+      clusterGroup.addLayer(m);
+    });
+    updateStats(pins);
+    if (offline) {
+      const panel = document.querySelector('.cta');
+      if (panel) panel.textContent = 'You are viewing local pins (offline). They will sync when the network is back.';
     }
+  }
 
-    function loadPinsLocal() {
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; }
-    }
-    function savePinsLocal(pins) { localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
+  function updateStats(pins) {
+    // Side-panel totals
+    const totalEl = document.getElementById('totalPins');
+    if (totalEl) totalEl.textContent = pins.length;
 
-    function getFilteredPins(pins){
-      const v = (document.getElementById('timeWindow')?.value || 'all');
-      if (v === 'all') return pins;
-      const now = Date.now();
-      const delta = v === '24h' ? 24*3600e3 : v === '7d' ? 7*24*3600e3 : 30*24*3600e3;
-      return pins.filter(p => (now - (p.ts || 0)) <= delta);
-    }
+    const uniqueEl = document.getElementById('uniquePlaces');
+    const counts = new Map();
+    pins.forEach(p => counts.set(p.label, (counts.get(p.label) || 0) + 1));
+    if (uniqueEl) uniqueEl.textContent = counts.size;
 
-    async function renderPins() {
-      window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
+    // Top Cities ticker
+    const top = Array.from(counts.entries())
+      .filter(([label]) => label && /,/.test(label))
+      .sort((a,b) => b[1]-a[1])
+      .slice(0, 20)
+      .map(([label, n]) => `${label} ×${n}`);
+    const track = document.getElementById('tickerTrack');
+    if (track) track.textContent = top.length ? `  ✦  ${top.join('   •   ')}   ` : 'No activity yet — be the first to drop a ripple!';
 
-      clusterGroup.clearLayers();
-      let pins = await fetchGlobalPins();
-      let offline = false;
-      if (!pins) { pins = loadPinsLocal(); offline = true; }
-      pins = getFilteredPins(pins);
-      pins.forEach(p => {
-        const m = L.marker([p.lat, p.lng]);
-        m.bindPopup(`<b>${p.label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
-        clusterGroup.addLayer(m);
-      });
-      updateStats(pins);
-      if (offline) {
-        const panel = document.querySelector('.cta');
-        if (panel) panel.textContent = 'You are viewing local pins (offline). They will sync when the network is back.';
-      }
-    }
-
-    function updateStats(pins) {
-      // Header total (visible at top) — guard for missing node
-      
-
-      // Side-panel totals — guard for missing nodes
-      const totalEl = document.getElementById('totalPins');
-      if (totalEl) totalEl.textContent = pins.length;
-
-      const uniqueEl = document.getElementById('uniquePlaces');
-      const counts = new Map();
-      pins.forEach(p => counts.set(p.label, (counts.get(p.label) || 0) + 1));
-      if (uniqueEl) uniqueEl.textContent = counts.size;
-
-      // Update Top Cities ticker (limit to 20)
-      const top = Array.from(counts.entries())
-        .filter(([label]) => label && /,/.test(label))
-        .sort((a,b) => b[1]-a[1])
-        .slice(0, 20)
-        .map(([label, n]) => `${label} ×${n}`);
-      const track = document.getElementById('tickerTrack');
-      if (track) {
-        track.textContent = top.length ? `  ✦  ${top.join('   •   ')}   ` : 'No activity yet — be the first to drop a ripple!';
-      }
-
-      // Side panel list (if present)
-      const list = document.getElementById('clusterList');
-      if (list) {
-        list.innerHTML = '';
-        const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
-        if (sorted.length === 0) {
-          const el = document.createElement('div');
-          el.className = 'cluster-item';
-          el.innerHTML = '<span class="where">No clusters yet</span><span class="count">—</span>';
-          list.appendChild(el);
-        } else {
-          sorted.forEach(([label, count]) => {
-            const el = document.createElement('div');
-            el.className = 'cluster-item';
-            el.innerHTML = `<span class="where">${label}</span><span class="count">×${count}</span>`;
-            list.appendChild(el);
-          });
-        }
-      }
-
-      // Overlays — guard against missing map/layers
-      if (typeof updateStateBadges === 'function') updateStateBadges(pins);
-      if (typeof heatLayer !== 'undefined' && heatLayer && typeof heatLayer.setLatLngs === 'function') {
-        const asHeat = pins.map(p => [p.lat, p.lng, 1]);
-        heatLayer.setLatLngs(asHeat);
-        const heatOn = document.getElementById('heatToggle');
-        if (heatOn && heatOn.checked) {
-          if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
-        } else if (map.hasLayer && map.hasLayer(heatLayer)) {
-          map.removeLayer(heatLayer);
-        }
-      }
-    }
-
-      // Side panel list
-      const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
-      const list = document.getElementById('clusterList');
+    // Side panel list
+    const list = document.getElementById('clusterList');
+    if (list) {
       list.innerHTML = '';
+      const sorted = Array.from(counts.entries()).sort((a,b) => b[1]-a[1]).slice(0, 50);
       if (sorted.length === 0) {
         const el = document.createElement('div');
         el.className = 'cluster-item';
@@ -406,280 +391,195 @@ document.addEventListener('DOMContentLoaded', () => {
           list.appendChild(el);
         });
       }
-
-      // Update overlays
-      updateStateBadges(pins);
-      const asHeat = pins.map(p => [p.lat, p.lng, 1]);
-      heatLayer.setLatLngs(asHeat);
-      const heatOn = document.getElementById('heatToggle');
-      if (heatOn && heatOn.checked) {
-        if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
-      } else if (map.hasLayer(heatLayer)) {
-        map.removeLayer(heatLayer);
-      }
-    } else {
-        sorted.forEach(([label, count]) => {
-          const el = document.createElement('div');
-          el.className = 'cluster-item';
-          el.innerHTML = `<span class="where">${label}</span><span class="count">×${count}</span>`;
-          list.appendChild(el);
-        });
-      }
-
-      // Update overlays
-      updateStateBadges(pins);
-      const asHeat = pins.map(p => [p.lat, p.lng, 1]);
-      heatLayer.setLatLngs(asHeat);
-      const heatOn = document.getElementById('heatToggle');
-      if (heatOn && heatOn.checked) {
-        if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
-      } else if (map.hasLayer(heatLayer)) {
-        map.removeLayer(heatLayer);
-      }
     }
 
-    async function postGlobalPin(p) {
-      try {
-        const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) });
-        return res.ok;
-      } catch { return false; }
+    // Overlays
+    updateStateBadges(pins);
+    const asHeat = pins.map(p => [p.lat, p.lng, 1]);
+    heatLayer.setLatLngs(asHeat);
+    const heatOn = document.getElementById('heatToggle');
+    if (heatOn && heatOn.checked) {
+      if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
+    } else if (map.hasLayer(heatLayer)) {
+      map.removeLayer(heatLayer);
     }
+  }
 
-    async function dropRipple(lat, lng, label, zoomTo = true) {
-      const p = { lat, lng, label, ts: Date.now() };
+  async function postGlobalPin(p) {
+    try {
+      const res = await fetch(API, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(p) });
+      return res.ok;
+    } catch { return false; }
+  }
 
-      // Optimistic UI
-      const m = L.marker([lat, lng]).bindPopup(`<b>${label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
-      clusterGroup.addLayer(m);
-      if (zoomTo) map.setView([lat, lng], Math.max(map.getZoom(), 6));
+  async function dropRipple(lat, lng, label, zoomTo = true) {
+    const p = { lat, lng, label, ts: Date.now() };
 
-      // Pulse effect
-      const pulse = L.marker([lat, lng], { icon: L.divIcon({ className: 'ttv-pulse', iconSize: [14,14] }) }).addTo(map);
-      setTimeout(() => map.removeLayer(pulse), 1600);
+    // Optimistic UI
+    const m = L.marker([lat, lng]).bindPopup(`<b>${label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
+    clusterGroup.addLayer(m);
+    if (zoomTo) map.setView([lat, lng], Math.max(map.getZoom(), 6));
 
-      // Local resilience
-      const local = loadPinsLocal(); local.push(p); savePinsLocal(local);
+    // Pulse effect
+    const pulse = L.marker([lat, lng], { icon: L.divIcon({ className: 'ttv-pulse', iconSize: [14,14] }) }).addTo(map);
+    setTimeout(() => map.removeLayer(pulse), 1600);
 
-      // Try global
-      const ok = await postGlobalPin(p);
-      if (!ok) console.warn('Could not persist globally; will show local only until online.');
+    // Local resilience
+    const local = loadPinsLocal(); local.push(p); savePinsLocal(local);
 
-      const pinsNow = await fetchGlobalPins() || loadPinsLocal();
-      updateStats(getFilteredPins(pinsNow));
-      m.openPopup();
-    }
+    // Try global
+    const ok = await postGlobalPin(p);
+    if (!ok) console.warn('Could not persist globally; will show local only until online.');
 
-    // Controls
-    const stateSel = document.getElementById('stateSel');
-    const cityInput = document.getElementById('cityInput');
-    const countryInput = document.getElementById('countryInput');
+    const pinsNow = await fetchGlobalPins() || loadPinsLocal();
+    updateStats(getFilteredPins(pinsNow));
+    m.openPopup();
+  }
 
-    // Nominatim geocoder (global)
-    async function geocode(query) {
-      const url = new URL('https://nominatim.openstreetmap.org/search');
-      url.searchParams.set('q', query);
-      url.searchParams.set('format', 'json');
-      url.searchParams.set('limit', '1');
-      url.searchParams.set('addressdetails', '0');
-      try {
-        const res = await fetch(url.toString(), { headers: { 'Accept-Language': 'en', 'User-Agent': 'TipTheVerse-Ripples-Map/1.0 (public site)' } });
-        if (!res.ok) throw new Error('Geocoder unavailable');
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          const item = data[0];
-          return { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
-        }
-        return null;
-      } catch (e) {
-        console.warn(e);
-        return null;
+  // Controls
+  const stateSel = document.getElementById('stateSel');
+  const cityInput = document.getElementById('cityInput');
+  const countryInput = document.getElementById('countryInput');
+
+  // Nominatim geocoder (global)
+  async function geocode(query) {
+    const url = new URL('https://nominatim.openstreetmap.org/search');
+    url.searchParams.set('q', query);
+    url.searchParams.set('format', 'json');
+    url.searchParams.set('limit', '1');
+    url.searchParams.set('addressdetails', '0');
+    try {
+      const res = await fetch(url.toString(), { headers: { 'Accept-Language': 'en', 'User-Agent': 'TipTheVerse-Ripples-Map/1.0 (public site)' } });
+      if (!res.ok) throw new Error('Geocoder unavailable');
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) {
+        const item = data[0];
+        return { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
       }
+      return null;
+    } catch (e) {
+      console.warn(e);
+      return null;
+    }
+  }
+
+  document.getElementById('dropBtn').addEventListener('click', async () => {
+    const city = cityInput.value.trim();
+    const state = stateSel.value.trim();
+    const country = countryInput.value.trim();
+    const label = placeLabel(city, state, country);
+
+    if (CITY_COORDS.has(label)) {
+      const [lat, lng] = CITY_COORDS.get(label);
+      await dropRipple(lat, lng, label);
+      return;
     }
 
-    document.getElementById('dropBtn').addEventListener('click', async () => {
-      const city = cityInput.value.trim();
-      const state = stateSel.value.trim();
-      const country = countryInput.value.trim();
-      const label = placeLabel(city, state, country);
-
-      if (CITY_COORDS.has(label)) {
-        const [lat, lng] = CITY_COORDS.get(label);
-        await dropRipple(lat, lng, label);
+    for (const [key, coords] of CITY_COORDS.entries()) {
+      if (city && key.toLowerCase().startsWith(city.toLowerCase()+",")) {
+        await dropRipple(coords[0], coords[1], key);
         return;
       }
-
-      for (const [key, coords] of CITY_COORDS.entries()) {
-        if (city && key.toLowerCase().startsWith(city.toLowerCase()+",")) {
-          await dropRipple(coords[0], coords[1], key);
-          return;
-        }
-      }
-
-      if (city || state || country) {
-        const pos = await geocode(label);
-        if (pos) { await dropRipple(pos.lat, pos.lng, label); return; }
-      }
-
-      alert('Could not locate that place automatically — click on the map to place your ripple anywhere.');
-      enableClickMode(label);
-    });
-
-    // Click-to-drop mode
-    let clickModeLabel = null;
-    function enableClickMode(label = null) {
-      clickModeLabel = label || placeLabel(cityInput.value, stateSel.value, countryInput.value) || 'Somewhere';
-      document.getElementById('clickModeBtn').classList.add('active');
-    }
-    function disableClickMode() {
-      clickModeLabel = null;
-      document.getElementById('clickModeBtn').classList.remove('active');
-    }
-    document.getElementById('clickModeBtn').addEventListener('click', () => {
-      if (clickModeLabel) { disableClickMode(); } else { enableClickMode(); }
-    });
-
-    map.on('click', async (e) => {
-      if (!clickModeLabel) return;
-      await dropRipple(e.latlng.lat, e.latlng.lng, clickModeLabel);
-      disableClickMode();
-    });
-
-    // Clear local pins
-    document.getElementById('clearBtn').addEventListener('click', () => {
-      if (confirm('Remove all pins saved on this device?')) {
-        localStorage.removeItem(STORAGE_KEY);
-        renderPins();
-      }
-    });
-
-    // Export handlers
-    function download(name, text){
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
-      a.download = name; a.click(); URL.revokeObjectURL(a.href);
-    }
-    document.getElementById('exportCsvBtn')?.addEventListener('click', async () => {
-      const pins = await fetchGlobalPins() || loadPinsLocal();
-      const filt = getFilteredPins(pins);
-      const rows = ['lat,lng,label,ts'];
-      filt.forEach(p => rows.push(`${p.lat},${p.lng},"${(p.label||'').replace(/"/g,'""')}",${p.ts||''}`));
-      download(`ripples-${Date.now()}.csv`, rows.join('
-'));
-    });
-    document.getElementById('exportJsonBtn')?.addEventListener('click', async () => {
-      const pins = await fetchGlobalPins() || loadPinsLocal();
-      const filt = getFilteredPins(pins);
-      download(`ripples-${Date.now()}.json`, JSON.stringify(filt, null, 2));
-    });
-
-    // Share current view + settings
-    document.getElementById('shareBtn')?.addEventListener('click', async () => {
-      const c = map.getCenter();
-      const z = map.getZoom();
-      const t = document.getElementById('timeWindow')?.value || 'all';
-      const h = document.getElementById('heatToggle')?.checked ? 1 : 0;
-      const url = new URL(window.location.href);
-      url.hash = `z=${z}&lat=${c.lat.toFixed(5)}&lng=${c.lng.toFixed(5)}&t=${t}&h=${h}`;
-      try { await navigator.clipboard.writeText(url.toString()); alert('Shareable link copied!'); }
-      catch { prompt('Copy this link:', url.toString()); }
-    });
-
-    // Parse hash on load
-    (function applyHash(){
-      if (!location.hash) return;
-      const q = new URLSearchParams(location.hash.slice(1));
-      const z = parseInt(q.get('z')||'',10); const lat = parseFloat(q.get('lat')), lng = parseFloat(q.get('lng'));
-      const t = q.get('t'); const h = q.get('h');
-      if (!Number.isNaN(lat) && !Number.isNaN(lng) && !Number.isNaN(z)) map.setView([lat,lng], z);
-      if (t && document.getElementById('timeWindow')) document.getElementById('timeWindow').value = t;
-      if (h === '1' && document.getElementById('heatToggle')) document.getElementById('heatToggle').checked = true;
-    })();
-
-    // Add a geocoder search box that drops a ripple
-    const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
-      .on('markgeocode', function(e) {
-        const c = e.geocode.center;
-        const name = e.geocode && e.geocode.name ? e.geocode.name : `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
-        dropRipple(c.lat, c.lng, name);
-        map.setView(c, 7);
-      })
-      .addTo(map);
-
-    // First render + ensure map sizes correctly after layout
-    renderPins().then(() => setTimeout(() => map.invalidateSize(), 250));
-    window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
-  </script>
-
-  <!-- =========================
-    Netlify Function (create this file for global pins):
-    File: netlify/functions/pins.js
-    ========================= -->
-  <!--
-  // netlify/functions/pins.js
-  // Shared, anonymous pin storage using Netlify Blobs
-
-  export default async (req, context) => {
-    const { blobs } = await import('@netlify/blobs');
-    const store = blobs.createBlobStore({ name: 'ttv-ripples' });
-    const KEY = 'pins.json';
-
-    if (req.method === 'OPTIONS') {
-      return new Response(null, { status: 204, headers: cors() });
     }
 
-    if (req.method === 'GET') {
-      const obj = await store.get(KEY);
-      const pins = obj ? JSON.parse(await obj.text()) : [];
-      return json(pins);
+    if (city || state || country) {
+      const pos = await geocode(label);
+      if (pos) { await dropRipple(pos.lat, pos.lng, label); return; }
     }
 
-    if (req.method === 'POST') {
-      const body = await req.json().catch(() => ({}));
-      const { lat, lng, label, ts } = body || {};
-      if (typeof lat !== 'number' || typeof lng !== 'number' || !label) {
-        return json({ error: 'invalid' }, 400);
-      }
-      const obj = await store.get(KEY);
-      const pins = obj ? JSON.parse(await obj.text()) : [];
-      pins.push({ lat, lng, label, ts: ts || Date.now() });
-      await store.set(KEY, JSON.stringify(pins));
-      return json({ ok: true });
-    }
+    alert('Could not locate that place automatically — click on the map to place your ripple anywhere.');
+    enableClickMode(label);
+  });
 
-    return json({ error: 'method' }, 405);
-  };
-
-  function json(data, status = 200) {
-    return new Response(JSON.stringify(data), {
-      status,
-      headers: { ...cors(), 'content-type': 'application/json' },
-    });
+  // Click-to-drop mode
+  let clickModeLabel = null;
+  function enableClickMode(label = null) {
+    clickModeLabel = label || placeLabel(cityInput.value, stateSel.value, countryInput.value) || 'Somewhere';
+    document.getElementById('clickModeBtn').classList.add('active');
   }
-  function cors() {
-    return {
-      'access-control-allow-origin': '*',
-      'access-control-allow-methods': 'GET,POST,OPTIONS',
-      'access-control-allow-headers': 'content-type',
-    };
+  function disableClickMode() {
+    clickModeLabel = null;
+    document.getElementById('clickModeBtn').classList.remove('active');
   }
-  -->
-  <script>
-    // Minimal on-screen error banner to surface JS errors that can hide the map
-    (function attachErrorBanner(){
-      const banner = document.createElement('div');
-      banner.id = 'ttv-error-banner';
-      banner.style.cssText = 'position:fixed;left:12px;bottom:12px;z-index:99999;background:#2a0f12;color:#ffd1d6;border:1px solid #61202a;padding:8px 10px;border-radius:8px;font:12px/1.2 system-ui;display:none;max-width:70vw';
-      document.body.appendChild(banner);
-      function show(msg){ banner.textContent = 'Error: ' + msg; banner.style.display = 'block'; }
-      window.addEventListener('error', (e)=> show(e.message||'Unknown error'));
-      window.addEventListener('unhandledrejection', (e)=> show((e.reason&&e.reason.message)||'Promise rejected'));
-    })();
- }); // end DOMContentLoaded
+  document.getElementById('clickModeBtn').addEventListener('click', () => {
+    if (clickModeLabel) { disableClickMode(); } else { enableClickMode(); }
+  });
+
+  map.on('click', async (e) => {
+    if (!clickModeLabel) return;
+    await dropRipple(e.latlng.lat, e.latlng.lng, clickModeLabel);
+    disableClickMode();
+  });
+
+  // Clear local pins (guarded: only if the button exists)
+  document.getElementById('clearBtn')?.addEventListener('click', () => {
+    if (confirm('Remove all pins saved on this device?')) {
+      localStorage.removeItem(STORAGE_KEY);
+      renderPins();
+    }
+  });
+
+  // Export handlers
+  function download(name, text){
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
+    a.download = name; a.click(); URL.revokeObjectURL(a.href);
+  }
+  document.getElementById('exportCsvBtn')?.addEventListener('click', async () => {
+    const pins = await fetchGlobalPins() || loadPinsLocal();
+    const filt = getFilteredPins(pins);
+    const rows = ['lat,lng,label,ts'];
+    filt.forEach(p => rows.push(`${p.lat},${p.lng},"${(p.label||'').replace(/"/g,'""')}",${p.ts||''}`));
+    download(`ripples-${Date.now()}.csv`, rows.join('\\n'));
+  });
+  document.getElementById('exportJsonBtn')?.addEventListener('click', async () => {
+    const pins = await fetchGlobalPins() || loadPinsLocal();
+    const filt = getFilteredPins(pins);
+    download(`ripples-${Date.now()}.json`, JSON.stringify(filt, null, 2));
+  });
+
+  // Share current view + settings
+  document.getElementById('shareBtn')?.addEventListener('click', async () => {
+    const c = map.getCenter();
+    const z = map.getZoom();
+    const t = document.getElementById('timeWindow')?.value || 'all';
+    const h = document.getElementById('heatToggle')?.checked ? 1 : 0;
+    const url = new URL(window.location.href);
+    url.hash = `z=${z}&lat=${c.lat.toFixed(5)}&lng=${c.lng.toFixed(5)}&t=${t}&h=${h}`;
+    try { await navigator.clipboard.writeText(url.toString()); alert('Shareable link copied!'); }
+    catch { prompt('Copy this link:', url.toString()); }
+  });
+
+  // Parse hash on load
+  (function applyHash(){
+    if (!location.hash) return;
+    const q = new URLSearchParams(location.hash.slice(1));
+    const z = parseInt(q.get('z')||'',10); const lat = parseFloat(q.get('lat')), lng = parseFloat(q.get('lng'));
+    const t = q.get('t'); const h = q.get('h');
+    if (!Number.isNaN(lat) && !Number.isNaN(lng) && !Number.isNaN(z)) map.setView([lat,lng], z);
+    if (t && document.getElementById('timeWindow')) document.getElementById('timeWindow').value = t;
+    if (h === '1' && document.getElementById('heatToggle')) document.getElementById('heatToggle').checked = true;
+  })();
+
+  // Geocoder control
+  const geocoder = L.Control.geocoder({ defaultMarkGeocode: false })
+    .on('markgeocode', function(e) {
+      const c = e.geocode.center;
+      const name = e.geocode && e.geocode.name ? e.geocode.name : `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
+      dropRipple(c.lat, c.lng, name);
+      map.setView(c, 7);
+    })
+    .addTo(map);
+
+  // First render + ensure map sizes correctly after layout
+  renderPins().then(() => setTimeout(() => map.invalidateSize(), 250));
+  window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
+}); // end DOMContentLoaded
 </script>
 
-  </script>
 </body>
 </html>
+
 
 
 
