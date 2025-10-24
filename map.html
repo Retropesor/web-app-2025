@@ -672,8 +672,12 @@ document.addEventListener('DOMContentLoaded', () => {
       window.addEventListener('error', (e)=> show(e.message||'Unknown error'));
       window.addEventListener('unhandledrejection', (e)=> show((e.reason&&e.reason.message)||'Promise rejected'));
     })();
+ }); // end DOMContentLoaded
+</script>
+
   </script>
 </body>
 </html>
+
 
 
