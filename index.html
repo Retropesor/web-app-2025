@@ -3,7 +3,6 @@
 <head>
   <meta charset="utf-8">
   <title>Tiptheverse</title>
-  <!-- viewport-fit=cover helps on iOS safe areas -->
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 
   <!-- meta polish -->
@@ -14,9 +13,9 @@
   <meta name="theme-color" content="#0b2742">
 
   <style>
-    /* ===== Background & global guards ===== */
+    /* ===== Background ===== */
     html { background:#000; }
-    html, body { height: 100%; margin: 0; overflow-x: hidden; }
+    html, body { height: 100%; margin: 0; overflow-x:hidden; } /* 🚑 stop side scroll */
     *, *::before, *::after { box-sizing: border-box; }
 
     body {
@@ -26,27 +25,29 @@
       color: #fff;
     }
 
-    .links{
-      display:flex; flex-wrap:wrap; gap:12px;
-      justify-content:center; align-items:center;
-      margin:18px auto 0; max-width:720px;
-    }
-
     .overlay {
       position: fixed; inset: 0;
       background: rgba(0,0,0,0.32);
-      pointer-events: none; z-index: 0;
+      pointer-events: none;
+      z-index: 0;
     }
 
     .wrap {
       position: relative; z-index: 1;
-      min-height: 100svh; min-height: 100vh;
-      display: grid; place-items: center;
-      padding: 24px; text-align: center;
+      min-height: 100svh; min-height:100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
       text-shadow: 0 2px 10px rgba(0,0,0,.55);
     }
 
-    .hero { max-width: 860px; margin: 0 auto; }
+    .hero { 
+      max-width: 860px; 
+      margin: 0 auto; 
+      width:100%;             /* 🚑 force hero to stay inside screen */
+      padding:0 12px;         /* 🚑 small inset so nothing spills over */
+    }
 
     h1 {
       font-size: clamp(28px, 6vw, 64px);
@@ -61,23 +62,23 @@
     .ticker {
       --speed: 28s;
       overflow: hidden;
-      width: 100%;               /* force full width */
-      margin: 6px auto 16px;
-      opacity: .9;
+      width:100%;              /* 🚑 keep inside viewport */
+      margin:6px auto 16px;
+      opacity:.9;
     }
     .ticker-track {
-      display: flex; gap: 28px;
-      white-space: nowrap;
+      display:flex; gap:28px;
+      white-space:nowrap;
       animation: ticker-scroll var(--speed) linear infinite;
-      padding: 0 8px;            /* inset prevents overflow */
+      padding:0 6px;           /* 🚑 tiny inset */
     }
-    .ticker-item { font-size: .95rem; }
+    .ticker-item { font-size:.95rem; }
     @keyframes ticker-scroll {
       from { transform: translateX(0); }
       to   { transform: translateX(-50%); }
     }
 
-    .actions { display:inline-flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:8px; }
+    .actions { display:flex; flex-wrap:wrap; gap:12px; justify-content:center; margin-top:8px; padding:0 8px; }
     .btn {
       display:inline-block; padding:12px 18px; border-radius:999px;
       background: rgba(255,255,255,0.18);
@@ -85,6 +86,13 @@
       color:#fff; text-decoration:none; font-weight:600;
     }
     .btn:hover { background: rgba(255,255,255,0.28); }
+
+    .links{
+      display:flex; flex-wrap:wrap; gap:12px;
+      justify-content:center; align-items:center;
+      margin:18px auto 0; max-width:720px;
+      padding:0 8px; /* 🚑 keep inside screen */
+    }
 
     .ripple-intro { margin:18px 0 20px; }
     .ripple-intro p { margin:6px 0; }
@@ -94,11 +102,9 @@
     #ripple-rotator.is-fading { opacity:0; }
 
     #about {
-      position:relative; z-index:1;
       padding:40px 20px 80px;
       text-align:center; text-shadow:0 2px 10px rgba(0,0,0,.55);
     }
-    #about h2{ margin:0 0 8px; }
     #about p { max-width:820px; margin:0 auto; }
 
     footer {
@@ -107,37 +113,9 @@
       color:#fff; opacity:.9; text-shadow:0 1px 6px rgba(0,0,0,.6);
       z-index:2; max-width:90%; margin:0 auto; padding:0 10px;
     }
-    footer p { margin:4px 0; }
 
     @supports (-webkit-touch-callout: none) {
       body { background-attachment: scroll; }
-    }
-
-    /* === Mobile-only fixes === */
-    @media (max-width: 768px){
-      .wrap{
-        min-height: 100vh;
-        min-height: calc(100svh - 90px);
-        padding-bottom: 96px;
-      }
-
-      .hero{
-        width: 100%;
-        padding-left: 16px;
-        padding-right: 16px;
-        margin: 0 auto;
-      }
-
-      .actions, .links{
-        padding-left: 8px;
-        padding-right: 8px;
-      }
-
-      footer{
-        position: static; /* don’t cover content */
-        padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
-        max-width: 100%;
-      }
     }
   </style>
 </head>
@@ -170,7 +148,7 @@
 
       <h3 class="rotator-wrap"><span id="ripple-rotator">Small act. Real motion.</span></h3>
 
-      <div class="actions"><a class="btn" href="/pay.html" rel="noopener">Tip the ’Verse</a></div>
+      <div class="actions"><a class="btn" href="/pay.html" rel="noopener">Tip the 'Verse</a></div>
 
       <div class="links">
         <a class="btn" href="/about.html">You Already Know</a>
@@ -186,7 +164,9 @@
   </div>
 
   <footer>
-    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided. The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible for any positive effects set in motion, just the ripple that your gift creates.</p>
+    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
+    The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
+    for any positive effects set in motion, just the ripple that your gift creates.</p>
     <p>© <span id="y">2025</span> Tiptheverse</p>
   </footer>
 
@@ -194,11 +174,18 @@
   <script>
     (function() {
       const lines = [
-        "Small act. Real motion.","Drop $1, set a ripple.","Intent made visible.","You arrived right on time.","The universe heard you.","One dollar. One signal.","Tiny push, wide circles.","Give, and the current moves.","A thought becomes a sign.","Perfect timing isn’t loud.","You aren’t here by accident.","Ripples travel farther than we see.","The who/what/when is already known.","Release it and let it work.","Quiet motion, real results.","Act now; the map appears.","The return is never predictable.","Set it down; watch it move.","Your $1 can’t be ignored.","Trust the unfolding."
+        "Small act. Real motion.","Drop $1, set a ripple.","Intent made visible.",
+        "You arrived right on time.","The universe heard you.","One dollar. One signal.",
+        "Tiny push, wide circles.","Give, and the current moves.","A thought becomes a sign.",
+        "Perfect timing isn’t loud.","You aren’t here by accident.","Ripples travel farther than we see.",
+        "The who/what/when is already known.","Release it and let it work.","Quiet motion, real results.",
+        "Act now; the map appears.","The return is never predictable.","Set it down; watch it move.",
+        "Your $1 can’t be ignored.","Trust the unfolding."
       ];
       const el = document.getElementById("ripple-rotator");
       if (!el) return;
-      let i = 0; const interval = 7500;
+      let i = 0;
+      const interval = 7500;
       function nextLine() {
         el.classList.add("is-fading");
         setTimeout(() => {
@@ -212,6 +199,7 @@
   </script>
 </body>
 </html>
+
 
 
 
