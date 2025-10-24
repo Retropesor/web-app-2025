@@ -19,6 +19,10 @@
     crossorigin=""
   ></script>
 
+  <!-- Geocoder control -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
   <!-- Marker clustering (optional but nice) -->
   <link
     rel="stylesheet"
@@ -70,7 +74,7 @@
     .cluster-item .where { font-weight: 600; }
     .cluster-item .count { opacity: .9; }
 
-    #map { grid-row: 2; height: calc(100vh - 76px); width: 100%; }
+    #map { grid-row: 2; height: min(75vh, calc(100vh - 120px)); width: 100%; }
 
     .cta { font-size: 14px; color: #b7d8ff; }
 
@@ -113,7 +117,7 @@
           <option>DC</option>
         </select>
 
-        <input id="cityInput" list="cityHints" placeholder="Type your city (e.g., Myrtle Beach)" />
+        <input id="cityInput" list="cityHints" placeholder="City (e.g., Myrtle Beach)" />
         <datalist id="cityHints">
           <option value="Myrtle Beach"></option>
           <option value="Conway"></option>
@@ -123,33 +127,15 @@
           <option value="Wilmington"></option>
           <option value="Virginia Beach"></option>
           <option value="Assateague"></option>
+          <option value="Washington"></option>
+          <option value="Philadelphia"></option>
           <option value="New York"></option>
           <option value="Los Angeles"></option>
           <option value="Chicago"></option>
           <option value="Austin"></option>
-          <option value="Philadelphia"></option>
-          <option value="Washington"></option>
         </datalist>
 
         <input id="countryInput" placeholder="Country (optional, e.g., United States)" />
-
-        <input id="cityInput" list="cityHints" placeholder="Type your city (e.g., Myrtle Beach)" />
-        <datalist id="cityHints">
-          <option value="Myrtle Beach"></option>
-          <option value="Conway"></option>
-          <option value="Little River"></option>
-          <option value="North Myrtle Beach"></option>
-          <option value="Longs"></option>
-          <option value="Wilmington"></option>
-          <option value="Virginia Beach"></option>
-          <option value="Assateague"></option>
-          <option value="New York"></option>
-          <option value="Los Angeles"></option>
-          <option value="Chicago"></option>
-          <option value="Austin"></option>
-          <option value="Philadelphia"></option>
-          <option value="Washington"></option>
-        </datalist>
 
         <button id="dropBtn">Drop a Ripple</button>
         <button id="clickModeBtn" class="secondary" title="Place a pin by clicking the map">Click-to-Drop</button>
@@ -160,9 +146,10 @@
     <aside>
       <div class="panel">
         <h3>How it works</h3>
-        <p>Pick a city (and optional state/country) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse.
-        You can also use <em>Click-to-Drop</em> and place a pin anywhere on the map.</p>
-        <p class="cta">Pins are saved to <strong>your device</strong> (localStorage). For a global, shared map, we can switch this to a tiny serverless backend later.</p>
+        <p><strong>This map is an experiment in collective thought.</strong> Every time someone feels a ripple return — a kindness, luck, or a good thing — they can place a pin. One ripple is powerful, but when thousands of people focus on the same intention, the effect multiplies. The clusters show us how quickly positivity can spread when shared energy is at play.</p>
+        <p>All pins are anonymous, because it is not about credit — it's about the motion itself. You will feel the city-level pulse. By adding your ripple, you help us see and measure how collective thought can accelerate the good.</p>
+        <p>Pick a city (and optional state/country) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse. Or use <em>Click-to-Drop</em> to place a pin anywhere on the map.</p>
+        <p class="cta">Pins currently save on this device. We can switch to a tiny serverless backend so everyone sees the same pins, everywhere.</p>
       </div>
 
       <div class="panel" style="margin-top:12px">
@@ -207,6 +194,7 @@
       if (parts.length === 0) return "Unknown";
       return parts.join(', ');
     }
+
         return c; // city only
       }
       return `${c}, ${s}`;
@@ -224,6 +212,55 @@
     // Clustering group
     const clusterGroup = L.markerClusterGroup();
     map.addLayer(clusterGroup);
+
+    // --- State badge layer (US) ---
+    const stateBadgeLayer = L.layerGroup().addTo(map);
+
+    // Approximate state centroids for labels
+    const STATE_CENTROIDS = {
+      AL:[32.8067,-86.7911], AK:[64.2008,-149.4937], AZ:[34.0489,-111.0937], AR:[35.2010,-91.8318],
+      CA:[36.7783,-119.4179], CO:[39.5501,-105.7821], CT:[41.6032,-73.0877], DE:[38.9108,-75.5277],
+      FL:[27.6648,-81.5158], GA:[32.1656,-82.9001], HI:[19.8968,-155.5828], ID:[44.0682,-114.7420],
+      IL:[40.6331,-89.3985], IN:[40.2672,-86.1349], IA:[41.8780,-93.0977], KS:[39.0119,-98.4842],
+      KY:[37.8393,-84.2700], LA:[30.9843,-91.9623], ME:[45.2538,-69.4455], MD:[39.0458,-76.6413],
+      MA:[42.4072,-71.3824], MI:[44.3148,-85.6024], MN:[46.7296,-94.6859], MS:[32.3547,-89.3985],
+      MO:[37.9643,-91.8318], MT:[46.8797,-110.3626], NE:[41.4925,-99.9018], NV:[38.8026,-116.4194],
+      NH:[43.1939,-71.5724], NJ:[40.0583,-74.4057], NM:[34.5199,-105.8701], NY:[43.2994,-74.2179],
+      NC:[35.7596,-79.0193], ND:[47.5515,-101.0020], OH:[40.4173,-82.9071], OK:[35.4676,-97.5164],
+      OR:[43.8041,-120.5542], PA:[41.2033,-77.1945], RI:[41.5801,-71.4774], SC:[33.8361,-81.1637],
+      SD:[43.9695,-99.9018], TN:[35.5175,-86.5804], TX:[31.9686,-99.9018], UT:[39.3210,-111.0937],
+      VT:[44.5588,-72.5778], VA:[37.4316,-78.6569], WA:[47.7511,-120.7401], WV:[38.5976,-80.4549],
+      WI:[43.7844,-88.7879], WY:[43.0759,-107.2903], DC:[38.9072,-77.0369]
+    };
+
+    function stateFromLabel(label){
+      // Expect formats like "City, ST" or "City, ST, Country" or "Washington, DC"
+      const parts = (label || '').split(',').map(s=>s.trim());
+      if (parts.length >= 2){
+        const st = parts[1].toUpperCase();
+        if (STATE_CENTROIDS[st]) return st;
+        // If label was like "City, District of Columbia" try DC
+        if (/district of columbia/i.test(parts[1])) return 'DC';
+      }
+      return null;
+    }
+
+    function updateStateBadges(pins){
+      stateBadgeLayer.clearLayers();
+      const counts = {};
+      pins.forEach(p=>{ const st = stateFromLabel(p.label); if(st) counts[st] = (counts[st]||0)+1; });
+      Object.entries(counts).forEach(([st, n])=>{
+        const c = STATE_CENTROIDS[st]; if(!c) return;
+        const html = `<div style="
+          background:#1a2333; border:1px solid #294066; color:#d9ecff;
+          padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px;
+          box-shadow:0 6px 16px rgba(0,0,0,.35); white-space:nowrap;">
+          ${st}: ${n}
+        </div>`;
+        const icon = L.divIcon({ html, className:'ttv-state-badge', iconSize:null });
+        L.marker([c[0], c[1]], { icon, interactive:false }).addTo(stateBadgeLayer);
+      });
+    }
 
     // Storage helpers
     const STORAGE_KEY = 'ttv_ripples_v1';
@@ -270,6 +307,8 @@
           list.appendChild(el);
         });
       }
+      // Update state badges overlay
+      updateStateBadges(pins);
     }
 
     // Drop logic
@@ -357,10 +396,6 @@
       clickModeLabel = null;
       document.getElementById('clickModeBtn').classList.remove('active');
     }
-    function disableClickMode() {
-      clickModeLabel = null;
-      document.getElementById('clickModeBtn').classList.remove('active');
-    }
     document.getElementById('clickModeBtn').addEventListener('click', () => {
       if (clickModeLabel) { disableClickMode(); } else { enableClickMode(); }
     });
@@ -381,7 +416,22 @@
 
     // First render
     renderPins();
+    setTimeout(() => map.invalidateSize(), 250);
+
+    // Add a geocoder search box that drops a ripple
+    const geocoder = L.Control.geocoder({
+      defaultMarkGeocode: false
+    })
+    .on('markgeocode', function(e) {
+      const c = e.geocode.center;
+      const name = e.geocode && e.geocode.name ? e.geocode.name : `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
+      dropRipple(c.lat, c.lng, name);
+      map.setView(c, 7);
+    })
+    .addTo(map);
+
   </script>
 </body>
 </html>
+
 
