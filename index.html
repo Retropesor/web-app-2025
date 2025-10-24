@@ -66,30 +66,31 @@
       margin: 0 0 10px; opacity: 0.95;
     }
 
-    /* --- Lightweight Ticker (added) --- */
-    .ticker {
-      --speed: 28s;
-      overflow: hidden;
-      max-width: 860px;
-      margin: 6px auto 16px;
-      opacity: .9;
-      mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    }
-    .ticker-track {
-      display: flex;
-      gap: 28px;
-      white-space: nowrap;
-      will-change: transform;
-      animation: ticker-scroll var(--speed) linear infinite;
-    }
-    .ticker-item { font-size: .95rem; }
-    @keyframes ticker-scroll {
-      from { transform: translateX(0); }
-      to   { transform: translateX(-50%); } /* duplicate items for seamless loop */
-    }
-    @media (prefers-reduced-motion: reduce){
-      .ticker-track { animation: none; }
-    }
+    /* --- Lightweight Ticker (mobile-safe) --- */
+.ticker {
+  --speed: 28s;
+  overflow: hidden;
+  max-width: 860px;
+  margin: 6px auto 16px;
+  opacity: .9;
+  /* removed mask-image to avoid mobile paint issues */
+}
+.ticker-track {
+  display: flex;
+  gap: 28px;
+  white-space: nowrap;
+  will-change: transform;
+  animation: ticker-scroll var(--speed) linear infinite;
+}
+.ticker-item { font-size: .95rem; }
+@keyframes ticker-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); } /* duplicate items for seamless loop */
+}
+@media (prefers-reduced-motion: reduce){
+  .ticker-track { animation: none; }
+}
+
 
     .actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
     .btn {
@@ -141,32 +142,33 @@
     @supports (-webkit-touch-callout: none) {
       body { background-attachment: scroll; }
     }
-    /* === Mobile polish (safe, no desktop changes) === */
-@media (max-width: 480px){
-  /* prevent sideways scroll and keep content above the footer */
+   /* === Mobile polish (safe, no desktop changes) === */
+@media (max-width: 768px){
   html, body { overflow-x: hidden; }
 
-  /* give the content a bit more breathing room and account for iOS safe area */
-  .wrap{
-    min-height: calc(100svh - 90px); /* avoid being hidden under footer */
-    padding: 20px 16px 96px;         /* extra bottom so buttons aren’t cramped */
-  }
+ .wrap {
+  position: relative;
+  z-index: 1;              /* above overlay */
+  min-height: 100svh;      /* modern mobile unit */
+  min-height: 100vh;       /* fallback for older/mobile browsers */
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+  text-shadow: 0 2px 10px rgba(0,0,0,.55);
+}
 
-  /* scale text a touch smaller so lines don’t wrap awkwardly */
   h1{ font-size: clamp(22px, 8vw, 36px); }
   .tag{ font-size: 14px; margin-bottom: 8px; }
 
-  /* ticker: slightly slower & tighter gap to avoid jumpiness */
   .ticker{ --speed: 32s; margin: 4px auto 12px; }
   .ticker-track{ gap: 18px; }
 
-  /* buttons: comfy tap targets but not huge */
   .btn{ padding: 12px 16px; font-size: 15px; }
   .links{ gap: 10px; }
 
-  /* footer: stop covering content on small screens */
   footer{
-    position: static;                /* no longer fixed on mobile */
+    position: static; /* prevents overlap */
     padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0px));
     max-width: 100%;
     opacity: .85;
@@ -185,6 +187,8 @@
       <!-- Header (unchanged) -->
       <h1>Do a Good Deed. Get Good Karma.</h1>
       <p class="tag">Start a ripple with $1. Small ripples become waves.</p>
+  
+}
 
       <!-- Ticker (added) -->
       <div class="ticker" aria-hidden="false">
@@ -296,6 +300,7 @@
   </script>
 </body>
 </html>
+
 
 
 
