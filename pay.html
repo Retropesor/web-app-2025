@@ -74,12 +74,14 @@
 
   <script>
     // ✅ SET THESE 3 VALUES to your actual accounts
-    const CASHTAG = 'YOUR_CASHTAG';      // e.g. 'TipTheVerse' (without the $)
-    const VENMO   = 'YOUR_VENMO';        // e.g. 'TipTheVerse'
-    const PAYPAL  = 'YOUR_PAYPALME';     // PayPal.Me username, e.g. 'tiptheverse'
+   // ✅ Your real accounts are set here
+const CASHTAG = 'TipTheVerse';     // Cash App, no $ symbol
+const VENMO   = 'TipTheVerse';     // Venmo username (without @)
+const PAYPAL  = 'tiptheverse';     // PayPal.Me username (without @)
 
-    const AMOUNT  = '1';
-    const NOTE    = encodeURIComponent('TipTheVerse ripple');
+const AMOUNT  = '1';
+const NOTE    = encodeURIComponent('TipTheVerse ripple');
+
 
     function pay(provider){
       let appUrl = '', webUrl = '';
