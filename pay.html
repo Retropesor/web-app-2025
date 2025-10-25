@@ -5,19 +5,18 @@
   <title>TipTheVerse — Pay</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Set the ripple in motion with $1." />
-
   <style>
-    /* Background + base */
     html { background:#000; }
     html, body { height:100%; margin:0; }
     body{
       font-family: system-ui, Arial, sans-serif;
       color:#fff;
-      background: #0a1130 url("payment-bg.png") center / cover no-repeat; /* <-- your file name */
-      /* avoid 'fixed' on iOS; it causes issues */
+      background: #0a1130 url("payment-bg.png") center / cover no-repeat;
       text-shadow: 0 2px 10px rgba(0,0,0,.45);
     }
-
+    .overlay{ position:fixed; inset:0;
+      background: radial-gradient(120% 70% at 50% 35%, rgba(5,10,26,0.10) 0%, rgba(5,10,26,0.55) 70%, rgba(5,10,26,0.85) 100%);
+      pointer-events:none; }
     .wrap{
       min-height:100svh;
       display:flex; flex-direction:column;
@@ -25,15 +24,12 @@
       text-align:center;
       padding:24px;
       gap:14px;
-      backdrop-filter: none; /* keep it crisp */
     }
-
     h1{ margin:0 0 6px; font-size: clamp(28px, 6vw, 56px); }
     p.lead{ margin:0 0 10px; opacity:.95; }
-
     .buttons{
       display:flex; flex-direction:column; gap:12px;
-      width:min(520px, 92vw);
+      width:min(560px, 92vw);
       margin-top:6px;
     }
     .btn{
@@ -45,12 +41,14 @@
       color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
     }
     .btn:hover{ background: rgba(255,255,255,.25); }
-
-    .tiny{ font-size:12px; opacity:.85; margin-top:6px; }
-    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
-
+    .label{ display:block; font-size:12px; opacity:.85; margin-top:2px; }
+    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
     a.link { color:#fff; text-underline-offset:3px; }
-
+    .bottom-note{
+      margin-top:60px;
+      font-size:12px; opacity:.8;
+      max-width:620px;
+    }
     @media (max-width:768px){
       html, body { overflow-x:hidden; }
       .wrap{ padding:20px 16px 96px; }
@@ -58,31 +56,39 @@
   </style>
 </head>
 <body>
+  <div class="overlay" aria-hidden="true"></div>
   <main class="wrap">
     <h1>Set It in Motion</h1>
-    <p class="lead">Choose a way to send <strong>$1</strong>:</p>
+    <p class="lead">Send <strong>$1</strong> your favorite way — or use card with a small fee to keep your ripple whole.</p>
 
     <div class="buttons">
-      <!-- Solid WEB links (reliable across devices) -->
-      <a class="btn" href="https://cash.app/$TipTheVerse?amount=1" target="_blank" rel="noopener">Cash App — $TipTheVerse</a>
-      <a class="btn" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">Venmo — @TipTheVerse</a>
-      <a class="btn" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">PayPal — /tiptheverse</a>
-    </div>
-
-    <div class="tiny">
-      If the app doesn’t open, the web page will—then tap “Open in app.”
+      <a class="btn" href="https://cash.app/$TipTheVerse?amount=1" target="_blank" rel="noopener">
+        💸 Send a Spark via Cash App
+        <span class="label">$TipTheVerse — opens Cash App or web</span>
+      </a>
+      <a class="btn" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">
+        💫 Fuel the Ripple on Venmo
+        <span class="label">@TipTheVerse — Venmo may not prefill $1 on web</span>
+      </a>
+      <a class="btn" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">
+        🌊 Cast $1 into PayPal
+        <span class="label">paypal.me/tiptheverse/1 — prefilled</span>
+      </a>
+      <a class="btn" href="https://buy.stripe.com/your-payment-link" target="_blank" rel="noopener">
+        ✨ Card / Apple Pay / Google Pay — $1.34
+        <span class="label">Covers processing so your full $1 ripple still flows</span>
+      </a>
     </div>
 
     <div class="row">
-      <a class="link" href="thanks.html">I sent it → Take me to the Thank-You page</a>
+      <a class="link" href="thanks.html">I sent it → Take me to the Thank‑You page</a>
       <span>•</span>
       <a class="link" href="index.html">Back to Home</a>
     </div>
 
-
-    <div class="tiny">
-      Having trouble? Copy/paste: 
-      cash.app/$TipTheVerse • venmo.com/u/TipTheVerse • paypal.me/tiptheverse/1
+    <div class="bottom-note">
+      Trouble? Copy/paste: cash.app/$TipTheVerse • venmo.com/u/TipTheVerse • paypal.me/tiptheverse/1.
+      For the card option, replace the Stripe link with your own Payment Link (Settings → Payment Links).
     </div>
   </main>
 </body>
