@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TipTheVerse — How Manifestation Works</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="A clear, practical explainer of manifestation, why $1 helps you practice letting go, and science-backed reading if you want to go deeper." />
+  <style>
+    :root {
+      --bg: #0b0f14;
+      --card: #111821;
+      --ink: #e9f1fb;
+      --muted: #a9b8c9;
+      --accent: #79d0ff;
+      --accent-2: #7cffc4;
+      --ring: rgba(121,208,255,0.35);
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif; line-height:1.6; }
+    a { color: var(--accent); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { display:flex; min-height:100dvh; }
+    .sidebar {
+      position: sticky; top:0; align-self:flex-start;
+      width: 280px; padding: 24px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.06);
+      height: 100dvh; overflow:auto;
+    }
+    .brand { font-weight:700; letter-spacing:.4px; margin-bottom: 12px; opacity:.9 }
+    .side-title { font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); margin:18px 0 10px }
+    .side-nav a { display:block; padding:8px 10px; border-radius:10px; color:var(--ink); }
+    .side-nav a:hover { background: rgba(255,255,255,0.05); }
+    .side-links a { display:block; padding:8px 10px; border-radius:10px; color:var(--ink); }
+    .main { flex:1; padding: 40px 6vw; max-width: 1100px; margin-inline:auto; }
+    .hero { padding: 8px 0 24px; }
+    h1 { font-size: clamp(28px, 3.2vw, 44px); line-height:1.15; margin: 6px 0 10px; }
+    .sub { color: var(--muted); font-size: clamp(14px, 1.6vw, 18px); }
+    section { padding: 28px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    h2 { font-size: clamp(22px, 2.4vw, 30px); margin: 0 0 12px; }
+    .card {
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0));
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 18px;
+    }
+    .note { color: var(--muted); font-size: 0.95rem; }
+    .cta-row { display:flex; gap:12px; flex-wrap: wrap; margin-top: 18px; }
+    .btn {
+      display:inline-block; padding:12px 16px; border-radius: 12px; background: var(--accent);
+      color:#001018; font-weight:700; border: none; cursor:pointer; text-decoration:none;
+      box-shadow: 0 0 0 0 var(--ring); transition: box-shadow .2s ease, transform .06s ease;
+    }
+    .btn.secondary { background: var(--accent-2); }
+    .btn:hover { box-shadow: 0 0 0 6px var(--ring); transform: translateY(-1px); }
+    .list { margin:0; padding-left: 1.1rem; }
+    .list li { margin: 6px 0; }
+    .muted { color: var(--muted); }
+    .two { display:grid; grid-template-columns: 1fr; gap:16px; }
+    @media (min-width: 880px) {
+      .two { grid-template-columns: 1.1fr 1fr; }
+    }
+    .footer { padding: 20px 0 60px; color: var(--muted); font-size: 0.9rem; }
+    /* Simple top nav you can include sitewide */
+    .topnav {
+      position: sticky; top:0; z-index: 40;
+      display:flex; gap: 18px; align-items:center; padding: 12px 6vw;
+      background: rgba(11,15,20,0.8); backdrop-filter: blur(6px); border-bottom: 1px solid rgba(255,255,255,0.06);
+    }
+    .topnav a { color: var(--ink); font-weight:600; }
+    .spacer { flex:1; }
+    .socials a { margin-left:12px; color: var(--muted); }
+    /* Mobile: make sidebar toggleable later if needed */
+    @media (max-width: 980px) {
+      .sidebar { display:none; }
+      .wrap { display:block; }
+      .main { padding: 28px 6vw; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Simple top navigation (optional, sitewide) -->
+  <nav class="topnav">
+    <a href="/">TipTheVerse</a>
+    <a href="/map.html">Map</a>
+    <a href="/manifestation.html" aria-current="page">Manifestation</a>
+    <a href="/give.html">Give</a>
+    <div class="spacer"></div>
+    <div class="socials">
+      <!-- replace # with your profiles -->
+      <a href="#" aria-label="TikTok">TikTok</a>
+      <a href="#" aria-label="Instagram">Instagram</a>
+      <a href="#" aria-label="Facebook">Facebook</a>
+    </div>
+  </nav>
+
+  <div class="wrap">
+    <aside class="sidebar" aria-label="On this page">
+      <div class="brand">TipTheVerse</div>
+      <div class="side-title">On this page</div>
+      <nav class="side-nav">
+        <a href="#how">How Manifestation Works</a>
+        <a href="#why-dollar">Why $1 Helps</a>
+        <a href="#learn">Learn More</a>
+        <a href="#trust">Trust & Questions</a>
+      </nav>
+
+      <div class="side-title">Read more</div>
+      <div class="side-links">
+        <a href="https://greatergood.berkeley.edu/article/item/when_are_you_most_likely_to_catch_other_peoples_emotions" target="_blank" rel="noopener">Emotional Contagion (GGSC)</a>
+        <a href="https://www.pnas.org/doi/10.1073/pnas.1320040111" target="_blank" rel="noopener">Massive-Scale Contagion (PNAS)</a>
+        <a href="https://www.health.harvard.edu/newsletter_article/the-power-of-the-placebo-effect" target="_blank" rel="noopener">Placebo & Expectation (Harvard)</a>
+        <a href="https://plato.stanford.edu/entries/collective-intentionality/" target="_blank" rel="noopener">Collective Intentionality (Stanford)</a>
+        <a href="https://www.ncbi.nlm.nih.gov/books/NBK549835/" target="_blank" rel="noopener">Reticular Activating System (NCBI)</a>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="hero">
+        <h1>How Manifestation Works</h1>
+        <p class="sub">More than a dollar. More than a wish. A practical way to focus, release, and trust.</p>
+      </header>
+
+      <section id="how">
+        <h2>Manifestation, in Plain Language</h2>
+        <div class="card">
+          <p>Manifestation is not begging the universe for favors or obsessing over what you want. It’s a two-step skill:</p>
+          <ul class="list">
+            <li><strong>Direct a clear thought.</strong> Name what you want to invite—without spiraling or doom-scrolling the “how.”</li>
+            <li><strong>Release it—and live.</strong> Let the thought sink into the background and carry on. Trust that when timing lines up, you’ll notice the right doors and act.</li>
+          </ul>
+          <p class="note">Think seed-planting: you don’t dig it up every day. You plant, cover, water, and trust growth you can’t see yet.</p>
+          <p>Brains are pattern-hunters. When you set a direction, your attention quietly re-tunes; you start noticing chances that were there all along, and you behave a little differently. Those small choices ripple to others. When many people hold a similar intention, those ripples can reinforce each other.</p>
+        </div>
+        <div class="cta-row">
+          <a class="btn" href="/give.html">Give a $1 Ripple</a>
+          <a class="btn secondary" href="/map.html">See the Ripples Map</a>
+        </div>
+      </section>
+
+      <section id="why-dollar">
+        <h2>Why the $1 Helps (But Isn’t Required)</h2>
+        <div class="card two">
+          <div>
+            <p><strong>You don’t need a dollar to manifest.</strong> You don’t need to give at all. What matters is directing a thought, then letting it go.</p>
+            <p>The $1 is a <em>training tool</em>. Most of us don’t know how to “release.” We cling, ruminate, and check the seed. Giving $1 is a tiny, physical act that says: <em>I’ve planted the thought. I’ve let it go.</em> Your subconscious remembers the gesture and relaxes.</p>
+            <p class="note">Worst case, you spent a dollar. Best case, you opened a new way of thinking—and set off a ripple that travels farther than you’ll ever see.</p>
+          </div>
+          <div>
+            <div class="card">
+              <strong>Practice script</strong>
+              <p class="muted">“I’m setting this intention. I give this $1 as a reminder to release it. I’ll notice the right moment when it comes.”</p>
+            </div>
+          </div>
+        </div>
+        <div class="cta-row">
+          <a class="btn" href="/give.html">Start with $1</a>
+          <a class="btn secondary" href="/">Back to Home</a>
+        </div>
+      </section>
+
+      <section id="learn">
+        <h2>Learn More (Short, science-friendly reads)</h2>
+        <div class="card">
+          <ul class="list">
+            <li><strong>How emotions spread</strong> — A readable overview of when we “catch” other people’s feelings and why it matters for communities. <a target="_blank" rel="noopener" href="https://greatergood.berkeley.edu/article/item/when_are_you_most_likely_to_catch_other_peoples_emotions">Greater Good Science Center</a></li>
+            <li><strong>Emotions at scale</strong> — Peer-reviewed study suggesting moods propagate through networks even without direct interaction. <a target="_blank" rel="noopener" href="https://www.pnas.org/doi/10.1073/pnas.1320040111">PNAS</a></li>
+            <li><strong>Expectation effects</strong> — How beliefs and expectations can change outcomes in measurable ways. <a target="_blank" rel="noopener" href="https://www.health.harvard.edu/newsletter_article/the-power-of-the-placebo-effect">Harvard Health</a></li>
+            <li><strong>We-intentions</strong> — How groups form shared goals (“we are doing this”), not just stacks of “I’s.” <a target="_blank" rel="noopener" href="https://plato.stanford.edu/entries/collective-intentionality/">Stanford Encyclopedia of Philosophy</a></li>
+            <li><strong>Attention filters</strong> — Why focusing on a goal can change what you notice and act on. <a target="_blank" rel="noopener" href="https://www.ncbi.nlm.nih.gov/books/NBK549835/">NCBI: Reticular Activating System</a></li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="trust">
+        <h2>Trust, Transparency, and “Where does the $1 go?”</h2>
+        <div class="card">
+          <p><strong>Short answer:</strong> You’re giving freely, without expectation of reward or credit. That’s part of the practice.</p>
+          <p>We don’t publish a ledger of each dollar’s final stop. Why? Because the point is to <em>do and release</em>—to train the muscle of letting go, and to allow the ripple to find its path. Some effects are direct, some are second- or third-order: a kindness you’ll never trace back to your $1, but one that your ripple helped set in motion.</p>
+          <p class="note"><em>“The dollar is not the cost of manifestation—it’s a reminder.”</em></p>
+          <p>If you’d rather not give, that’s okay. Try the practice without it. If you do give, thank you for adding momentum to something bigger than any one of us.</p>
+        </div>
+        <div class="cta-row">
+          <a class="btn" href="/give.html">Give a $1 Ripple</a>
+          <a class="btn secondary" href="/map.html">See Community Ripples</a>
+        </div>
+      </section>
+
+      <footer class="footer">
+        <p>TipTheVerse is an experiment in collective positivity. No data harvesting. No rewards promised. Just ripples.</p>
+      </footer>
+    </main>
+  </div>
+
+  <script>
+    // Smooth scroll for sidebar links
+    document.querySelectorAll('a[href^="#"]').forEach(a => {
+      a.addEventListener('click', e => {
+        const id = a.getAttribute('href').slice(1);
+        const el = document.getElementById(id);
+        if (el) { e.preventDefault(); el.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+      });
+    });
+  </script>
+</body>
+</html>
