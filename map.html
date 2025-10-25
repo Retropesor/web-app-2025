@@ -8,189 +8,155 @@
   <meta name="description" content="Drop a pin to show where the ripple touched down." />
 
   <!-- Leaflet -->
-  <link
-    rel="stylesheet"
-    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin="anonymous"
-  />
-  <script
-    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin="anonymous"
-  ></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+
+  <!-- Firebase (modular CDN) -->
+  <script type="module">
+    // ---- CONFIG: replace with your actual values from Firebase Console
+    export const firebaseConfig = {
+      apiKey: "YOUR_API_KEY",
+      authDomain: "YOUR_PROJECT.firebaseapp.com",
+      projectId: "YOUR_PROJECT_ID",
+      storageBucket: "YOUR_PROJECT.appspot.com",
+      messagingSenderId: "YOUR_SENDER_ID",
+      appId: "YOUR_APP_ID",
+    };
+  </script>
 
   <style>
-    /* Base + mobile-safe sizing */
     html, body { height: 100%; margin: 0; background:#0a1130; }
     body {
-      font-family: system-ui, Arial, sans-serif;
-      color: #fff;
-      -webkit-font-smoothing: antialiased;
-      -moz-osx-font-smoothing: grayscale;
-      overflow: hidden; /* prevent sideways scroll on iOS */
+      font-family: system-ui, Arial, sans-serif; color:#fff; overflow: hidden;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
     }
-    #map {
-      position: fixed; inset: 0;
-      height: 100svh; /* mobile-friendly viewport */
-      width: 100vw;
-      z-index: 0;
-    }
+    #map { position: fixed; inset: 0; height: 100svh; width: 100vw; z-index: 0; }
 
-    /* Soft header */
-    .topbar{
-      position: fixed; top: env(safe-area-inset-top, 10px); left: 0; right: 0;
-      display:flex; justify-content:center; pointer-events:none; z-index: 2;
-    }
-    .chip{
-      pointer-events:auto;
-      background: rgba(10,17,48,.65);
-      border:1px solid rgba(255,255,255,.35);
-      color:#fff;
-      padding:10px 14px; border-radius:999px;
-      margin: 8px auto 0;
-      font-weight:800; letter-spacing:.2px;
-      text-shadow: 0 1px 4px rgba(0,0,0,.5);
-    }
+    .topbar{ position: fixed; top: env(safe-area-inset-top, 10px); left:0; right:0; display:flex; justify-content:center; z-index:2; pointer-events:none; }
+    .chip{ pointer-events:auto; background: rgba(10,17,48,.65); border:1px solid rgba(255,255,255,.35); color:#fff; padding:10px 14px; border-radius:999px; margin-top:8px; font-weight:800; letter-spacing:.2px; text-shadow:0 1px 4px rgba(0,0,0,.5); }
 
-    /* Floating toolbar (bottom) */
-    .toolbar{
-      position: fixed; left: 0; right: 0;
-      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
-      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
-      padding: 0 14px;
-      z-index: 3;
-    }
-    .btn{
-      display:inline-flex; align-items:center; justify-content:center; gap:8px;
-      min-height: 44px; padding: 12px 14px;
-      border-radius: 999px;
-      border: 1px solid rgba(255,255,255,.45);
-      background: rgba(255,255,255,.15);
-      color: #fff; text-decoration:none; font-weight:800; letter-spacing:.2px;
-      backdrop-filter: blur(2px);
-      touch-action: manipulation;
-    }
+    .toolbar{ position: fixed; left:0; right:0; bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap; padding:0 14px; z-index:3; }
+    .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:12px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.15); color:#fff; text-decoration:none; font-weight:800; letter-spacing:.2px; backdrop-filter: blur(2px); touch-action: manipulation; }
     .btn:hover{ background: rgba(255,255,255,.25); }
     .btn.primary{ background: rgba(0,160,255,.25); border-color: rgba(120,200,255,.8); }
     .btn.warn{ background: rgba(255,80,80,.22); border-color: rgba(255,160,160,.9); }
 
-    /* Small help text */
-    .hint{
-      position: fixed; left: 0; right: 0; bottom: calc(60px + env(safe-area-inset-bottom, 0px));
-      display:flex; justify-content:center; z-index:2; pointer-events:none;
-    }
-    .hint > span{
-      pointer-events:auto;
-      display:inline-block; padding:8px 12px; border-radius:12px;
-      background: rgba(10,17,48,.55); border:1px solid rgba(255,255,255,.35);
-      font-size: 12px; opacity:.95;
-      text-shadow: 0 1px 3px rgba(0,0,0,.5);
-    }
+    .hint{ position: fixed; left:0; right:0; bottom: calc(60px + env(safe-area-inset-bottom, 0px)); display:flex; justify-content:center; z-index:2; pointer-events:none; }
+    .hint > span{ pointer-events:auto; display:inline-block; padding:8px 12px; border-radius:12px; background: rgba(10,17,48,.55); border:1px solid rgba(255,255,255,.35); font-size:12px; opacity:.95; text-shadow:0 1px 3px rgba(0,0,0,.5); }
 
-    /* Leaflet default control tweaks for mobile */
     .leaflet-control-zoom a { width: 38px; height: 38px; line-height: 38px; }
-    .leaflet-control-attribution { display:none; } /* keep UI clean */
+    .leaflet-control-attribution { display:none; }
   </style>
 </head>
 <body>
   <div id="map" role="application" aria-label="Map to drop a pin"></div>
 
   <div class="topbar"><div class="chip">Drop a Pin where the ripple touched ✨</div></div>
-
   <div class="hint"><span>Tip: tap the map to drop a pin. Use “My Location” first if you want.</span></div>
 
   <div class="toolbar" role="toolbar" aria-label="Map actions">
     <button id="locate" class="btn primary">📍 My Location</button>
-    <button id="drop" class="btn">📌 Drop Pin Here</button>
-    <button id="undo" class="btn">↩️ Undo</button>
-    <button id="clear" class="btn warn">🧹 Clear</button>
+    <button id="drop"   class="btn">📌 Drop Pin Here</button>
+    <button id="undo"   class="btn">↩️ Undo (this device)</button>
+    <button id="clear"  class="btn warn">🧹 Clear (this device)</button>
     <a href="index.html" class="btn">🏠 Home</a>
   </div>
 
-  <script>
-    // === Map init ===
-    const map = L.map('map', {
-      zoomControl: true,
-      tap: true,         // mobile taps
-      maxBoundsViscosity: 0.75
+  <script type="module">
+    import { firebaseConfig } from './map.html'; // uses the inline export above
+
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, signInAnonymously, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // Init
+    const app  = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    // Leaflet map
+    const map = L.map('map', { zoomControl: true, tap: true, maxBoundsViscosity: 0.75 });
+    map.setView([33.7, -78.9], 5);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+
+    // Layers
+    const sharedLayer = L.layerGroup().addTo(map);  // pins from Firestore
+    const localLayer  = L.layerGroup().addTo(map);  // local-only markers (undo/clear only affect these)
+    const localStack  = [];                          // track local adds for undo
+
+    // Auth (anonymous)
+    await signInAnonymously(auth);
+    onAuthStateChanged(auth, (u) => { /* u?.uid exists for rules */ });
+
+    // Realtime read: stream most recent pins (tune limit as you like)
+    const pinsRef = collection(db, "pins");
+    const q = query(pinsRef, orderBy("ts", "desc"), limit(500)); // latest 500
+    onSnapshot(q, (snap) => {
+      sharedLayer.clearLayers();
+      snap.forEach(doc => {
+        const p = doc.data();
+        if (!p || typeof p.lat !== 'number' || typeof p.lng !== 'number') return;
+        L.marker([p.lat, p.lng]).addTo(sharedLayer);
+      });
     });
 
-    // World view, slight focus on US east
-    map.setView([33.7, -78.9], 5);
+    // Helper: add shared pin with simple throttle (10s per device)
+    let lastDrop = 0;
+    async function addSharedPin(latlng){
+      const now = Date.now();
+      if (now - lastDrop < 10000) { alert("Easy there—try again in a few seconds."); return; }
+      lastDrop = now;
 
-    // Tiles (OSM)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19,
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
-
-    // === Pins state (persist in localStorage) ===
-    const STORAGE_KEY = 'ttv_pins_v1';
-    let pins = loadPins();
-    const pinLayer = L.layerGroup().addTo(map);
-
-    function loadPins(){
-      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
-      catch(e){ return []; }
-    }
-    function savePins(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
-    function redrawPins(){
-      pinLayer.clearLayers();
-      pins.forEach(p => L.marker([p.lat, p.lng]).addTo(pinLayer));
-    }
-    redrawPins();
-
-    function addPin(latlng){
-      pins.push({lat: latlng.lat, lng: latlng.lng, t: Date.now()});
-      savePins();
-      redrawPins();
+      try {
+        await addDoc(pinsRef, {
+          lat: Number(latlng.lat),
+          lng: Number(latlng.lng),
+          ts:  serverTimestamp(),
+          v:   1
+        });
+        // also add a local marker immediately for instant feedback
+        const m = L.marker([latlng.lat, latlng.lng]).addTo(localLayer);
+        localStack.push(m);
+      } catch (e) {
+        console.error(e);
+        alert("Couldn’t drop the pin right now.");
+      }
     }
 
-    // === UI actions ===
+    // UI controls
     document.getElementById('locate').addEventListener('click', () => {
       if (!navigator.geolocation) { alert('Location not available on this device/browser.'); return; }
       navigator.geolocation.getCurrentPosition((pos) => {
         const { latitude, longitude } = pos.coords;
         map.setView([latitude, longitude], 14, {animate: true});
-        addPin({lat: latitude, lng: longitude});
+        addSharedPin({lat: latitude, lng: longitude});
       }, () => alert('Could not get your location. You may need to allow permission.'));
     });
 
-    // Tap/Click to drop a pin
-    map.on('click', (e) => {
-      addPin(e.latlng);
-    });
+    map.on('click', (e) => addSharedPin(e.latlng));
+    document.getElementById('drop').addEventListener('click', () => addSharedPin(map.getCenter()));
 
-    // Drop pin at current center
-    document.getElementById('drop').addEventListener('click', () => {
-      addPin(map.getCenter());
-    });
-
-    // Undo (remove last pin)
+    // Local-only undo/clear (doesn’t delete Firestore)
     document.getElementById('undo').addEventListener('click', () => {
-      pins.pop();
-      savePins();
-      redrawPins();
+      const m = localStack.pop();
+      if (m) localLayer.removeLayer(m);
     });
-
-    // Clear all
     document.getElementById('clear').addEventListener('click', () => {
-      if (confirm('Remove all pins on this device?')){
-        pins = [];
-        savePins();
-        redrawPins();
+      if (confirm('Remove local pins (just on this device)?')) {
+        localStack.splice(0, localStack.length);
+        localLayer.clearLayers();
       }
     });
 
-    // Improve touch usability: disable accidental page scroll while interacting
+    // Improve touch usability
     document.addEventListener('touchmove', function(e){
       if(e.target.closest('#map')) e.preventDefault();
     }, {passive:false});
   </script>
 </body>
 </html>
-
 
 
 
