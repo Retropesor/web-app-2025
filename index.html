@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -134,34 +133,15 @@
     }
 
     /* === Mobile polish (safe, no desktop changes) === */
-  /* 📱 Fix for mobile centering */
-@media (max-width: 768px) {
-  html, body {
-    overflow-x: hidden;
-  }
-
-  .wrap {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 20px 16px 96px; /* keep your safe spacing */
-  }
-
-  .hero {
-    width: 100%;
-    max-width: 90%;   /* stop it from pushing too wide */
-    margin: 0 auto;
-  }
-
-  .hero *, .links, .actions {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-  }
-}
-
+    @media (max-width: 768px) {
+      html, body { overflow-x: hidden; }
+      .wrap {
+        display: flex; flex-direction: column; justify-content: center; align-items: center;
+        text-align: center; padding: 20px 16px 96px;
+      }
+      .hero { width: 100%; max-width: 90%; margin: 0 auto; }
+      .hero *, .links, .actions { text-align: center; margin-left: auto; margin-right: auto; }
+    }
   </style>
 </head>
 <body>
@@ -195,27 +175,26 @@
         <span id="ripple-rotator">Small act. Real motion.</span>
       </h3>
 
+      <!-- ACTIONS -->
       <div class="actions">
-        <a class="btn" href="/pay.html" rel="noopener">Tip the ’Verse</a>
+        <!-- made relative so it works locally -->
+        <a class="btn" href="pay.html" rel="noopener">Tip the ’Verse</a>
       </div>
 
-     <div class="actions">
-  <a class="btn" href="/pay.html" rel="noopener">Tip the ’Verse</a>
-</div>
+      <!-- LINKS (Manifestation link included) -->
+      <div class="links">
+        <a class="btn" href="about.html">You Already Know</a>
+        <a class="btn" href="map.html">Drop a Pin</a>
+        <a class="btn" href="echoes.html">Echoes</a>
+        <a class="btn" href="manifestation.html">Manifestation</a>
+      </div>
 
-<div class="links">
-  <a class="btn" href="/about.html">You Already Know</a>
-  <a class="btn" href="map.html">Drop a Pin</a>
-  <a class="btn" href="/echoes.html">Echoes</a>
-  <a class="btn" href="manifestation.html">Manifestation</a>
-</div>
-
-
-
+      <!-- keep hero open until after about -->
       <section id="about">
         <h2>Why $1?</h2>
         <p>Your $1 is a voluntary gift to The Universe—no strings attached—meant to inspire unexpected kindness and momentum. Give a little, notice a lot.</p>
       </section>
+
     </main>
   </div>
 
@@ -275,11 +254,6 @@
   </script>
 </body>
 </html>
-
-
-
-
-
 
 
 
