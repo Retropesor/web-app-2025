@@ -16,15 +16,25 @@
       --ring: rgba(121,208,255,0.35);
     }
     * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; background:var(--bg); color:var(--ink); font-family: system-ui, -apple-system, Segoe UI, Roboto, Inter, "Helvetica Neue", Arial, sans-serif; line-height:1.6; }
-    a { color: var(--accent); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .wrap { display:flex; min-height:100dvh; }
-    .sidebar {
-      position: sticky; top:0; align-self:flex-start;
-      width: 280px; padding: 24px; background: rgba(255,255,255,0.02); border-right: 1px solid rgba(255,255,255,0.06);
-      height: 100dvh; overflow:auto;
-    }
+html, body {
+  margin:0; padding:0;
+  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height:1.6;
+
+  /* Background image */
+  background: url("manifestation-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+/* Overlay for readability */
+body::before {
+  content:"";
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: -1;
+}
+
     .brand { font-weight:700; letter-spacing:.4px; margin-bottom: 12px; opacity:.9 }
     .side-title { font-size:14px; text-transform:uppercase; letter-spacing:.12em; color:var(--muted); margin:18px 0 10px }
     .side-nav a { display:block; padding:8px 10px; border-radius:10px; color:var(--ink); }
@@ -203,4 +213,5 @@
   </script>
 </body>
 </html>
+
 
