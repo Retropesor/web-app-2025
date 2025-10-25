@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TipTheVerse — Echoes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Echoes — real moments people noticed after dropping $1 into the Verse." />
+
+  <style>
+    html { background:#000; }
+    html, body { height:100%; margin:0; }
+    body{
+      font-family: system-ui, Arial, sans-serif;
+      color:#fff;
+      background: #0a1130 url("echoes-bg.jpeg") center / cover no-repeat;
+      text-shadow: 0 2px 10px rgba(0,0,0,.45);
+    }
+    .overlay{ position:fixed; inset:0;
+      background: radial-gradient(120% 70% at 50% 35%, rgba(5,10,26,0.10) 0%, rgba(5,10,26,0.55) 70%, rgba(5,10,26,0.85) 100%);
+      pointer-events:none; }
+
+    .wrap{
+      min-height:100svh;
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      padding:28px 24px 100px;
+      gap:16px;
+      text-align:center;
+    }
+    h1{ margin:4px 0 0; font-size: clamp(28px, 6vw, 56px); }
+    p.lead{ margin:4px 0 8px; opacity:.95; max-width:820px; }
+    .controls{
+      display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:6px;
+    }
+    .chip{
+      display:inline-block; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.12);
+      cursor:pointer; user-select:none; font-weight:700; font-size:14px;
+    }
+    .chip.active{ background:rgba(255,255,255,.28); }
+    .grid{
+      width:min(1100px, 96vw);
+      margin-top:10px;
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+    }
+    .card{
+      text-align:left;
+      padding:14px 16px; border-radius:16px;
+      background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4);
+    }
+    .meta{ font-size:12px; opacity:.85; margin-bottom:6px; display:flex; gap:8px; flex-wrap:wrap }
+    .tag{ font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.5); opacity:.9 }
+    .text{ margin:4px 0 0; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px }
+    .btn{
+      display:inline-block; padding:12px 16px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.15);
+      color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
+      cursor:pointer;
+    }
+    .btn:hover{ background: rgba(255,255,255,.25); }
+    .bottom-note{ margin-top:50px; font-size:13px; opacity:.9; max-width:720px; }
+
+    /* Modal */
+    .modal-backdrop{
+      position: fixed; inset: 0; z-index: 5;
+      background: rgba(0,0,0,.6);
+      display:none; align-items:center; justify-content:center;
+      padding: 20px;
+    }
+    .modal{
+      background: rgba(10,17,48,.9);
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 18px;
+      max-width: 680px; width: 100%;
+      text-align: left;
+      padding: 18px 18px 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    }
+    .modal h2{ margin: 0 0 8px; font-size: clamp(20px, 4.5vw, 28px); text-align:center }
+    .modal p.small{ margin: 0 0 8px; opacity:.9; text-align:center }
+    .row2{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row1{ display: grid; grid-template-columns: 1fr; gap: 10px; }
+    label{ font-size: 13px; opacity: .95; }
+    input, select, textarea{
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.06); color: #fff;
+      outline: none;
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+    .checks{ display:flex; gap:10px; align-items:center; margin-top:6px; flex-wrap:wrap }
+    .modal-actions{
+      display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap
+    }
+    .ghost{ background: transparent; border-color: rgba(255,255,255,.35); }
+    .success{
+      display:none; margin-top:10px; padding:10px 12px; border-radius:12px;
+      background: rgba(0,200,120,.25); border: 1px solid rgba(0,200,120,.6);
+      text-align:center; font-weight:700;
+    }
+    .error{
+      display:none; margin-top:10px; padding:10px 12px; border-radius:12px;
+      background: rgba(200,0,80,.25); border: 1px solid rgba(200,0,80,.6);
+      text-align:center; font-weight:700;
+    }
+
+    @media (max-width:1000px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width:640px){
+      html, body { overflow-x:hidden; }
+      .wrap{ padding:22px 16px 120px; }
+      .grid{ grid-template-columns: 1fr; }
+      .row2{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" aria-hidden="true"></div>
+  <main class="wrap">
+    <h1>Echoes</h1>
+    <p class="lead">Real moments people noticed after dropping <strong>$1</strong> into the Verse. Choose a lens below, or add your own.</p>
+
+    <div class="controls" role="tablist" aria-label="Echo filters">
+      <span class="chip active" data-filter="all" role="tab" aria-selected="true">All</span>
+      <span class="chip" data-filter="Serendipity" role="tab">Serendipity</span>
+      <span class="chip" data-filter="Kindness" role="tab">Kindness</span>
+      <span class="chip" data-filter="Money" role="tab">Money</span>
+      <span class="chip" data-filter="Work" role="tab">Work</span>
+      <span class="chip" data-filter="Love" role="tab">Love</span>
+      <span class="chip" data-filter="Health" role="tab">Health</span>
+    </div>
+
+    <section class="grid" id="echoGrid" aria-live="polite"></section>
+
+    <div class="actions">
+      <button class="btn" id="openForm">Share Your Echo</button>
+      <a class="btn" href="index.html">Back to Home</a>
+    </div>
+
+    <div class="bottom-note">
+      🔒 All echoes are anonymous. Please share freely — no names, no identifiers.
+    </div>
+  </main>
+
+  <!-- Modal Form (no new page) -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="echoTitle">
+      <h2 id="echoTitle">Share Your Echo</h2>
+      <p class="small">Keep it short and anonymous. We’ll never ask for your name.</p>
+
+      <form id="echoForm">
+        <div class="row2">
+          <div>
+            <label for="city">City & State</label>
+            <input id="city" name="city" placeholder="Myrtle Beach, SC" required />
+          </div>
+          <div>
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label for="tag">Choose a tag</label>
+            <select id="tag" name="tag" required>
+              <option value="Serendipity">Serendipity</option>
+              <option value="Kindness">Kindness</option>
+              <option value="Money">Money</option>
+              <option value="Work">Work</option>
+              <option value="Love">Love</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+          <div>
+            <label for="permission">Permission</label>
+            <select id="permission" name="permission" required>
+              <option value="anon">Publish anonymously</option>
+              <option value="first-city">Publish with first name + city</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row1">
+          <div>
+            <label for="text">Your Echo (1–3 sentences)</label>
+            <textarea id="text" name="text" maxlength="400" placeholder="What happened after you dropped $1?" required></textarea>
+          </div>
+        </div>
+
+        <div class="checks">
+          <label><input type="checkbox" id="agree" required /> I confirm there are no personal identifiers in my story.</label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" type="submit">Send</button>
+          <button class="btn ghost" type="button" id="closeForm">Cancel</button>
+        </div>
+
+        <div class="success" id="ok">Thank you! Your echo is in. ✨</div>
+        <div class="error" id="err">Hmm, that didn’t send. You can try again in a moment.</div>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    // === Data / rendering (same as before) ===
+    const ECHOES = [
+      { city:"Myrtle Beach, SC", date:"2025-10-21", tag:"Serendipity", text:"Got a free coffee from the person in front of me right after I sent the $1. Barista said it 'just happens sometimes'." },
+      { city:"Phoenix, AZ",      date:"2025-10-22", tag:"Work",        text:"An old client reappeared with a small project the same afternoon. Totally random timing." },
+      { city:"Charleston, SC",   date:"2025-10-19", tag:"Kindness",    text:"Neighbor helped me carry groceries in during a downpour, unasked. First time we ever talked." },
+      { city:"Wilmington, NC",   date:"2025-10-18", tag:"Money",       text:"Found $5 in a jacket pocket I haven’t worn since spring. I laughed out loud." },
+      { city:"Columbia, SC",     date:"2025-10-23", tag:"Love",        text:"Texted an apology I’d put off. Got a warm reply and a plan to talk this weekend." },
+      { city:"Asheville, NC",    date:"2025-10-20", tag:"Health",      text:"Been procrastinating walks. Took one that evening and ran into a friend I needed to see." },
+      { city:"Savannah, GA",     date:"2025-10-22", tag:"Serendipity", text:"The song I was thinking of popped on the radio as soon as I turned the car on." }
+    ];
+
+    const grid = document.getElementById('echoGrid');
+    function cardTemplate(e){
+      return `
+        <article class="card" data-tag="${e.tag}">
+          <div class="meta">
+            <span>${e.city}</span> •
+            <span>${new Date(e.date).toLocaleDateString()}</span>
+            <span class="tag">${e.tag}</span>
+          </div>
+          <div class="text">${e.text}</div>
+        </article>
+      `;
+    }
+    function render(filter='all'){
+      grid.innerHTML = ECHOES
+        .filter(e => filter==='all' ? true : e.tag === filter)
+        .map(cardTemplate)
+        .join('');
+    }
+    render();
+
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      ch.classList.add('active');
+      const f = ch.dataset.filter;
+      render(f || 'all');
+    }));
+
+    // === Modal logic ===
+    const openForm = document.getElementById('openForm');
+    const closeForm = document.getElementById('closeForm');
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('echoForm');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
+
+    openForm.addEventListener('click', () => { modal.style.display = 'flex'; });
+    closeForm.addEventListener('click', () => { modal.style.display = 'none'; });
+
+    // === Submission (AJAX, stays on page) ===
+    // Replace this with your real endpoint later (e.g., Formspree or Netlify Function)
+    const FORM_ENDPOINT = "https://formspree.io/f/your-id"; // TODO: replace
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const data = {
+        city: form.city.value.trim(),
+        date: form.date.value,
+        tag: form.tag.value,
+        permission: form.permission.value,
+        text: form.text.value.trim(),
+        agreed: form.agree.checked ? "yes" : "no"
+      };
+
+      try {
+        const resp = await fetch(FORM_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (resp.ok) {
+          ok.style.display = 'block';
+          // Add to the grid immediately (local preview)
+          ECHOES.unshift({
+            city: data.city,
+            date: data.date,
+            tag: data.tag,
+            text: data.text
+          });
+          render(document.querySelector('.chip.active')?.dataset.filter || 'all');
+          form.reset();
+          setTimeout(() => { modal.style.display = 'none'; ok.style.display = 'none'; }, 1200);
+        } else {
+          err.style.display = 'block';
+        }
+      } catch (e) {
+        err.style.display = 'block';
+      }
+    });
+  </script>
+</body>
+</html>
