@@ -55,9 +55,54 @@
       display:inline-block; padding:12px 16px; border-radius:999px;
       border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.15);
       color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
+      cursor:pointer;
     }
     .btn:hover{ background: rgba(255,255,255,.25); }
-    .bottom-note{ margin-top:50px; font-size:12px; opacity:.8; max-width:720px; }
+    .bottom-note{ margin-top:50px; font-size:13px; opacity:.9; max-width:720px; }
+
+    /* Modal */
+    .modal-backdrop{
+      position: fixed; inset: 0; z-index: 5;
+      background: rgba(0,0,0,.6);
+      display:none; align-items:center; justify-content:center;
+      padding: 20px;
+    }
+    .modal{
+      background: rgba(10,17,48,.9);
+      border: 1px solid rgba(255,255,255,.4);
+      border-radius: 18px;
+      max-width: 680px; width: 100%;
+      text-align: left;
+      padding: 18px 18px 14px;
+      box-shadow: 0 10px 40px rgba(0,0,0,.45);
+    }
+    .modal h2{ margin: 0 0 8px; font-size: clamp(20px, 4.5vw, 28px); text-align:center }
+    .modal p.small{ margin: 0 0 8px; opacity:.9; text-align:center }
+    .row2{ display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .row1{ display: grid; grid-template-columns: 1fr; gap: 10px; }
+    label{ font-size: 13px; opacity: .95; }
+    input, select, textarea{
+      width: 100%; padding: 10px 12px; border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.4);
+      background: rgba(255,255,255,.06); color: #fff;
+      outline: none;
+    }
+    textarea{ min-height: 110px; resize: vertical; }
+    .checks{ display:flex; gap:10px; align-items:center; margin-top:6px; flex-wrap:wrap }
+    .modal-actions{
+      display:flex; gap:10px; justify-content:center; margin-top:12px; flex-wrap:wrap
+    }
+    .ghost{ background: transparent; border-color: rgba(255,255,255,.35); }
+    .success{
+      display:none; margin-top:10px; padding:10px 12px; border-radius:12px;
+      background: rgba(0,200,120,.25); border: 1px solid rgba(0,200,120,.6);
+      text-align:center; font-weight:700;
+    }
+    .error{
+      display:none; margin-top:10px; padding:10px 12px; border-radius:12px;
+      background: rgba(200,0,80,.25); border: 1px solid rgba(200,0,80,.6);
+      text-align:center; font-weight:700;
+    }
 
     @media (max-width:1000px){
       .grid{ grid-template-columns: repeat(2, 1fr); }
@@ -66,6 +111,7 @@
       html, body { overflow-x:hidden; }
       .wrap{ padding:22px 16px 120px; }
       .grid{ grid-template-columns: 1fr; }
+      .row2{ grid-template-columns: 1fr; }
     }
   </style>
 </head>
@@ -88,17 +134,78 @@
     <section class="grid" id="echoGrid" aria-live="polite"></section>
 
     <div class="actions">
-      <a class="btn" id="shareBtn" href="#">Share Your Echo</a>
+      <button class="btn" id="openForm">Share Your Echo</button>
       <a class="btn" href="index.html">Back to Home</a>
     </div>
 
-   <div class="bottom-note">
-  🔒 All echoes are anonymous. Please share freely — no names, no identifiers.
-</div>
-
+    <div class="bottom-note">
+      🔒 All echoes are anonymous. Please share freely — no names, no identifiers.
+    </div>
   </main>
 
+  <!-- Modal Form (no new page) -->
+  <div class="modal-backdrop" id="modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="echoTitle">
+      <h2 id="echoTitle">Share Your Echo</h2>
+      <p class="small">Keep it short and anonymous. We’ll never ask for your name.</p>
+
+      <form id="echoForm">
+        <div class="row2">
+          <div>
+            <label for="city">City & State</label>
+            <input id="city" name="city" placeholder="Myrtle Beach, SC" required />
+          </div>
+          <div>
+            <label for="date">Date</label>
+            <input id="date" name="date" type="date" required />
+          </div>
+        </div>
+
+        <div class="row2">
+          <div>
+            <label for="tag">Choose a tag</label>
+            <select id="tag" name="tag" required>
+              <option value="Serendipity">Serendipity</option>
+              <option value="Kindness">Kindness</option>
+              <option value="Money">Money</option>
+              <option value="Work">Work</option>
+              <option value="Love">Love</option>
+              <option value="Health">Health</option>
+            </select>
+          </div>
+          <div>
+            <label for="permission">Permission</label>
+            <select id="permission" name="permission" required>
+              <option value="anon">Publish anonymously</option>
+              <option value="first-city">Publish with first name + city</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="row1">
+          <div>
+            <label for="text">Your Echo (1–3 sentences)</label>
+            <textarea id="text" name="text" maxlength="400" placeholder="What happened after you dropped $1?" required></textarea>
+          </div>
+        </div>
+
+        <div class="checks">
+          <label><input type="checkbox" id="agree" required /> I confirm there are no personal identifiers in my story.</label>
+        </div>
+
+        <div class="modal-actions">
+          <button class="btn" type="submit">Send</button>
+          <button class="btn ghost" type="button" id="closeForm">Cancel</button>
+        </div>
+
+        <div class="success" id="ok">Thank you! Your echo is in. ✨</div>
+        <div class="error" id="err">Hmm, that didn’t send. You can try again in a moment.</div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    // === Data / rendering (same as before) ===
     const ECHOES = [
       { city:"Myrtle Beach, SC", date:"2025-10-21", tag:"Serendipity", text:"Got a free coffee from the person in front of me right after I sent the $1. Barista said it 'just happens sometimes'." },
       { city:"Phoenix, AZ",      date:"2025-10-22", tag:"Work",        text:"An old client reappeared with a small project the same afternoon. Totally random timing." },
@@ -138,24 +245,60 @@
       render(f || 'all');
     }));
 
-    const shareBtn = document.getElementById('shareBtn');
-    const mailTo = () => {
-      const subject = encodeURIComponent('Echo submission — TipTheVerse');
-      const body = encodeURIComponent(
-`City & State:
-Date (MM/DD/YYYY):
-Choose a tag (Serendipity, Kindness, Money, Work, Love, Health):
-Your Echo (1–3 sentences):
+    // === Modal logic ===
+    const openForm = document.getElementById('openForm');
+    const closeForm = document.getElementById('closeForm');
+    const modal = document.getElementById('modal');
+    const form = document.getElementById('echoForm');
+    const ok = document.getElementById('ok');
+    const err = document.getElementById('err');
 
-Permission:
-[ ] You can publish this anonymously
-[ ] You can publish this with my first name + city`
-      );
-      return `mailto:echoes@tiptheverse.com?subject=${subject}&body=${body}`;
-    };
-    shareBtn.addEventListener('click', (e) => {
+    openForm.addEventListener('click', () => { modal.style.display = 'flex'; });
+    closeForm.addEventListener('click', () => { modal.style.display = 'none'; });
+
+    // === Submission (AJAX, stays on page) ===
+    // Replace this with your real endpoint later (e.g., Formspree or Netlify Function)
+    const FORM_ENDPOINT = "https://formspree.io/f/your-id"; // TODO: replace
+
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
-      window.location.href = mailTo();
+      ok.style.display = 'none';
+      err.style.display = 'none';
+
+      const data = {
+        city: form.city.value.trim(),
+        date: form.date.value,
+        tag: form.tag.value,
+        permission: form.permission.value,
+        text: form.text.value.trim(),
+        agreed: form.agree.checked ? "yes" : "no"
+      };
+
+      try {
+        const resp = await fetch(FORM_ENDPOINT, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "Accept": "application/json" },
+          body: JSON.stringify(data)
+        });
+
+        if (resp.ok) {
+          ok.style.display = 'block';
+          // Add to the grid immediately (local preview)
+          ECHOES.unshift({
+            city: data.city,
+            date: data.date,
+            tag: data.tag,
+            text: data.text
+          });
+          render(document.querySelector('.chip.active')?.dataset.filter || 'all');
+          form.reset();
+          setTimeout(() => { modal.style.display = 'none'; ok.style.display = 'none'; }, 1200);
+        } else {
+          err.style.display = 'block';
+        }
+      } catch (e) {
+        err.style.display = 'block';
+      }
     });
   </script>
 </body>
