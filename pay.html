@@ -1,120 +1,88 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
+  <meta charset="utf-8" />
   <title>TipTheVerse — Pay</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Set the ripple in motion with $1.">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Set the ripple in motion with $1." />
+
   <style>
-    :root{
-      --bg: #0a1130;
-      --ring: rgba(255,255,255,.85);
-    }
-    html,body{height:100%;margin:0}
+    /* Background + base */
+    html { background:#000; }
+    html, body { height:100%; margin:0; }
     body{
       font-family: system-ui, Arial, sans-serif;
       color:#fff;
-      background: var(--bg) url('pay-bg.png') no-repeat center/cover;
+      background: #0a1130 url("payment-bg.png") center / cover no-repeat; /* <-- your file name */
+      /* avoid 'fixed' on iOS; it causes issues */
+      text-shadow: 0 2px 10px rgba(0,0,0,.45);
     }
-    .overlay{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%, rgba(10,17,48,.25), rgba(10,17,48,.75));}
+
     .wrap{
-      position:relative; z-index:1;
       min-height:100svh;
-      display:flex; flex-direction:column; align-items:center; justify-content:center;
-      text-align:center; padding:24px;
-      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+      display:flex; flex-direction:column;
+      align-items:center; justify-content:center;
+      text-align:center;
+      padding:24px;
+      gap:14px;
+      backdrop-filter: none; /* keep it crisp */
     }
-    h1{margin:0 0 8px; font-size:clamp(26px,6vw,56px)}
-    p.lead{margin:0 0 16px; opacity:.95}
-    .buttons{display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-top:10px}
+
+    h1{ margin:0 0 6px; font-size: clamp(28px, 6vw, 56px); }
+    p.lead{ margin:0 0 10px; opacity:.95; }
+
+    .buttons{
+      display:flex; flex-direction:column; gap:12px;
+      width:min(520px, 92vw);
+      margin-top:6px;
+    }
     .btn{
-      display:inline-flex; align-items:center; gap:10px;
-      padding:12px 18px; border-radius:999px;
-      border:1px solid rgba(255,255,255,.5); background:rgba(255,255,255,.15);
-      color:#fff; text-decoration:none; font-weight:700
+      display:block;
+      padding:14px 18px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.55);
+      background:rgba(255,255,255,.15);
+      color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
     }
-    .btn:hover{background:rgba(255,255,255,.25)}
-    .note{opacity:.85; font-size:14px; max-width:640px; margin:14px auto 0}
-    .after{margin-top:18px}
-    .plain{opacity:.85; font-size:12px; margin-top:8px}
-    footer{position:fixed;left:0;right:0;bottom:10px; text-align:center; font-size:12px; opacity:.85}
+    .btn:hover{ background: rgba(255,255,255,.25); }
+
+    .tiny{ font-size:12px; opacity:.85; margin-top:6px; }
+    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; }
+
+    a.link { color:#fff; text-underline-offset:3px; }
+
     @media (max-width:768px){
-      html,body{overflow-x:hidden}
-      .wrap{padding:20px 16px 96px}
-      .btn{padding:12px 16px; font-size:15px}
-      footer{position:static; margin-top:18px}
+      html, body { overflow-x:hidden; }
+      .wrap{ padding:20px 16px 96px; }
     }
   </style>
 </head>
 <body>
-  <div class="overlay" aria-hidden="true"></div>
   <main class="wrap">
     <h1>Set It in Motion</h1>
-    <p class="lead">Choose a way to send <strong>$1</strong>. We’ll take you to your app.</p>
+    <p class="lead">Choose a way to send <strong>$1</strong>:</p>
 
     <div class="buttons">
-      <!-- 🔧 Replace the handles below with your real accounts -->
-      <a class="btn" href="#" onclick="return pay('cashapp');">Cash App</a>
-      <a class="btn" href="#" onclick="return pay('venmo');">Venmo</a>
-      <a class="btn" href="#" onclick="return pay('paypal');">PayPal</a>
+      <!-- Solid WEB links (reliable across devices) -->
+      <a class="btn" href="https://cash.app/$TipTheVerse?amount=1" target="_blank" rel="noopener">Cash App — $TipTheVerse</a>
+      <a class="btn" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">Venmo — @TipTheVerse</a>
+      <a class="btn" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">PayPal — /tiptheverse</a>
     </div>
 
-    <p class="note">If your app doesn’t open, it’s okay—tap again. Some phones require a second tap to approve opening the app.</p>
-
-    <div class="after">
-      <a class="btn" href="thanks.html" rel="noopener">I sent it — take me to the Thank‑You page</a>
+    <div class="tiny">
+      If the app doesn’t open, the web page will—then tap “Open in app.”
     </div>
 
-    <div class="plain">
-      Can’t use those? Later you can add a card/Apple Pay/Google Pay via a Stripe Payment Link.
+    <div class="row">
+      <a class="link" href="thanks.html">I sent it → Take me to the Thank-You page</a>
+      <span>•</span>
+      <a class="link" href="index.html">Back to Home</a>
+    </div>
+
+    <div class="tiny">
+      Having trouble? Copy/paste: 
+      cash.app/$TipTheVerse • venmo.com/u/TipTheVerse • paypal.me/tiptheverse/1
     </div>
   </main>
-
-  <footer>© <span id="y">2025</span> TipTheVerse</footer>
-
-  <script>
-    // ✅ SET THESE 3 VALUES to your actual accounts
-   // ✅ Your real accounts are set here
-const CASHTAG = 'TipTheVerse';     // Cash App, no $ symbol
-const VENMO   = 'TipTheVerse';     // Venmo username (without @)
-const PAYPAL  = 'tiptheverse';     // PayPal.Me username (without @)
-
-const AMOUNT  = '1';
-const NOTE    = encodeURIComponent('TipTheVerse ripple');
-
-
-    function pay(provider){
-      let appUrl = '', webUrl = '';
-
-      if(provider === 'cashapp'){
-        appUrl = `cashapp://cashme?recipient=$${CASHTAG}&amount=${AMOUNT}&note=${NOTE}`;
-        webUrl = `https://cash.app/$${CASHTAG}?amount=${AMOUNT}&note=${NOTE}`;
-      }
-
-      if(provider === 'venmo'){
-        appUrl = `venmo://paycharge?txn=pay&recipients=${VENMO}&amount=${AMOUNT}&note=${NOTE}`;
-        webUrl = `https://venmo.com/u/${VENMO}?txn=pay&amount=${AMOUNT}&note=${NOTE}`;
-      }
-
-      if(provider === 'paypal'){
-        appUrl = `paypal://send?recipient=${PAYPAL}&amount=${AMOUNT}&note=${NOTE}`;
-        webUrl = `https://www.paypal.me/${PAYPAL}/${AMOUNT}`;
-      }
-
-      const opened = open(appUrl);
-      setTimeout(() => { if(!opened) window.location.href = webUrl; }, 100);
-
-      return false;
-    }
-
-    function open(url){
-      try{
-        window.location.href = url;
-        return true;
-      }catch(e){ return false; }
-    }
-
-    document.getElementById('y').textContent = new Date().getFullYear();
-  </script>
 </body>
 </html>
