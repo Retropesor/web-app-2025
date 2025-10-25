@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,10 +25,6 @@
     .btn{ display:inline-flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:12px 14px; border-radius:999px; border:1px solid rgba(255,255,255,.45); background:rgba(255,255,255,.15); color:#fff; text-decoration:none; font-weight:800; letter-spacing:.2px; backdrop-filter: blur(2px); touch-action: manipulation; }
     .btn:hover{ background: rgba(255,255,255,.25); }
     .btn.primary{ background: rgba(0,160,255,.25); border-color: rgba(120,200,255,.8); }
-    .btn.warn{ background: rgba(255,80,80,.22); border-color: rgba(255,160,160,.9); }
-
-    .leaflet-control-zoom a { width: 38px; height: 38px; line-height: 38px; }
-    .leaflet-control-attribution { display:none; }
   </style>
 </head>
 <body>
@@ -41,29 +38,76 @@
     <a href="index.html" class="btn">🏠 Home</a>
   </div>
 
-  <script>
-    // Basic Leaflet map always visible
+  <script type="module">
+    // --- Firebase Config (yours) ---
+    const firebaseConfig = {
+      apiKey: "AIzaSyCrgKxU2ng2yQQ-zsdcqYmx6No8eLT2Wiw",
+      authDomain: "tiptheverse---ripples-map.firebaseapp.com",
+      projectId: "tiptheverse---ripples-map",
+      storageBucket: "tiptheverse---ripples-map.firebasestorage.app",
+      messagingSenderId: "730375081757",
+      appId: "1:730375081757:web:287cf70a4ae197a7589bf4",
+      measurementId: "G-SZLNPRF9DJ"
+    };
+
+    // Firebase SDKs
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-app.js";
+    import { getAuth, signInAnonymously } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-auth.js";
+    import { getFirestore, collection, addDoc, serverTimestamp, onSnapshot, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.13.1/firebase-firestore.js";
+
+    // Init Firebase
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db   = getFirestore(app);
+
+    await signInAnonymously(auth);
+
+    // Leaflet base map
     const map = L.map('map', { zoomControl: true, tap: true });
     map.setView([33.7, -78.9], 5);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
-    const pinLayer = L.layerGroup().addTo(map);
+    // Layers
+    const sharedLayer = L.layerGroup().addTo(map);
+    const localLayer  = L.layerGroup().addTo(map);
 
-    function addPin(latlng){
-      L.marker([latlng.lat, latlng.lng]).addTo(pinLayer);
+    // Live pins from Firestore
+    const pinsRef = collection(db, "pins");
+    const q = query(pinsRef, orderBy("ts", "desc"), limit(500));
+    onSnapshot(q, (snap) => {
+      sharedLayer.clearLayers();
+      snap.forEach(doc => {
+        const p = doc.data();
+        if (p && typeof p.lat === 'number' && typeof p.lng === 'number') {
+          L.marker([p.lat, p.lng]).addTo(sharedLayer);
+        }
+      });
+    });
+
+    // Add pin helper with cooldown
+    let lastDrop = 0;
+    async function addSharedPin(latlng){
+      const now = Date.now();
+      if (now - lastDrop < 10000) return;
+      lastDrop = now;
+      try {
+        await addDoc(pinsRef, { lat: latlng.lat, lng: latlng.lng, ts: serverTimestamp(), v: 1 });
+        L.marker([latlng.lat, latlng.lng]).addTo(localLayer);
+      } catch(e){ console.error("Pin add failed", e); }
     }
 
+    // UI buttons
     document.getElementById('locate').addEventListener('click', () => {
-      if (!navigator.geolocation) { alert('Location not available.'); return; }
+      if (!navigator.geolocation) { alert('Location not available'); return; }
       navigator.geolocation.getCurrentPosition((pos) => {
         const { latitude, longitude } = pos.coords;
         map.setView([latitude, longitude], 14, {animate: true});
-        addPin({lat: latitude, lng: longitude});
-      }, () => alert('Could not get your location.'));
+        addSharedPin({lat: latitude, lng: longitude});
+      }, () => alert('Could not get location.'));
     });
 
-    map.on('click', (e) => addPin(e.latlng));
-    document.getElementById('drop').addEventListener('click', () => addPin(map.getCenter()));
+    map.on('click', (e) => addSharedPin(e.latlng));
+    document.getElementById('drop').addEventListener('click', () => addSharedPin(map.getCenter()));
   </script>
 </body>
 </html>
