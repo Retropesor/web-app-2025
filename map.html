@@ -1,513 +1,195 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="utf-8" />
+  <title>TipTheVerse — Drop a Pin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>TipTheVerse — Ripples Map</title>
-  <meta name="description" content="Drop a ripple, see where the clusters form. Anonymous, city-level pins only." />
+  <meta name="theme-color" content="#0a1130" />
+  <meta name="description" content="Drop a pin to show where the ripple touched down." />
 
-  <!-- Leaflet core -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin />
-  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin></script>
-
-  <!-- Marker clustering -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
-  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
-  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
-
-  <!-- Heatmap plugin -->
-  <script src="https://unpkg.com/leaflet.heat/dist/leaflet-heat.js"></script>
-
-  <!-- Geocoder control -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+  <!-- Leaflet -->
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin="anonymous"
+  />
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin="anonymous"
+  ></script>
 
   <style>
-    :root { --bg:#0b0b0b; --fg:#f3f3f3; --muted:#b8c2cc; --accent:#3ec9ff; --card:#141414; --card2:#0f1115; --br:16px; --shadow:0 10px 30px rgba(0,0,0,.35); }
-    html,body{height:100%;margin:0;background:var(--bg);color:var(--fg);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-    .wrap{display:grid;grid-template-columns:360px 1fr;grid-template-rows:auto 1fr;height:100%}
-    header{grid-column:1 / -1;padding:18px 20px;display:flex;gap:14px;align-items:center;justify-content:space-between;background:linear-gradient(180deg,#0b0b0bcc,#0b0b0b00 90%);position:sticky;top:0;z-index:10}
-    .brand{display:flex;align-items:center;gap:12px}
-    .logo{width:38px;height:38px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#5be7ff,#0066ff 60%,#001c3b);box-shadow:0 0 18px rgba(62,201,255,.45),inset 0 0 28px rgba(255,255,255,.08)}
-    .title{font-weight:700;letter-spacing:.3px}
-    .subtitle{color:var(--muted);font-size:14px}
-    .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-    .controls input,.controls select,.controls button{height:42px;border-radius:10px;border:1px solid #232323;background:var(--card);color:var(--fg);padding:0 12px}
-    .controls button{background:linear-gradient(180deg,#26b7ff,#0086ff);border:none;box-shadow:0 10px 20px rgba(0,134,255,.25);cursor:pointer;font-weight:600}
-    .controls button.secondary{background:#1b1d22;border:1px solid #242830;box-shadow:none;color:#e6eef8}
-
-    aside{grid-row:2;background:linear-gradient(180deg,var(--card2),#0c0f14);border-right:1px solid #141821;padding:14px;overflow:auto}
-    .panel{background:linear-gradient(180deg,#12161d,#0e1117);border:1px solid #1a2030;border-radius:var(--br);padding:14px;box-shadow:var(--shadow)}
-    .panel h3{margin:6px 0 8px;font-size:16px;color:#cfe7ff}
-    .panel p{margin:0 0 10px;color:var(--muted);font-size:14px}
-
-    .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-    .stat{background:#0f1218;border:1px solid #182033;border-radius:12px;padding:10px;text-align:center}
-    .stat .n{font-size:20px;font-weight:700}
-    .stat .k{font-size:12px;color:var(--muted)}
-
-    .cluster-list{margin:6px 0 0;display:grid;gap:8px}
-    .cluster-item{background:#0f1218;border:1px solid #182033;border-radius:10px;padding:10px;display:flex;align-items:center;justify-content:space-between}
-    .cluster-item .where{font-weight:600}
-    .cluster-item .count{opacity:.9}
-
-    #map{grid-row:2;height:min(75vh,calc(100vh - 120px));width:100%}
-    .cta{font-size:14px;color:#b7d8ff}
-    .toolbar-spacer{width:8px;height:8px}
-    .toggle{display:inline-flex;align-items:center;gap:6px;padding:0 10px;height:42px;border-radius:10px;border:1px solid #242830;background:#1b1d22;color:#e6eef8;cursor:pointer}
-    .toggle input{accent-color:#26b7ff}
-    .pill{height:42px;border-radius:999px;background:#0e1117;border:1px solid #1a2030;padding:0 12px;display:inline-flex;align-items:center;gap:8px}
-    .pill select{background:transparent;border:none;color:#e6eef8;height:32px}
-    .pill button{background:#0f1218;border:1px solid #182033;border-radius:999px;height:32px;padding:0 10px}
-
-    /* Pulse marker */
-    .ttv-pulse{position:relative;width:14px;height:14px;background:#26b7ff;border-radius:50%;box-shadow:0 0 0 2px rgba(38,183,255,.25)}
-    .ttv-pulse::after{content:'';position:absolute;inset:-6px;border-radius:50%;border:2px solid rgba(38,183,255,.45);animation:ttvRipple 1.6s ease-out 1 forwards}
-    @keyframes ttvRipple{0%{transform:scale(.4);opacity:.9}100%{transform:scale(2.2);opacity:0}}
-
-    /* Top Cities ticker */
-    .ticker{flex:1 1 auto;min-width:240px;margin:0 12px;overflow:hidden;height:28px;border-radius:999px;background:#0e1117;border:1px solid #1a2030;box-shadow:inset 0 0 0 1px rgba(255,255,255,.02)}
-    .ticker-track{display:inline-block;white-space:nowrap;padding-left:100%;animation:tickerMove 28s linear infinite;color:#b7d8ff;font-size:13px;line-height:26px}
-    .ticker:hover .ticker-track{animation-play-state:paused}
-    @keyframes tickerMove{from{transform:translateX(0)}to{transform:translateX(-100%)}}
-
-    @media (max-width:900px){
-      .wrap{grid-template-columns:1fr;grid-template-rows:auto auto 1fr}
-      aside{grid-row:3}
-      #map{grid-row:4;height:60vh}
+    /* Base + mobile-safe sizing */
+    html, body { height: 100%; margin: 0; background:#0a1130; }
+    body {
+      font-family: system-ui, Arial, sans-serif;
+      color: #fff;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      overflow: hidden; /* prevent sideways scroll on iOS */
     }
+    #map {
+      position: fixed; inset: 0;
+      height: 100svh; /* mobile-friendly viewport */
+      width: 100vw;
+      z-index: 0;
+    }
+
+    /* Soft header */
+    .topbar{
+      position: fixed; top: env(safe-area-inset-top, 10px); left: 0; right: 0;
+      display:flex; justify-content:center; pointer-events:none; z-index: 2;
+    }
+    .chip{
+      pointer-events:auto;
+      background: rgba(10,17,48,.65);
+      border:1px solid rgba(255,255,255,.35);
+      color:#fff;
+      padding:10px 14px; border-radius:999px;
+      margin: 8px auto 0;
+      font-weight:800; letter-spacing:.2px;
+      text-shadow: 0 1px 4px rgba(0,0,0,.5);
+    }
+
+    /* Floating toolbar (bottom) */
+    .toolbar{
+      position: fixed; left: 0; right: 0;
+      bottom: calc(10px + env(safe-area-inset-bottom, 0px));
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      padding: 0 14px;
+      z-index: 3;
+    }
+    .btn{
+      display:inline-flex; align-items:center; justify-content:center; gap:8px;
+      min-height: 44px; padding: 12px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(255,255,255,.45);
+      background: rgba(255,255,255,.15);
+      color: #fff; text-decoration:none; font-weight:800; letter-spacing:.2px;
+      backdrop-filter: blur(2px);
+      touch-action: manipulation;
+    }
+    .btn:hover{ background: rgba(255,255,255,.25); }
+    .btn.primary{ background: rgba(0,160,255,.25); border-color: rgba(120,200,255,.8); }
+    .btn.warn{ background: rgba(255,80,80,.22); border-color: rgba(255,160,160,.9); }
+
+    /* Small help text */
+    .hint{
+      position: fixed; left: 0; right: 0; bottom: calc(60px + env(safe-area-inset-bottom, 0px));
+      display:flex; justify-content:center; z-index:2; pointer-events:none;
+    }
+    .hint > span{
+      pointer-events:auto;
+      display:inline-block; padding:8px 12px; border-radius:12px;
+      background: rgba(10,17,48,.55); border:1px solid rgba(255,255,255,.35);
+      font-size: 12px; opacity:.95;
+      text-shadow: 0 1px 3px rgba(0,0,0,.5);
+    }
+
+    /* Leaflet default control tweaks for mobile */
+    .leaflet-control-zoom a { width: 38px; height: 38px; line-height: 38px; }
+    .leaflet-control-attribution { display:none; } /* keep UI clean */
   </style>
 </head>
 <body>
-  <div class="wrap">
-    <header>
-      <div class="brand">
-        <div class="logo" aria-hidden="true"></div>
-        <div>
-          <div class="title">TipTheVerse — Ripples Map</div>
-          <div class="subtitle">Collective thought has power — see where the ripples are forming.</div>
-        </div>
-      </div>
+  <div id="map" role="application" aria-label="Map to drop a pin"></div>
 
-      <!-- Top cities ticker -->
-      <div id="ticker" class="ticker" aria-live="polite" title="Top cities right now (respects time filter)">
-        <div class="ticker-track" id="tickerTrack">Loading…</div>
-      </div>
+  <div class="topbar"><div class="chip">Drop a Pin where the ripple touched ✨</div></div>
 
-      <div class="controls" role="group" aria-label="Drop a ripple controls">
-        <label class="visually-hidden" for="stateSel">State</label>
-        <select id="stateSel" title="Select state (optional)">
-          <option value="">State (optional)</option>
-          <option>AL</option><option>AK</option><option>AZ</option><option>AR</option>
-          <option>CA</option><option>CO</option><option>CT</option><option>DE</option>
-          <option>FL</option><option>GA</option><option>HI</option><option>ID</option>
-          <option>IL</option><option>IN</option><option>IA</option><option>KS</option>
-          <option>KY</option><option>LA</option><option>ME</option><option>MD</option>
-          <option>MA</option><option>MI</option><option>MN</option><option>MS</option>
-          <option>MO</option><option>MT</option><option>NE</option><option>NV</option>
-          <option>NH</option><option>NJ</option><option>NM</option><option>NY</option>
-          <option>NC</option><option>ND</option><option>OH</option><option>OK</option>
-          <option>OR</option><option>PA</option><option>RI</option><option>SC</option>
-          <option>SD</option><option>TN</option><option>TX</option><option>UT</option>
-          <option>VT</option><option>VA</option><option>WA</option><option>WV</option>
-          <option>WI</option><option>WY</option><option>DC</option>
-        </select>
+  <div class="hint"><span>Tip: tap the map to drop a pin. Use “My Location” first if you want.</span></div>
 
-        <input id="cityInput" list="cityHints" placeholder="City (e.g., Myrtle Beach)" />
-        <datalist id="cityHints">
-          <option value="Myrtle Beach"></option><option value="Conway"></option><option value="Little River"></option>
-          <option value="North Myrtle Beach"></option><option value="Longs"></option><option value="Wilmington"></option>
-          <option value="Virginia Beach"></option><option value="Assateague"></option><option value="Washington"></option>
-          <option value="Philadelphia"></option><option value="New York"></option><option value="Los Angeles"></option>
-          <option value="Chicago"></option><option value="Austin"></option>
-        </datalist>
-
-        <input id="countryInput" placeholder="Country (optional, e.g., United States)" />
-        <button id="dropBtn">Drop a Ripple</button>
-        <button id="clickModeBtn" class="secondary" title="Place a pin by clicking the map">Click-to-Drop</button>
-        <span class="toolbar-spacer"></span>
-
-        <label class="toggle" title="Heatmap"><input type="checkbox" id="heatToggle" /> Heatmap</label>
-        <div class="pill" title="Time window">
-          <span>Time:</span>
-          <select id="timeWindow">
-            <option value="all">All time</option>
-            <option value="30d">30 days</option>
-            <option value="7d">7 days</option>
-            <option value="24h">24 hours</option>
-          </select>
-        </div>
-        <div class="pill" title="Export">
-          <button id="exportCsvBtn">CSV</button>
-          <button id="exportJsonBtn">JSON</button>
-        </div>
-        <button id="shareBtn" class="secondary" title="Copy a shareable link">Share view</button>
-      </div>
-    </header>
-
-    <aside>
-      <div class="panel">
-        <h3>How it works</h3>
-        <p><strong>This map is an experiment in collective thought.</strong> Every time someone feels a ripple return — a kindness, luck, or a good thing — they can place a pin. One ripple is powerful, but when thousands of people focus on the same intention, the effect multiplies. The clusters show us how quickly positivity can spread when shared energy is at play.</p>
-        <p>All pins are anonymous, because it is not about credit — it's about the motion itself. By adding your ripple, you help us see and measure how collective thought can accelerate the good.</p>
-        <p>Pick a city (and optional state/country) and tap <strong>Drop a Ripple</strong>. No names, no tracking — just a city-level pulse. Or use <em>Click-to-Drop</em> to place a pin anywhere on the map.</p>
-        <p class="cta">Pins appear for everyone via a shared store. If the network is unavailable, your device temporarily saves your pin and syncs later.</p>
-      </div>
-
-      <div class="panel" style="margin-top:12px">
-        <h3>At a glance</h3>
-        <div class="stats">
-          <div class="stat"><div class="n" id="totalPins">0</div><div class="k">Total pins</div></div>
-          <div class="stat"><div class="n" id="uniquePlaces">0</div><div class="k">Unique places</div></div>
-        </div>
-        <h3>Ripple clusters</h3>
-        <div id="clusterList" class="cluster-list"></div>
-      </div>
-    </aside>
-
-    <div id="map" role="application" aria-label="Ripples map"></div>
+  <div class="toolbar" role="toolbar" aria-label="Map actions">
+    <button id="locate" class="btn primary">📍 My Location</button>
+    <button id="drop" class="btn">📌 Drop Pin Here</button>
+    <button id="undo" class="btn">↩️ Undo</button>
+    <button id="clear" class="btn warn">🧹 Clear</button>
+    <a href="index.html" class="btn">🏠 Home</a>
   </div>
 
   <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    // --- Minimal city → coordinate dictionary (expand anytime) ---
-    const CITY_COORDS = new Map([
-      ["Myrtle Beach, SC", [33.6891, -78.8867]],
-      ["North Myrtle Beach, SC", [33.823, -78.6800]],
-      ["Conway, SC", [33.8358, -79.0478]],
-      ["Little River, SC", [33.8732, -78.6147]],
-      ["Longs, SC", [33.9427, -78.7347]],
-      ["Wilmington, NC", [34.2257, -77.9447]],
-      ["Virginia Beach, VA", [36.8529, -75.9780]],
-      ["Assateague, MD", [38.0930, -75.2065]],
-      ["Washington, DC", [38.9072, -77.0369]],
-      ["Philadelphia, PA", [39.9526, -75.1652]],
-      ["New York, NY", [40.7128, -74.0060]],
-      ["Los Angeles, CA", [34.0522, -118.2437]],
-      ["Chicago, IL", [41.8781, -87.6298]],
-      ["Austin, TX", [30.2672, -97.7431]],
-    ]);
+    // === Map init ===
+    const map = L.map('map', {
+      zoomControl: true,
+      tap: true,         // mobile taps
+      maxBoundsViscosity: 0.75
+    });
 
-    function placeLabel(city, state, country) {
-      const parts = [];
-      if (city && city.trim()) parts.push(city.trim());
-      if (state && state.trim()) parts.push(state.trim());
-      if (country && country.trim()) parts.push(country.trim());
-      if (parts.length === 0) return "Unknown";
-      return parts.join(', ');
-    }
+    // World view, slight focus on US east
+    map.setView([33.7, -78.9], 5);
 
-    // Map
-    const map = L.map('map', { worldCopyJump: true }).setView([37.8, -96], 4);
-
+    // Tiles (OSM)
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 19, attribution: '© OpenStreetMap contributors'
+      maxZoom: 19,
+      attribution: '&copy; OpenStreetMap'
     }).addTo(map);
 
-    // Clusters
-    const clusterGroup = L.markerClusterGroup();
-    map.addLayer(clusterGroup);
+    // === Pins state (persist in localStorage) ===
+    const STORAGE_KEY = 'ttv_pins_v1';
+    let pins = loadPins();
+    const pinLayer = L.layerGroup().addTo(map);
 
-    // Heatmap
-    let heatLayer = L.heatLayer([], { radius: 22, blur: 18, maxZoom: 11 });
+    function loadPins(){
+      try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); }
+      catch(e){ return []; }
+    }
+    function savePins(){ localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
+    function redrawPins(){
+      pinLayer.clearLayers();
+      pins.forEach(p => L.marker([p.lat, p.lng]).addTo(pinLayer));
+    }
+    redrawPins();
 
-    // State badges
-    const stateBadgeLayer = L.layerGroup().addTo(map);
-    const STATE_CENTROIDS = {
-      AL:[32.8067,-86.7911], AK:[64.2008,-149.4937], AZ:[34.0489,-111.0937], AR:[35.2010,-91.8318],
-      CA:[36.7783,-119.4179], CO:[39.5501,-105.7821], CT:[41.6032,-73.0877], DE:[38.9108,-75.5277],
-      FL:[27.6648,-81.5158], GA:[32.1656,-82.9001], HI:[19.8968,-155.5828], ID:[44.0682,-114.7420],
-      IL:[40.6331,-89.3985], IN:[40.2672,-86.1349], IA:[41.8780,-93.0977], KS:[39.0119,-98.4842],
-      KY:[37.8393,-84.2700], LA:[30.9843,-91.9623], ME:[45.2538,-69.4455], MD:[39.0458,-76.6413],
-      MA:[42.4072,-71.3824], MI:[44.3148,-85.6024], MN:[46.7296,-94.6859], MS:[32.3547,-89.3985],
-      MO:[37.9643,-91.8318], MT:[46.8797,-110.3626], NE:[41.4925,-99.9018], NV:[38.8026,-116.4194],
-      NH:[43.1939,-71.5724], NJ:[40.0583,-74.4057], NM:[34.5199,-105.8701], NY:[43.2994,-74.2179],
-      NC:[35.7596,-79.0193], ND:[47.5515,-101.0020], OH:[40.4173,-82.9071], OK:[35.4676,-97.5164],
-      OR:[43.8041,-120.5542], PA:[41.2033,-77.1945], RI:[41.5801,-71.4774], SC:[33.8361,-81.1637],
-      SD:[43.9695,-99.9018], TN:[35.5175,-86.5804], TX:[31.9686,-99.9018], UT:[39.3210,-111.0937],
-      VT:[44.5588,-72.5778], VA:[37.4316,-78.6569], WA:[47.7511,-120.7401], WV:[38.5976,-80.4549],
-      WI:[43.7844,-88.7879], WY:[43.0759,-107.2903], DC:[38.9072,-77.0369]
-    };
-
-    function stateFromLabel(label){
-      const parts = (label || '').split(',').map(s=>s.trim());
-      if (parts.length >= 2){
-        const st = parts[1].toUpperCase();
-        if (STATE_CENTROIDS[st]) return st;
-        if (/district of columbia/i.test(parts[1])) return 'DC';
-      }
-      return null;
+    function addPin(latlng){
+      pins.push({lat: latlng.lat, lng: latlng.lng, t: Date.now()});
+      savePins();
+      redrawPins();
     }
 
-    function updateStateBadges(pins){
-      stateBadgeLayer.clearLayers();
-      const counts = {};
-      pins.forEach(p=>{ const st = stateFromLabel(p.label); if (st) counts[st] = (counts[st]||0)+1; });
-      Object.entries(counts).forEach(([st, n])=>{
-        const c = STATE_CENTROIDS[st]; if (!c) return;
-        const html = `<div style="
-          background:#1a2333; border:1px solid #294066; color:#d9ecff;
-          padding:4px 8px; border-radius:999px; font-weight:700; font-size:12px;
-          box-shadow:0 6px 16px rgba(0,0,0,.35); white-space:nowrap;">
-          ${st}: ${n}
-        </div>`;
-        const icon = L.divIcon({ html, className:'ttv-state-badge', iconSize:null });
-        L.marker([c[0], c[1]], { icon, interactive:false }).addTo(stateBadgeLayer);
-      });
-    }
-
-    const STORAGE_KEY = 'ttv_ripples_v1';
-    const API = '/.netlify/functions/pins';
-
-    async function fetchGlobalPins() {
-      try {
-        const res = await fetch(API);
-        if (!res.ok) throw new Error('bad');
-        const data = await res.json();
-        return Array.isArray(data) ? data : [];
-      } catch {
-        console.warn('Global pins unavailable, falling back to local only');
-        return null; // offline/local
-      }
-    }
-
-    function loadPinsLocal(){ try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'); } catch { return []; } }
-    function savePinsLocal(pins){ localStorage.setItem(STORAGE_KEY, JSON.stringify(pins)); }
-
-    function getFilteredPins(pins){
-      const v = (document.getElementById('timeWindow')?.value || 'all');
-      if (v === 'all') return pins;
-      const now = Date.now();
-      const delta = v === '24h' ? 24*3600e3 : v === '7d' ? 7*24*3600e3 : 30*24*3600e3;
-      return pins.filter(p => (now - (p.ts || 0)) <= delta);
-    }
-
-    async function renderPins() {
-      clusterGroup.clearLayers();
-      let pins = await fetchGlobalPins();
-      let offline = false;
-      if (!pins) { pins = loadPinsLocal(); offline = true; }
-      pins = getFilteredPins(pins);
-      pins.forEach(p => {
-        const m = L.marker([p.lat, p.lng]);
-        m.bindPopup(`<b>${p.label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
-        clusterGroup.addLayer(m);
-      });
-      updateStats(pins);
-      if (offline) {
-        const panel = document.querySelector('.cta');
-        if (panel) panel.textContent = 'You are viewing local pins (offline). They will sync when the network is back.';
-      }
-    }
-
-    function updateStats(pins){
-      const totalEl = document.getElementById('totalPins');
-      if (totalEl) totalEl.textContent = pins.length;
-
-      const uniqueEl = document.getElementById('uniquePlaces');
-      const counts = new Map();
-      pins.forEach(p => counts.set(p.label, (counts.get(p.label) || 0) + 1));
-      if (uniqueEl) uniqueEl.textContent = counts.size;
-
-      // Ticker
-      const top = Array.from(counts.entries())
-        .filter(([label]) => label && /,/.test(label))
-        .sort((a,b) => b[1]-a[1])
-        .slice(0, 20)
-        .map(([label, n]) => `${label} ×${n}`);
-      const track = document.getElementById('tickerTrack');
-      if (track) track.textContent = top.length ? `  ✦  ${top.join('   •   ')}   ` : 'No activity yet — be the first to drop a ripple!';
-
-      // Side list
-      const list = document.getElementById('clusterList');
-      if (list) {
-        list.innerHTML = '';
-        const sorted = Array.from(counts.entries()).sort((a,b)=>b[1]-a[1]).slice(0,50);
-        if (sorted.length === 0){
-          const el = document.createElement('div');
-          el.className = 'cluster-item';
-          el.innerHTML = '<span class="where">No clusters yet</span><span class="count">—</span>';
-          list.appendChild(el);
-        } else {
-          sorted.forEach(([label,count])=>{
-            const el = document.createElement('div');
-            el.className = 'cluster-item';
-            el.innerHTML = `<span class="where">${label}</span><span class="count">×${count}</span>`;
-            list.appendChild(el);
-          });
-        }
-      }
-
-      // Overlays
-      updateStateBadges(pins);
-      const asHeat = pins.map(p => [p.lat, p.lng, 1]);
-      heatLayer.setLatLngs(asHeat);
-      const heatOn = document.getElementById('heatToggle');
-      if (heatOn && heatOn.checked) {
-        if (!map.hasLayer(heatLayer)) heatLayer.addTo(map);
-      } else if (map.hasLayer(heatLayer)) {
-        map.removeLayer(heatLayer);
-      }
-    }
-
-    async function postGlobalPin(p){
-      try{
-        const res = await fetch(API, { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(p) });
-        return res.ok;
-      } catch { return false; }
-    }
-
-    async function dropRipple(lat, lng, label, zoomTo = true){
-      const p = { lat, lng, label, ts: Date.now() };
-
-      // Optimistic UI
-      const m = L.marker([lat, lng]).bindPopup(`<b>${label}</b><br/><small>${new Date(p.ts).toLocaleString()}</small>`);
-      clusterGroup.addLayer(m);
-      if (zoomTo) map.setView([lat, lng], Math.max(map.getZoom(), 6));
-
-      // Pulse
-      const pulse = L.marker([lat, lng], { icon: L.divIcon({ className:'ttv-pulse', iconSize:[14,14] }) }).addTo(map);
-      setTimeout(() => map.removeLayer(pulse), 1600);
-
-      // Local + Global
-      const local = loadPinsLocal(); local.push(p); savePinsLocal(local);
-      const ok = await postGlobalPin(p);
-      if (!ok) console.warn('Could not persist globally; local only until online.');
-
-      const pinsNow = await fetchGlobalPins() || loadPinsLocal();
-      updateStats(getFilteredPins(pinsNow));
-      m.openPopup();
-    }
-
-    // Controls
-    const stateSel = document.getElementById('stateSel');
-    const cityInput = document.getElementById('cityInput');
-    const countryInput = document.getElementById('countryInput');
-
-    async function geocode(query){
-      const url = new URL('https://nominatim.openstreetmap.org/search');
-      url.searchParams.set('q', query);
-      url.searchParams.set('format', 'json');
-      url.searchParams.set('limit', '1');
-      url.searchParams.set('addressdetails', '0');
-      try{
-        const res = await fetch(url.toString(), { headers:{'Accept-Language':'en','User-Agent':'TipTheVerse-Ripples-Map/1.0 (public site)'} });
-        if (!res.ok) throw new Error('Geocoder unavailable');
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0){
-          const item = data[0];
-          return { lat: parseFloat(item.lat), lng: parseFloat(item.lon) };
-        }
-        return null;
-      } catch { return null; }
-    }
-
-    document.getElementById('dropBtn').addEventListener('click', async () => {
-      const city = cityInput.value.trim();
-      const state = stateSel.value.trim();
-      const country = countryInput.value.trim();
-      const label = placeLabel(city, state, country);
-
-      if (CITY_COORDS.has(label)) {
-        const [lat, lng] = CITY_COORDS.get(label);
-        await dropRipple(lat, lng, label); return;
-      }
-      for (const [key, coords] of CITY_COORDS.entries()) {
-        if (city && key.toLowerCase().startsWith(city.toLowerCase()+",")) {
-          await dropRipple(coords[0], coords[1], key); return;
-        }
-      }
-      if (city || state || country) {
-        const pos = await geocode(label);
-        if (pos) { await dropRipple(pos.lat, pos.lng, label); return; }
-      }
-      alert('Could not locate that place automatically — click on the map to place your ripple anywhere.');
-      enableClickMode(label);
+    // === UI actions ===
+    document.getElementById('locate').addEventListener('click', () => {
+      if (!navigator.geolocation) { alert('Location not available on this device/browser.'); return; }
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const { latitude, longitude } = pos.coords;
+        map.setView([latitude, longitude], 14, {animate: true});
+        addPin({lat: latitude, lng: longitude});
+      }, () => alert('Could not get your location. You may need to allow permission.'));
     });
 
-    // Click-to-drop
-    let clickModeLabel = null;
-    function enableClickMode(label = null){
-      clickModeLabel = label || placeLabel(cityInput.value, stateSel.value, countryInput.value) || 'Somewhere';
-      document.getElementById('clickModeBtn').classList.add('active');
-    }
-    function disableClickMode(){
-      clickModeLabel = null;
-      document.getElementById('clickModeBtn').classList.remove('active');
-    }
-    document.getElementById('clickModeBtn').addEventListener('click', () => {
-      if (clickModeLabel) disableClickMode(); else enableClickMode();
-    });
-    map.on('click', async (e) => {
-      if (!clickModeLabel) return;
-      await dropRipple(e.latlng.lat, e.latlng.lng, clickModeLabel);
-      disableClickMode();
+    // Tap/Click to drop a pin
+    map.on('click', (e) => {
+      addPin(e.latlng);
     });
 
-    // Export
-    function download(name, text){
-      const a = document.createElement('a');
-      a.href = URL.createObjectURL(new Blob([text], {type:'text/plain'}));
-      a.download = name; a.click(); URL.revokeObjectURL(a.href);
-    }
-    document.getElementById('exportCsvBtn')?.addEventListener('click', async () => {
-      const pins = await fetchGlobalPins() || loadPinsLocal();
-      const filt = getFilteredPins(pins);
-      const rows = ['lat,lng,label,ts'];
-      filt.forEach(p => rows.push(`${p.lat},${p.lng},"${(p.label||'').replace(/"/g,'""')}",${p.ts||''}`));
-      download(`ripples-${Date.now()}.csv`, rows.join('\\n'));
-    });
-    document.getElementById('exportJsonBtn')?.addEventListener('click', async () => {
-      const pins = await fetchGlobalPins() || loadPinsLocal();
-      const filt = getFilteredPins(pins);
-      download(`ripples-${Date.now()}.json`, JSON.stringify(filt, null, 2));
+    // Drop pin at current center
+    document.getElementById('drop').addEventListener('click', () => {
+      addPin(map.getCenter());
     });
 
-    // Share
-    document.getElementById('shareBtn')?.addEventListener('click', async () => {
-      const c = map.getCenter();
-      const z = map.getZoom();
-      const t = document.getElementById('timeWindow')?.value || 'all';
-      const h = document.getElementById('heatToggle')?.checked ? 1 : 0;
-      const url = new URL(window.location.href);
-      url.hash = `z=${z}&lat=${c.lat.toFixed(5)}&lng=${c.lng.toFixed(5)}&t=${t}&h=${h}`;
-      try { await navigator.clipboard.writeText(url.toString()); alert('Shareable link copied!'); }
-      catch { prompt('Copy this link:', url.toString()); }
+    // Undo (remove last pin)
+    document.getElementById('undo').addEventListener('click', () => {
+      pins.pop();
+      savePins();
+      redrawPins();
     });
 
-    // Apply URL hash
-    (function applyHash(){
-      if (!location.hash) return;
-      const q = new URLSearchParams(location.hash.slice(1));
-      const z = parseInt(q.get('z')||'',10);
-      const lat = parseFloat(q.get('lat')), lng = parseFloat(q.get('lng'));
-      const t = q.get('t'); const h = q.get('h');
-      if (!Number.isNaN(lat) && !Number.isNaN(lng) && !Number.isNaN(z)) map.setView([lat,lng], z);
-      if (t && document.getElementById('timeWindow')) document.getElementById('timeWindow').value = t;
-      if (h === '1' && document.getElementById('heatToggle')) document.getElementById('heatToggle').checked = true;
-    })();
+    // Clear all
+    document.getElementById('clear').addEventListener('click', () => {
+      if (confirm('Remove all pins on this device?')){
+        pins = [];
+        savePins();
+        redrawPins();
+      }
+    });
 
-    // Geocoder UI
-    L.Control.geocoder({ defaultMarkGeocode:false })
-      .on('markgeocode', function(e){
-        const c = e.geocode.center;
-        const name = e.geocode && e.geocode.name ? e.geocode.name : `${c.lat.toFixed(4)}, ${c.lng.toFixed(4)}`;
-        dropRipple(c.lat, c.lng, name);
-        map.setView(c, 7);
-      })
-      .addTo(map);
-
-    // Render and fix size
-    renderPins().then(() => setTimeout(() => map.invalidateSize(), 250));
-    window.addEventListener('load', () => setTimeout(() => map.invalidateSize(), 100));
-  });
+    // Improve touch usability: disable accidental page scroll while interacting
+    document.addEventListener('touchmove', function(e){
+      if(e.target.closest('#map')) e.preventDefault();
+    }, {passive:false});
   </script>
 </body>
 </html>
-
-
-
-
 
 
 
