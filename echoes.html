@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <title>TipTheVerse — Echoes</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Echoes — real moments people noticed after dropping $1 into the Verse." />
+
+  <style>
+    html { background:#000; }
+    html, body { height:100%; margin:0; }
+    body{
+      font-family: system-ui, Arial, sans-serif;
+      color:#fff;
+      background: #0a1130 url("echoes-bg.jpeg") center / cover no-repeat;
+      text-shadow: 0 2px 10px rgba(0,0,0,.45);
+    }
+    .overlay{ position:fixed; inset:0;
+      background: radial-gradient(120% 70% at 50% 35%, rgba(5,10,26,0.10) 0%, rgba(5,10,26,0.55) 70%, rgba(5,10,26,0.85) 100%);
+      pointer-events:none; }
+
+    .wrap{
+      min-height:100svh;
+      display:flex; flex-direction:column; align-items:center; justify-content:flex-start;
+      padding:28px 24px 100px;
+      gap:16px;
+      text-align:center;
+    }
+    h1{ margin:4px 0 0; font-size: clamp(28px, 6vw, 56px); }
+    p.lead{ margin:4px 0 8px; opacity:.95; max-width:820px; }
+    .controls{
+      display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:6px;
+    }
+    .chip{
+      display:inline-block; padding:8px 12px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.12);
+      cursor:pointer; user-select:none; font-weight:700; font-size:14px;
+    }
+    .chip.active{ background:rgba(255,255,255,.28); }
+    .grid{
+      width:min(1100px, 96vw);
+      margin-top:10px;
+      display:grid; grid-template-columns: repeat(3, 1fr); gap:14px;
+    }
+    .card{
+      text-align:left;
+      padding:14px 16px; border-radius:16px;
+      background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4);
+    }
+    .meta{ font-size:12px; opacity:.85; margin-bottom:6px; display:flex; gap:8px; flex-wrap:wrap }
+    .tag{ font-size:11px; padding:2px 8px; border-radius:999px; border:1px solid rgba(255,255,255,.5); opacity:.9 }
+    .text{ margin:4px 0 0; }
+    .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:10px }
+    .btn{
+      display:inline-block; padding:12px 16px; border-radius:999px;
+      border:1px solid rgba(255,255,255,.55); background:rgba(255,255,255,.15);
+      color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
+    }
+    .btn:hover{ background: rgba(255,255,255,.25); }
+    .bottom-note{ margin-top:50px; font-size:12px; opacity:.8; max-width:720px; }
+
+    @media (max-width:1000px){
+      .grid{ grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width:640px){
+      html, body { overflow-x:hidden; }
+      .wrap{ padding:22px 16px 120px; }
+      .grid{ grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="overlay" aria-hidden="true"></div>
+  <main class="wrap">
+    <h1>Echoes</h1>
+    <p class="lead">Real moments people noticed after dropping <strong>$1</strong> into the Verse. Choose a lens below, or add your own.</p>
+
+    <div class="controls" role="tablist" aria-label="Echo filters">
+      <span class="chip active" data-filter="all" role="tab" aria-selected="true">All</span>
+      <span class="chip" data-filter="Serendipity" role="tab">Serendipity</span>
+      <span class="chip" data-filter="Kindness" role="tab">Kindness</span>
+      <span class="chip" data-filter="Money" role="tab">Money</span>
+      <span class="chip" data-filter="Work" role="tab">Work</span>
+      <span class="chip" data-filter="Love" role="tab">Love</span>
+      <span class="chip" data-filter="Health" role="tab">Health</span>
+    </div>
+
+    <section class="grid" id="echoGrid" aria-live="polite"></section>
+
+    <div class="actions">
+      <a class="btn" id="shareBtn" href="#">Share Your Echo</a>
+      <a class="btn" href="index.html">Back to Home</a>
+    </div>
+
+    <div class="bottom-note">
+      Tip: if you’d rather use a form or Google Sheet later, we can hook that up and publish new echoes automatically.
+    </div>
+  </main>
+
+  <script>
+    const ECHOES = [
+      { city:"Myrtle Beach, SC", date:"2025-10-21", tag:"Serendipity", text:"Got a free coffee from the person in front of me right after I sent the $1. Barista said it 'just happens sometimes'." },
+      { city:"Phoenix, AZ",      date:"2025-10-22", tag:"Work",        text:"An old client reappeared with a small project the same afternoon. Totally random timing." },
+      { city:"Charleston, SC",   date:"2025-10-19", tag:"Kindness",    text:"Neighbor helped me carry groceries in during a downpour, unasked. First time we ever talked." },
+      { city:"Wilmington, NC",   date:"2025-10-18", tag:"Money",       text:"Found $5 in a jacket pocket I haven’t worn since spring. I laughed out loud." },
+      { city:"Columbia, SC",     date:"2025-10-23", tag:"Love",        text:"Texted an apology I’d put off. Got a warm reply and a plan to talk this weekend." },
+      { city:"Asheville, NC",    date:"2025-10-20", tag:"Health",      text:"Been procrastinating walks. Took one that evening and ran into a friend I needed to see." },
+      { city:"Savannah, GA",     date:"2025-10-22", tag:"Serendipity", text:"The song I was thinking of popped on the radio as soon as I turned the car on." }
+    ];
+
+    const grid = document.getElementById('echoGrid');
+    function cardTemplate(e){
+      return `
+        <article class="card" data-tag="${e.tag}">
+          <div class="meta">
+            <span>${e.city}</span> •
+            <span>${new Date(e.date).toLocaleDateString()}</span>
+            <span class="tag">${e.tag}</span>
+          </div>
+          <div class="text">${e.text}</div>
+        </article>
+      `;
+    }
+    function render(filter='all'){
+      grid.innerHTML = ECHOES
+        .filter(e => filter==='all' ? true : e.tag === filter)
+        .map(cardTemplate)
+        .join('');
+    }
+    render();
+
+    const chips = document.querySelectorAll('.chip');
+    chips.forEach(ch => ch.addEventListener('click', () => {
+      chips.forEach(c => c.classList.remove('active'));
+      ch.classList.add('active');
+      const f = ch.dataset.filter;
+      render(f || 'all');
+    }));
+
+    const shareBtn = document.getElementById('shareBtn');
+    const mailTo = () => {
+      const subject = encodeURIComponent('Echo submission — TipTheVerse');
+      const body = encodeURIComponent(
+`City & State:
+Date (MM/DD/YYYY):
+Choose a tag (Serendipity, Kindness, Money, Work, Love, Health):
+Your Echo (1–3 sentences):
+
+Permission:
+[ ] You can publish this anonymously
+[ ] You can publish this with my first name + city`
+      );
+      return `mailto:echoes@tiptheverse.com?subject=${subject}&body=${body}`;
+    };
+    shareBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      window.location.href = mailTo();
+    });
+  </script>
+</body>
+</html>
