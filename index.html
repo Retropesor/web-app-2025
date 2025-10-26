@@ -1,3 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Tiptheverse</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- meta polish -->
+  <meta name="description" content="Start a ripple with $1. Small ripples become waves. Tiptheverse.">
+  <meta property="og:title" content="Tiptheverse">
+  <meta property="og:description" content="Do a Good Deed. Get Good Karma. Start a ripple with $1.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#0b2742">
+
+  <style>
+    html { background:#000; }
+    html, body { height: 100%; margin: 0; }
+    body {
+      <!-- DEBUG BAR (remove later) -->
+<div style="position:fixed;top:0;left:0;right:0;z-index:99999;background:#111;color:#fff;padding:10px 14px;font:14px system-ui">
+  Quick link → <a href="manifestation.html" style="color:#7cffc4;font-weight:700;text-decoration:underline">Manifestation</a>
+</div>
+<div style="height:44px"></div>
+
+      background: #000 url("background.png") no-repeat center center;
+      background-size: cover;
+      font-family: system-ui, Arial, sans-serif;
+      color: #fff;
+    }
+
+    .links{
+      display:flex;
+      flex-wrap:wrap;
+      gap:12px;
+      justify-content:center;
+      align-items:center;
+      margin:18px auto 0;
+      max-width:720px;
+    }
+
+    .overlay {
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,0.32);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      min-height: 100svh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      text-align: center;
+      text-shadow: 0 2px 10px rgba(0,0,0,.55);
+    }
+
+    .hero { max-width: 860px; margin: 0 auto; }
+
+    h1 {
+      font-size: clamp(28px, 6vw, 64px);
+      line-height: 1.1; margin: 0 0 10px;
+    }
+    .tag {
+      font-size: clamp(16px, 2.5vw, 22px);
+      margin: 0 0 10px; opacity: 0.95;
+    }
+
+    .actions { display: inline-flex; gap: 12px; flex-wrap: wrap; justify-content: center; margin-top: 8px; }
+    .btn {
+      display: inline-block;
+      padding: 12px 18px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.18);
+      border: 1px solid rgba(255,255,255,0.45);
+      color: #fff; text-decoration: none; font-weight: 600;
+    }
+    .btn:hover { background: rgba(255,255,255,0.28); }
+  </style>
+</head>
+<body>
+  <div class="overlay"></div>
+
+  <div class="wrap">
+    <main class="hero">
+      <h1>Do a Good Deed. Get Good Karma.</h1>
+      <p class="tag">Start a ripple with $1. Small ripples become waves.</p>
+
+      <div class="actions">
+        <a class="btn" href="pay.html" rel="noopener">Tip the ’Verse</a>
+      </div>
+
+      <div class="links">
+        <a class="btn" href="about.html">You Already Know</a>
+        <a class="btn" href="map.html">Drop a Pin</a>
+        <a class="btn" href="echoes.html">Echoes</a>
+        <a class="btn" href="manifestation.html">Manifestation</a>
+      </div>
+
+
+      <section id="about">
+        <h2>Why $1?</h2>
+        <p>Your $1 is a voluntary gift to The Universe—no strings attached—meant to inspire unexpected kindness and momentum. Give a little, notice a lot.</p>
+      </section>
+    </main>
+  </div>
+
+  <footer>
+    <p>This is not a raffle, purchase, or tax-deductible donation. No rewards or refunds will be provided.
+      The cosmos has a sense of humor: any good that follows is on you. The Universe is not responsible
+      for any positive effects set in motion, just the ripple that your gift creates.</p>
+    <p>© <span id="y">2025</span> Tiptheverse</p>
+  </footer>
+
+  <script>
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
+
+
+
 
 
 
