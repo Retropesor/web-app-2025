@@ -6,45 +6,47 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="A clear, practical explainer of manifestation, why $1 helps you practice letting go, and science-backed reading if you want to go deeper." />
 <style>
-  :root{
-    --bg:#0b0f14; --card:#111821; --ink:#e9f1fb; --muted:#a9b8c9;
-    --accent:#79d0ff; --accent-2:#7cffc4; --ring:rgba(121,208,255,0.35);
-  }
-  *{ box-sizing:border-box; }
+ :root{
+  --bg:#0b0f14; --card:#111821; --ink:#e9f1fb; --muted:#a9b8c9;
+  --accent:#79d0ff; --accent-2:#7cffc4; --ring:rgba(121,208,255,0.35);
+}
+*{ box-sizing:border-box; }
 
-  html, body{
-    body { background-color: red !important; }
+html, body{
+  height:100%;
+  margin:0;
+  padding:0;
+  color:var(--ink);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+  line-height:1.6;
+}
 
-    height:100%;
-    margin:0;
-    padding:0;
-    color:var(--ink);
-    font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
-    line-height:1.6;
-  }
+/* TEMP TEST — make sure CSS is loading */
+body { background-color: red !important; }  /* <-- this must be OUTSIDE the block above */
 
-  /* ✅ page background */
-  body{
-    background: url("manifestation.b-g.jpg") center / cover no-repeat fixed; /* change path if in /images */
-    position:relative;
-    min-height:100dvh;
-  }
+/* ✅ page background (switch to your real image path once you see red working) */
+body{
+  background: url("manifestation.b-g.jpg") center / cover no-repeat fixed;
+  position:relative;
+  min-height:100dvh;
+}
 
-  /* ✅ dark overlay ABOVE bg, BELOW content */
-  body::before{
-    content:"";
-    position:fixed;
-    inset:0;
-    background:rgba(0,0,0,0.65);
-    z-index:0;           /* keep >= 0 */
-    pointer-events:none;
-  }
+/* ✅ dark overlay ABOVE bg, BELOW content */
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.65);
+  z-index:0;
+  pointer-events:none;
+}
 
-  /* make sure all content sits above overlay */
-  body > *{
-    position:relative;
-    z-index:1;
-  }
+/* ensure all content sits above overlay */
+body > *{
+  position:relative;
+  z-index:1;
+}
+
 
   .wrap{ display:flex; min-height:100dvh; }
   .sidebar{
@@ -276,6 +278,7 @@
   </script>
 </body>
 </html>
+
 
 
 
