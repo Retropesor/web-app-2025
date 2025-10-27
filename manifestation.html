@@ -17,14 +17,38 @@
     }
     * { box-sizing: border-box; }
 
-    /* star background + overlay */
-    html, body {
-      margin:0; padding:0;
-      color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-      line-height:1.6;
-      background: url("manifestation-bg.jpg") no-repeat center center fixed;
-      background-size: cover;
+    
+  html, body {
+  height: 100%;      /* make sure it covers full screen */
+  margin: 0;
+  padding: 0;
+
+  color: var(--ink);
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.6;
+
+  /* 👇 background image */
+  background: url("manifestation-bg.jpg") no-repeat center center fixed;
+  background-size: cover;
+  position: relative;
+}
+
+/* Dark overlay on top of background */
+body::before {
+  content:"";
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.65);
+  z-index: 0;   /* makes it visible */
+  pointer-events: none;
+}
+
+/* Make sure your page content sits above the overlay */
+body > * {
+  position: relative;
+  z-index: 1;
+}
+
     }
     body::before {
       content:""; position: fixed; inset: 0;
@@ -261,6 +285,7 @@
   </script>
 </body>
 </html>
+
 
 
 
