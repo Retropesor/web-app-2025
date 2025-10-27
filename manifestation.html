@@ -12,7 +12,7 @@
 }
 *{ box-sizing:border-box; }
 
-html, body{
+html, body {
   height:100%;
   margin:0;
   padding:0;
@@ -21,16 +21,12 @@ html, body{
   line-height:1.6;
 }
 
-/* TEMP TEST — make sure CSS is loading */
-body { background-color: red !important; }  /* <-- this must be OUTSIDE the block above */
-
-/* ✅ page background (switch to your real image path once you see red working) */
+/* ✅ page background */
 body {
   background: url("manifestation.g-b.jpg") center / cover no-repeat fixed;
   position: relative;
-  min-height: 100dvh;
+  min-height:100dvh;
 }
-
 
 /* ✅ dark overlay ABOVE bg, BELOW content */
 body::before{
@@ -42,11 +38,12 @@ body::before{
   pointer-events:none;
 }
 
-/* ensure all content sits above overlay */
+/* make sure all content sits above overlay */
 body > *{
   position:relative;
   z-index:1;
 }
+
 
 
   .wrap{ display:flex; min-height:100dvh; }
@@ -279,6 +276,7 @@ body > *{
   </script>
 </body>
 </html>
+
 
 
 
