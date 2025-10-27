@@ -44,33 +44,132 @@
   <div id="map" role="region" aria-label="Ripples Map"></div>
 
   <script>
-    // Init map
-    const map = L.map('map').setView([39.5, -98.35], 4); // USA-ish center
+  // --- Init map
+  const map = L.map('map').setView([39.5, -98.35], 4); // USA-ish center
 
-    // Tiles (no API key needed)
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      maxZoom: 18,
-      attribution: '&copy; OpenStreetMap'
-    }).addTo(map);
+  // Tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 18,
+    attribution: '&copy; OpenStreetMap'
+  }).addTo(map);
 
-    // Cluster group
-    const markers = L.markerClusterGroup();
+  // Cluster group
+  const markers = L.markerClusterGroup();
+  map.addLayer(markers);
 
-    // Demo markers (replace with your data later)
-    const demo = [
-      { name: 'Myrtle Beach, SC', coords: [33.6891, -78.8867] },
-      { name: 'Philadelphia, PA', coords: [39.9526, -75.1652] },
-      { name: 'Phoenix, AZ', coords: [33.4484, -112.0740] },
-    ];
+  // --- Local demo markers (optional - keep or remove)
+  const demo = [
+    { name: 'Myrtle Beach, SC', coords: [33.6891, -78.8867] },
+    { name: 'Philadelphia, PA', coords: [39.9526, -75.1652] },
+    { name: 'Phoenix, AZ', coords: [33.4484, -112.0740] },
+  ];
+  demo.forEach(p => {
+    const m = L.marker(p.coords).bindPopup(`<strong>${p.name}</strong><br/>Ripple felt here ✨`);
+    markers.addLayer(m);
+  });
 
+  // --- Local storage helpers (per-visitor persistence)
+  const LS_KEY = 'ttv_ripples_v1';
+
+  function loadSavedPins() {
+    try {
+      const raw = localStorage.getItem(LS_KEY);
+      return raw ? JSON.parse(raw) : [];
+    } catch { return []; }
+  }
+
+  function savePins(pins) {
+    try {
+      localStorage.setItem(LS_KEY, JSON.stringify(pins));
+    } catch {}
+  }
+
+  function renderSavedPins() {
+    const pins = loadSavedPins();
+    pins.forEach(({lat, lng, note}) => {
+      const m = L.marker([lat, lng]).bindPopup(note || 'Ripple ✨');
+      markers.addLayer(m);
+    });
+  }
+
+  renderSavedPins();
+
+  // --- Drop a pin on click (desktop)
+  function addRipple(latlng) {
+    // Keep it anonymous but allow a short note (optional)
+    const note = prompt('Add an optional short note (or leave blank):', '');
+    const m = L.marker(latlng).bindPopup((note && note.trim()) ? note.trim() : 'Ripple ✨');
+    markers.addLayer(m);
+
+    // Save for this visitor
+    const pins = loadSavedPins();
+    pins.push({ lat: latlng.lat, lng: latlng.lng, note: (note || '').trim() });
+    savePins(pins);
+  }
+
+  map.on('click', (e) => {
+    addRipple(e.latlng);
+  });
+
+  // --- Long-press to drop on mobile
+  let pressTimer = null;
+  let pressStartLatLng = null;
+
+  function startPress(latlng) {
+    pressStartLatLng = latlng;
+    pressTimer = setTimeout(() => {
+      addRipple(pressStartLatLng);
+      pressTimer = null;
+    }, 600); // long press = 600ms
+  }
+  function cancelPress() {
+    if (pressTimer) { clearTimeout(pressTimer); pressTimer = null; }
+  }
+
+  map.on('mousedown', (e) => startPress(e.latlng));
+  map.on('mouseup', cancelPress);
+  map.on('mousemove', cancelPress);
+  map.on('touchstart', (e) => {
+    const first = e.latlng || (e.latlngs && e.latlngs[0]);
+    if (first) startPress(first);
+  });
+  map.on('touchend', cancelPress);
+  map.on('touchmove', cancelPress);
+
+  // --- UI: Clear my pins
+  const btn = L.control({position: 'topright'});
+  btn.onAdd = function() {
+    const div = L.DomUtil.create('div');
+    div.innerHTML = `
+      <button id="clearPinsBtn" style="
+        cursor:pointer;padding:8px 12px;border-radius:10px;
+        border:1px solid rgba(255,255,255,.2);background:rgba(11,15,20,.85);
+        color:#e9f1fb;font-weight:600;backdrop-filter:blur(6px);
+      ">
+        Clear my pins
+      </button>`;
+    return div;
+  };
+  btn.addTo(map);
+
+  // Stop the map from panning when clicking the button
+  L.DomEvent.disableClickPropagation(document.getElementById('clearPinsBtn'));
+
+  document.getElementById('clearPinsBtn').addEventListener('click', () => {
+    // Remove only this visitor's saved pins
+    localStorage.removeItem(LS_KEY);
+    // Rebuild the cluster: remove all user markers and re-add demo
+    markers.clearLayers();
     demo.forEach(p => {
       const m = L.marker(p.coords).bindPopup(`<strong>${p.name}</strong><br/>Ripple felt here ✨`);
       markers.addLayer(m);
     });
+    // (If you don’t want demo markers, delete the 3 lines above.)
+  });
+</script>
 
-    map.addLayer(markers);
-  </script>
 </body>
 </html>
+
 
 
