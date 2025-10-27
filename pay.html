@@ -4,29 +4,26 @@
   <meta charset="utf-8" />
   <title>TipTheVerse — Give</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Give a $1 ripple via Cash App, Venmo, or PayPal. Small ripples become waves." />
+  <meta name="description" content="Give a $1 ripple via Cash App, Venmo, PayPal, or Bank. Small ripples become waves." />
 
   <style>
     :root{
       --ink:#e9f1fb; --muted:#a9b8c9;
       --glass-bg: rgba(255,255,255,0.04);
       --glass-bdr: rgba(255,255,255,0.10);
-      --accent:#79d0ff; --accent2:#7cffc4;
+      --accent:#79d0ff; --accent2:#7cffc4; --accent3:#ffd166;
     }
 
     html, body { height:100%; margin:0; }
-    body {
-  background: #000 url("payment-bg.png") no-repeat center center fixed;
-  background-size: cover;
-  font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-  color: #fff;
-  margin: 0;
-  padding: 0;
-  min-height: 100dvh;
-  position: relative;
-}
-
-    
+    body{
+      /* ⬇️ KEEP YOUR COIN BACKGROUND — change ONLY the file name if needed */
+      background: #000 url("payment-bg.png") no-repeat center center fixed;
+      background-size: cover;
+      color: var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      position: relative;
+      min-height: 100dvh;
+    }
     /* Dark overlay for readability */
     body::before{
       content:""; position:fixed; inset:0;
@@ -35,7 +32,7 @@
     }
     body > * { position: relative; z-index: 1; }
 
-    /* Top nav (matches other pages) */
+    /* Top nav */
     .topnav{
       position: sticky; top:0; z-index: 5000;
       display:flex; gap:18px; align-items:center;
@@ -58,25 +55,29 @@
 
     /* Buttons */
     .pay-grid{
-      display: grid; grid-template-columns: 1fr; gap: 12px;
+      display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 8px;
     }
     @media (min-width: 720px){
-      .pay-grid{ grid-template-columns: repeat(3, 1fr); }
+      .pay-grid{ grid-template-columns: repeat(4, 1fr); }
     }
     .btn{
       display: flex; align-items: center; justify-content: center;
-      gap: 10px;
-      padding: 14px 16px;
-      border-radius: 12px;
+      gap: 10px; text-align: center;
+      padding: 14px 16px; border-radius: 12px;
       text-decoration: none; color:#001018; font-weight: 800;
       background: var(--accent);
       box-shadow: 0 0 0 0 rgba(121,208,255,0.35);
       transition: box-shadow .18s ease, transform .06s ease;
-      text-align: center;
+      min-height: 54px;
     }
-    .btn:nth-child(2){ background: var(--accent2); }
     .btn:hover{ box-shadow: 0 0 0 6px rgba(121,208,255,0.25); transform: translateY(-1px); }
     .btn small{ display:block; font-weight:600; opacity:.9; }
+
+    /* Give each its own tint */
+    .btn.cash { background: var(--accent); }
+    .btn.venmo{ background: var(--accent2); }
+    .btn.paypal{ background: #9ec2ff; }
+    .btn.bank  { background: var(--accent3); }
 
     .note{ color:var(--muted); font-size:.95rem; margin-top: 12px; }
 
@@ -104,21 +105,26 @@
       <h1>Tip the ’Verse</h1>
       <p class="sub">Give freely. Release the outcome. Let the ripple travel farther than you’ll ever know.</p>
 
-      <!-- ✅ PASTE YOUR EXISTING LINKS IN THE href="" VALUES BELOW -->
+      <!-- ✅ Replace the href values below with your REAL links -->
       <div class="pay-grid" role="list">
-        <a class="btn" role="listitem" href="https://cash.app/$YOUR_CASHTAG" target="_blank" rel="noopener">
+        <a class="btn cash" role="listitem" href="https://cash.app/$YOUR_CASHTAG" target="_blank" rel="noopener">
           💸 Cash App
           <small>$YOUR_CASHTAG</small>
         </a>
 
-        <a class="btn" role="listitem" href="https://venmo.com/u/YOUR_VENMO" target="_blank" rel="noopener">
+        <a class="btn venmo" role="listitem" href="https://venmo.com/u/YOUR_VENMO" target="_blank" rel="noopener">
           💙 Venmo
           <small>@YOUR_VENMO</small>
         </a>
 
-        <a class="btn" role="listitem" href="https://www.paypal.me/YOUR_PAYPAL" target="_blank" rel="noopener">
+        <a class="btn paypal" role="listitem" href="https://www.paypal.me/YOUR_PAYPAL" target="_blank" rel="noopener">
           🔵 PayPal
           <small>paypal.me/YOUR_PAYPAL</small>
+        </a>
+
+        <a class="btn bank" role="listitem" href="YOUR_BANK_LINK" target="_blank" rel="noopener">
+          🏦 Bank
+          <small>ACH / Zelle</small>
         </a>
       </div>
 
@@ -132,4 +138,5 @@
 
 </body>
 </html>
+
 
