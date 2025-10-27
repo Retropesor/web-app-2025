@@ -2,94 +2,131 @@
 <html lang="en">
 <head>
   <meta charset="utf-8" />
-  <title>TipTheVerse — Pay</title>
+  <title>TipTheVerse — Give</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Set the ripple in motion with $1." />
+  <meta name="description" content="Give a $1 ripple via Cash App, Venmo, or PayPal. Small ripples become waves." />
+
   <style>
-    html { background:#000; }
+    :root{
+      --ink:#e9f1fb; --muted:#a9b8c9;
+      --glass-bg: rgba(255,255,255,0.04);
+      --glass-bdr: rgba(255,255,255,0.10);
+      --accent:#79d0ff; --accent2:#7cffc4;
+    }
+
     html, body { height:100%; margin:0; }
     body{
-      font-family: system-ui, Arial, sans-serif;
-      color:#fff;
-      background: #0a1130 url("payment-bg.png") center / cover no-repeat;
-      text-shadow: 0 2px 10px rgba(0,0,0,.45);
+      color:var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
+      /* 🌌 starry background (use "images/stars.bg.jpg" if yours is in a folder) */
+      background: url("stars.bg.jpg") no-repeat center center fixed;
+      background-size: cover;
+      position: relative;
+      min-height: 100dvh;
     }
-    .overlay{ position:fixed; inset:0;
-      background: radial-gradient(120% 70% at 50% 35%, rgba(5,10,26,0.10) 0%, rgba(5,10,26,0.55) 70%, rgba(5,10,26,0.85) 100%);
-      pointer-events:none; }
-    .wrap{
-      min-height:100svh;
-      display:flex; flex-direction:column;
-      align-items:center; justify-content:center;
-      text-align:center;
-      padding:24px;
-      gap:14px;
+    /* Dark overlay for readability */
+    body::before{
+      content:""; position:fixed; inset:0;
+      background: rgba(0,0,0,0.55);
+      z-index:0; pointer-events:none;
     }
-    h1{ margin:0 0 6px; font-size: clamp(28px, 6vw, 56px); }
-    p.lead{ margin:0 0 10px; opacity:.95; }
-    .buttons{
-      display:flex; flex-direction:column; gap:12px;
-      width:min(560px, 92vw);
-      margin-top:6px;
+    body > * { position: relative; z-index: 1; }
+
+    /* Top nav (matches other pages) */
+    .topnav{
+      position: sticky; top:0; z-index: 5000;
+      display:flex; gap:18px; align-items:center;
+      padding:12px 6vw; background: rgba(11,15,20,0.90);
+      backdrop-filter: blur(6px);
+      border-bottom:1px solid rgba(255,255,255,0.06);
+    }
+    .topnav a{ color:var(--ink); font-weight:600; text-decoration:none; }
+    .spacer{ flex:1; }
+
+    /* Page layout */
+    .wrap{ max-width: 900px; margin: 28px auto; padding: 0 6vw; }
+    .card{
+      background: linear-gradient(180deg, var(--glass-bg), rgba(255,255,255,0.02));
+      border: 1px solid var(--glass-bdr);
+      border-radius: 16px; padding: 22px;
+    }
+    h1{ margin: 0 0 6px; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.15; }
+    .sub{ color: var(--muted); margin: 4px 0 16px; }
+
+    /* Buttons */
+    .pay-grid{
+      display: grid; grid-template-columns: 1fr; gap: 12px;
+    }
+    @media (min-width: 720px){
+      .pay-grid{ grid-template-columns: repeat(3, 1fr); }
     }
     .btn{
-      display:block;
-      padding:14px 18px;
-      border-radius:999px;
-      border:1px solid rgba(255,255,255,.55);
-      background:rgba(255,255,255,.15);
-      color:#fff; text-decoration:none; font-weight:800; letter-spacing:.3px;
+      display: flex; align-items: center; justify-content: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-radius: 12px;
+      text-decoration: none; color:#001018; font-weight: 800;
+      background: var(--accent);
+      box-shadow: 0 0 0 0 rgba(121,208,255,0.35);
+      transition: box-shadow .18s ease, transform .06s ease;
+      text-align: center;
     }
-    .btn:hover{ background: rgba(255,255,255,.25); }
-    .label{ display:block; font-size:12px; opacity:.85; margin-top:2px; }
-    .row{ display:flex; gap:10px; justify-content:center; flex-wrap:wrap; margin-top:14px; }
-    a.link { color:#fff; text-underline-offset:3px; }
-    .bottom-note{
-      margin-top:60px;
-      font-size:12px; opacity:.8;
-      max-width:620px;
-    }
-    @media (max-width:768px){
-      html, body { overflow-x:hidden; }
-      .wrap{ padding:20px 16px 96px; }
+    .btn:nth-child(2){ background: var(--accent2); }
+    .btn:hover{ box-shadow: 0 0 0 6px rgba(121,208,255,0.25); transform: translateY(-1px); }
+    .btn small{ display:block; font-weight:600; opacity:.9; }
+
+    .note{ color:var(--muted); font-size:.95rem; margin-top: 12px; }
+
+    .footer{
+      color: var(--muted);
+      font-size: .9rem;
+      text-align: center;
+      margin: 20px 0 60px;
     }
   </style>
 </head>
 <body>
-  <div class="overlay" aria-hidden="true"></div>
+
+  <!-- Nav -->
+  <nav class="topnav">
+    <a href="/index.html">TipTheVerse</a>
+    <a href="/map.html">Map</a>
+    <a href="/manifestation.html">Manifestation</a>
+    <a href="/pay.html" aria-current="page">Give</a>
+    <div class="spacer"></div>
+  </nav>
+
   <main class="wrap">
-    <h1>Set It in Motion</h1>
-    <p class="lead">Send <strong>$1</strong> your favorite way — or use card with a small fee to keep your ripple whole.</p>
+    <section class="card">
+      <h1>Tip the ’Verse</h1>
+      <p class="sub">Give freely. Release the outcome. Let the ripple travel farther than you’ll ever know.</p>
 
-    <div class="buttons">
-      <a class="btn" href="https://cash.app/$TipTheVerse?amount=1" target="_blank" rel="noopener">
-        💸 Send a Spark via Cash App
-        <span class="label">$TipTheVerse — opens Cash App or web</span>
-      </a>
-      <a class="btn" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">
-        💫 Fuel the Ripple on Venmo
-        <span class="label">@TipTheVerse — Venmo may not prefill $1 on web</span>
-      </a>
-      <a class="btn" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">
-        🌊 Cast $1 into PayPal
-        <span class="label">paypal.me/tiptheverse/1 — prefilled</span>
-      </a>
-      <a class="btn" href="https://buy.stripe.com/your-payment-link" target="_blank" rel="noopener">
-        ✨ Card / Apple Pay / Google Pay — $1.34
-        <span class="label">Covers processing so your full $1 ripple still flows</span>
-      </a>
-    </div>
+      <!-- ✅ PASTE YOUR EXISTING LINKS IN THE href="" VALUES BELOW -->
+      <div class="pay-grid" role="list">
+        <a class="btn" role="listitem" href="https://cash.app/$YOUR_CASHTAG" target="_blank" rel="noopener">
+          💸 Cash App
+          <small>$YOUR_CASHTAG</small>
+        </a>
 
-    <div class="row">
-      <a class="link" href="thanks.html">I sent it → Take me to the Thank‑You page</a>
-      <span>•</span>
-      <a class="link" href="index.html">Back to Home</a>
-    </div>
+        <a class="btn" role="listitem" href="https://venmo.com/u/YOUR_VENMO" target="_blank" rel="noopener">
+          💙 Venmo
+          <small>@YOUR_VENMO</small>
+        </a>
 
-    <div class="bottom-note">
-      Trouble? Copy/paste: cash.app/$TipTheVerse • venmo.com/u/TipTheVerse • paypal.me/tiptheverse/1.
-      For the card option, replace the Stripe link with your own Payment Link (Settings → Payment Links).
-    </div>
+        <a class="btn" role="listitem" href="https://www.paypal.me/YOUR_PAYPAL" target="_blank" rel="noopener">
+          🔵 PayPal
+          <small>paypal.me/YOUR_PAYPAL</small>
+        </a>
+      </div>
+
+      <p class="note">
+        You don’t need to give to practice manifestation. But if you do, thank you for adding momentum to the wave.
+      </p>
+    </section>
+
+    <p class="footer">No rewards promised, no ledger published. This is a release, not a purchase.</p>
   </main>
+
 </body>
 </html>
+
