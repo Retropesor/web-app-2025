@@ -1,102 +1,79 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>TipTheVerse — Give</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta name="description" content="Give a $1 ripple via Cash App, Venmo, PayPal, or Bank. Small ripples become waves." />
+  <meta charset="utf-8">
+  <title>TipTheVerse — Thanks</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Thank you for setting the ripple in motion.">
   <style>
-    :root{
-      --ink:#e9f1fb; --muted:#a9b8c9;
-      --glass-bg: rgba(255,255,255,0.04);
-      --glass-bdr: rgba(255,255,255,0.10);
-      --accent:#79d0ff; --accent2:#7cffc4; --accent3:#ffd166;
-    }
-    html, body { height:100%; margin:0; }
+    html,body{height:100%;margin:0}
     body{
-      background:#000 url("payment-bg.png") no-repeat center center fixed;
-      background-size:cover;
-      color:var(--ink);
-      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
-      position:relative; min-height:100dvh;
+      font-family: system-ui, Arial, sans-serif;
+      color:#fff;
+      background:#0a1130 url('thankyou-gp.png') no-repeat center/cover;
     }
-    body::before{
-      content:""; position:fixed; inset:0;
-      background:rgba(0,0,0,.55);
-      z-index:0; pointer-events:none; /* allow clicks */
+    .overlay{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%, rgba(10,17,48,.25), rgba(10,17,48,.75)); pointer-events:none;}
+    .wrap{
+      position:relative; z-index:1;
+      min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
+      text-align:center; padding:24px; text-shadow:0 2px 10px rgba(0,0,0,.55);
     }
-    body > * { position:relative; z-index:1; }
-
-    .topnav{
-      position:sticky; top:0; z-index:5000;
-      display:flex; gap:18px; align-items:center;
-      padding:12px 6vw; background:rgba(11,15,20,.90);
-      backdrop-filter:blur(6px);
-      border-bottom:1px solid rgba(255,255,255,.06);
+    h1{margin:0 0 8px; font-size:clamp(26px,6vw,56px)}
+    p{margin:6px 0; opacity:.95; max-width:800px}
+    .card{margin-top:12px; padding:14px 18px; border-radius:14px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4)}
+    .again{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
+    .btn{display:inline-block; padding:10px 16px; border-radius:999px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.5); color:#fff; text-decoration:none; font-weight:700}
+    footer{position:fixed;left:0;right:0;bottom:10px;text-align:center;font-size:12px;opacity:.85}
+    @media (max-width:768px){
+      html,body{overflow-x:hidden}
+      .wrap{padding:20px 16px 96px}
+      footer{position:static;margin-top:18px}
     }
-    .topnav a{ color:var(--ink); font-weight:600; text-decoration:none; }
-    .spacer{ flex:1; }
-
-    .wrap{ max-width:900px; margin:28px auto; padding:0 6vw; }
-    .card{
-      background:linear-gradient(180deg,var(--glass-bg),rgba(255,255,255,.02));
-      border:1px solid var(--glass-bdr);
-      border-radius:16px; padding:22px;
-    }
-    h1{ margin:0 0 6px; font-size:clamp(28px,3.2vw,40px); line-height:1.15; }
-    .sub{ color:var(--muted); margin:4px 0 16px; }
-
-    .pay-grid{
-      display:grid; grid-template-columns:1fr; gap:12px; margin-top:8px;
-      position:relative; z-index:10;
-    }
-    @media (min-width:720px){ .pay-grid{ grid-template-columns:repeat(4,1fr);} }
-    .btn{
-      display:flex; align-items:center; justify-content:center; gap:10px; text-align:center;
-      padding:14px 16px; border-radius:12px; text-decoration:none; color:#001018; font-weight:800;
-      background:var(--accent);
-      box-shadow:0 0 0 0 rgba(121,208,255,.35);
-      transition:box-shadow .18s ease, transform .06s ease;
-      min-height:54px; position:relative; z-index:11; pointer-events:auto;
-    }
-    .btn:hover{ box-shadow:0 0 0 6px rgba(121,208,255,.25); transform:translateY(-1px); }
-    .btn small{ display:block; font-weight:600; opacity:.9; }
-    .btn.cash{ background:var(--accent); }
-    .btn.venmo{ background:var(--accent2); }
-    .btn.paypal{ background:#9ec2ff; }
-    .btn.bank{ background:var(--accent3); }
-
-    .note{ color:var(--muted); font-size:.95rem; margin-top:12px; }
-    .footer{ color:var(--muted); font-size:.9rem; text-align:center; margin:20px 0 60px; }
   </style>
 </head>
 <body>
-
-  <nav class="topnav">
-    <a href="index.html">TipTheVerse</a>
-    <a href="map.html">Map</a>
-    <a href="manifestation.html">Manifestation</a>
-    <a href="pay.html" aria-current="page">Give</a>
-    <div class="spacer"></div>
-  </nav>
-
+  <div class="overlay" aria-hidden="true"></div>
   <main class="wrap">
-    <section class="card">
-      <h1>Tip the ’Verse</h1>
-      <p class="sub">Give freely. Release the outcome. Let the ripple travel farther than you’ll ever know.</p>
+    <h1>Thanks ✨</h1>
+    <p>Your $1 signal is out there now. Watch for small, surprising good things. When one arrives, drop a pin so we can see ripples cluster.</p>
 
-      <div class="pay-grid" role="list">
-        <a class="btn cash" role="listitem" href="https://cash.app/$YOUR_CASHTAG/1" target="_blank" rel="noopener">
-          💸 Cash App
-          <small>$YOUR_CASHTAG</small>
-        </a>
-        <a class="btn venmo" role="listitem" href="https://venmo.com/u/YOUR_VENMO" target="_blank" rel="noopener">
-          💙 Venmo
-          <small>@YOUR_VENMO</small>
-        </a>
-        <a class="btn paypal" role="listitem" href="https://paypal.me/YOUR_PAYPAL/1" target="_blank" rel="noopener">
-          🔵 PayPal
-          <s
+    <div id="line" class="card">Small act. Real motion.</div>
 
+    <div class="again">
+      <a class="btn" href="map.html">Drop a Pin</a>
+      <a class="btn" href="index.html">Back to Home</a>
+      <a class="btn" href="pay.html">Give Again</a>
+    </div>
+  </main>
+
+  <footer>© <span id="y">2025</span> Tiptheverse</footer>
+
+  <script>
+    const sayings = [
+      "Small act. Real motion.",
+      "Drop $1, set a ripple.",
+      "Intent made visible.",
+      "You arrived right on time.",
+      "The universe heard you.",
+      "Tiny push, wide circles.",
+      "Give, and the current moves.",
+      "A thought becomes a sign.",
+      "Perfect timing isn’t loud.",
+      "You aren’t here by accident.",
+      "Ripples travel farther than we see.",
+      "Release it and let it work.",
+      "Quiet motion, real results.",
+      "Act now; the map appears.",
+      "The return is never predictable.",
+      "Set it down; watch it move.",
+      "Trust the unfolding."
+    ];
+    const el = document.getElementById('line');
+    let i = 0;
+    setInterval(() => { i = (i + 1) % sayings.length; el.textContent = sayings[i]; }, 3500);
+    document.getElementById('y').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
 
 
