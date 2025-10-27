@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>TipTheVerse — Thank You</title>
+  <title>TipTheVerse — Thanks</title>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="Thank you for setting the ripple in motion.">
   <style>
@@ -12,7 +12,7 @@
       color:#fff;
       background:#0a1130 url('thankyou-gp.png') no-repeat center/cover;
     }
-    .overlay{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%, rgba(10,17,48,.25), rgba(10,17,48,.75));}
+    .overlay{position:fixed;inset:0;background:radial-gradient(ellipse at 50% 35%, rgba(10,17,48,.25), rgba(10,17,48,.75)); pointer-events:none;}
     .wrap{
       position:relative; z-index:1;
       min-height:100svh; display:flex; flex-direction:column; align-items:center; justify-content:center;
@@ -21,7 +21,7 @@
     h1{margin:0 0 8px; font-size:clamp(26px,6vw,56px)}
     p{margin:6px 0; opacity:.95; max-width:800px}
     .card{margin-top:12px; padding:14px 18px; border-radius:14px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.4)}
-    .again{margin-top:20px}
+    .again{margin-top:20px; display:flex; gap:10px; flex-wrap:wrap; justify-content:center;}
     .btn{display:inline-block; padding:10px 16px; border-radius:999px; background:rgba(255,255,255,.15); border:1px solid rgba(255,255,255,.5); color:#fff; text-decoration:none; font-weight:700}
     footer{position:fixed;left:0;right:0;bottom:10px;text-align:center;font-size:12px;opacity:.85}
     @media (max-width:768px){
@@ -34,14 +34,15 @@
 <body>
   <div class="overlay" aria-hidden="true"></div>
   <main class="wrap">
-    <h1>Thank You ✨</h1>
-    <p>Your $1 signal is out there now. Watch for small, surprising good things. When one arrives, pin your city on the map so we can see the ripples cluster.</p>
+    <h1>Thanks ✨</h1>
+    <p>Your $1 signal is out there now. Watch for small, surprising good things. When one arrives, drop a pin so we can see ripples cluster.</p>
 
     <div id="line" class="card">Small act. Real motion.</div>
 
     <div class="again">
       <a class="btn" href="map.html">Drop a Pin</a>
       <a class="btn" href="index.html">Back to Home</a>
+      <a class="btn" href="pay.html">Give Again</a>
     </div>
   </main>
 
