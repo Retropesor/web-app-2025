@@ -5,7 +5,6 @@
   <title>TipTheVerse — Give</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="description" content="Give a $1 ripple via Cash App, Venmo, PayPal, or Bank. Small ripples become waves." />
-
   <style>
     :root{
       --ink:#e9f1fb; --muted:#a9b8c9;
@@ -13,90 +12,71 @@
       --glass-bdr: rgba(255,255,255,0.10);
       --accent:#79d0ff; --accent2:#7cffc4; --accent3:#ffd166;
     }
-
     html, body { height:100%; margin:0; }
     body{
-      /* ⬇️ KEEP YOUR COIN BACKGROUND — change ONLY the file name if needed */
-      background: #000 url("payment-bg.png") no-repeat center center fixed;
-      background-size: cover;
-      color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, sans-serif;
-      position: relative;
-      min-height: 100dvh;
+      background:#000 url("payment-bg.png") no-repeat center center fixed;
+      background-size:cover;
+      color:var(--ink);
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial,sans-serif;
+      position:relative; min-height:100dvh;
     }
-    /* Dark overlay for readability */
     body::before{
       content:""; position:fixed; inset:0;
-      background: rgba(0,0,0,0.55);
-      z-index:0; pointer-events:none;
+      background:rgba(0,0,0,.55);
+      z-index:0; pointer-events:none; /* allow clicks */
     }
-    body > * { position: relative; z-index: 1; }
+    body > * { position:relative; z-index:1; }
 
-    /* Top nav */
     .topnav{
-      position: sticky; top:0; z-index: 5000;
+      position:sticky; top:0; z-index:5000;
       display:flex; gap:18px; align-items:center;
-      padding:12px 6vw; background: rgba(11,15,20,0.90);
-      backdrop-filter: blur(6px);
-      border-bottom:1px solid rgba(255,255,255,0.06);
+      padding:12px 6vw; background:rgba(11,15,20,.90);
+      backdrop-filter:blur(6px);
+      border-bottom:1px solid rgba(255,255,255,.06);
     }
     .topnav a{ color:var(--ink); font-weight:600; text-decoration:none; }
     .spacer{ flex:1; }
 
-    /* Page layout */
-    .wrap{ max-width: 900px; margin: 28px auto; padding: 0 6vw; }
+    .wrap{ max-width:900px; margin:28px auto; padding:0 6vw; }
     .card{
-      background: linear-gradient(180deg, var(--glass-bg), rgba(255,255,255,0.02));
-      border: 1px solid var(--glass-bdr);
-      border-radius: 16px; padding: 22px;
+      background:linear-gradient(180deg,var(--glass-bg),rgba(255,255,255,.02));
+      border:1px solid var(--glass-bdr);
+      border-radius:16px; padding:22px;
     }
-    h1{ margin: 0 0 6px; font-size: clamp(28px, 3.2vw, 40px); line-height: 1.15; }
-    .sub{ color: var(--muted); margin: 4px 0 16px; }
+    h1{ margin:0 0 6px; font-size:clamp(28px,3.2vw,40px); line-height:1.15; }
+    .sub{ color:var(--muted); margin:4px 0 16px; }
 
-    /* Buttons */
     .pay-grid{
-      display: grid; grid-template-columns: 1fr; gap: 12px; margin-top: 8px;
+      display:grid; grid-template-columns:1fr; gap:12px; margin-top:8px;
+      position:relative; z-index:10;
     }
-    @media (min-width: 720px){
-      .pay-grid{ grid-template-columns: repeat(4, 1fr); }
-    }
+    @media (min-width:720px){ .pay-grid{ grid-template-columns:repeat(4,1fr);} }
     .btn{
-      display: flex; align-items: center; justify-content: center;
-      gap: 10px; text-align: center;
-      padding: 14px 16px; border-radius: 12px;
-      text-decoration: none; color:#001018; font-weight: 800;
-      background: var(--accent);
-      box-shadow: 0 0 0 0 rgba(121,208,255,0.35);
-      transition: box-shadow .18s ease, transform .06s ease;
-      min-height: 54px;
+      display:flex; align-items:center; justify-content:center; gap:10px; text-align:center;
+      padding:14px 16px; border-radius:12px; text-decoration:none; color:#001018; font-weight:800;
+      background:var(--accent);
+      box-shadow:0 0 0 0 rgba(121,208,255,.35);
+      transition:box-shadow .18s ease, transform .06s ease;
+      min-height:54px; position:relative; z-index:11; pointer-events:auto;
     }
-    .btn:hover{ box-shadow: 0 0 0 6px rgba(121,208,255,0.25); transform: translateY(-1px); }
+    .btn:hover{ box-shadow:0 0 0 6px rgba(121,208,255,.25); transform:translateY(-1px); }
     .btn small{ display:block; font-weight:600; opacity:.9; }
+    .btn.cash{ background:var(--accent); }
+    .btn.venmo{ background:var(--accent2); }
+    .btn.paypal{ background:#9ec2ff; }
+    .btn.bank{ background:var(--accent3); }
 
-    /* Give each its own tint */
-    .btn.cash { background: var(--accent); }
-    .btn.venmo{ background: var(--accent2); }
-    .btn.paypal{ background: #9ec2ff; }
-    .btn.bank  { background: var(--accent3); }
-
-    .note{ color:var(--muted); font-size:.95rem; margin-top: 12px; }
-
-    .footer{
-      color: var(--muted);
-      font-size: .9rem;
-      text-align: center;
-      margin: 20px 0 60px;
-    }
+    .note{ color:var(--muted); font-size:.95rem; margin-top:12px; }
+    .footer{ color:var(--muted); font-size:.9rem; text-align:center; margin:20px 0 60px; }
   </style>
 </head>
 <body>
 
-  <!-- Nav -->
   <nav class="topnav">
-    <a href="/index.html">TipTheVerse</a>
-    <a href="/map.html">Map</a>
-    <a href="/manifestation.html">Manifestation</a>
-    <a href="/pay.html" aria-current="page">Give</a>
+    <a href="index.html">TipTheVerse</a>
+    <a href="map.html">Map</a>
+    <a href="manifestation.html">Manifestation</a>
+    <a href="pay.html" aria-current="page">Give</a>
     <div class="spacer"></div>
   </nav>
 
@@ -105,38 +85,18 @@
       <h1>Tip the ’Verse</h1>
       <p class="sub">Give freely. Release the outcome. Let the ripple travel farther than you’ll ever know.</p>
 
-      <!-- ✅ Replace the href values below with your REAL links -->
       <div class="pay-grid" role="list">
-        <a class="btn cash" role="listitem" href="https://cash.app/$YOUR_CASHTAG" target="_blank" rel="noopener">
+        <a class="btn cash" role="listitem" href="https://cash.app/$YOUR_CASHTAG/1" target="_blank" rel="noopener">
           💸 Cash App
           <small>$YOUR_CASHTAG</small>
         </a>
-
         <a class="btn venmo" role="listitem" href="https://venmo.com/u/YOUR_VENMO" target="_blank" rel="noopener">
           💙 Venmo
           <small>@YOUR_VENMO</small>
         </a>
-
-        <a class="btn paypal" role="listitem" href="https://www.paypal.me/YOUR_PAYPAL" target="_blank" rel="noopener">
+        <a class="btn paypal" role="listitem" href="https://paypal.me/YOUR_PAYPAL/1" target="_blank" rel="noopener">
           🔵 PayPal
-          <small>paypal.me/YOUR_PAYPAL</small>
-        </a>
+          <s
 
-        <a class="btn bank" role="listitem" href="YOUR_BANK_LINK" target="_blank" rel="noopener">
-          🏦 Bank
-          <small>ACH / Zelle</small>
-        </a>
-      </div>
-
-      <p class="note">
-        You don’t need to give to practice manifestation. But if you do, thank you for adding momentum to the wave.
-      </p>
-    </section>
-
-    <p class="footer">No rewards promised, no ledger published. This is a release, not a purchase.</p>
-  </main>
-
-</body>
-</html>
 
 
