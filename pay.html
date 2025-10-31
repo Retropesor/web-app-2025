@@ -168,25 +168,7 @@
 
   <!-- Fallback: if some weird layer still blocks default anchor behavior on certain devices,
        this script forces opening the link on tap/click for our buttons. -->
-  <script>
-    document.querySelectorAll('.btn[href]').forEach(a => {
-      a.addEventListener('click', (e) => {
-        try {
-          // If default was blocked by an overlay, attempt manual open
-          if (!a.href) return;
-          // Let normal behavior happen first; if prevented, do manual open.
-          setTimeout(() => {
-            if (document.activeElement !== a) {
-              const w = window.open(a.href, a.target === '_blank' ? '_blank' : '_self');
-              if (!w) location.href = a.href; // popup blocked → navigate same tab
-            }
-          }, 0);
-        } catch(_) {
-          location.href = a.href;
-        }
-      }, { passive:true });
-    });
-  </script>
+ 
   <script>
   function trackAndGo(method, anchor) {
     const href = anchor.href;
