@@ -11,14 +11,18 @@
   <title>TipTheVerse</title>
 
   <!-- Google tag (gtag.js) -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=G-SZLNPRF9DJ"></script>
-  <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){ dataLayer.push(arguments); }
-    gtag('js', new Date());
-    gtag('config', 'G-SZLNPRF9DJ');
-  </script>
-</head>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-SZLNPRF9DJ"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){ dataLayer.push(arguments); }
+
+  // Consent defaults (deny until accepted)
+  gtag('consent', 'default', { analytics_storage: 'denied' });
+
+  gtag('js', new Date());
+  gtag('config', 'G-SZLNPRF9DJ');
+</script>
+
 
 
   <meta charset="utf-8" />
@@ -184,66 +188,60 @@
       <button class="btn primary" id="cookie-accept">Accept</button>
     </div>
   </div>
+<script>
+  (function () {
+    const KEY = "ttv-consent";
+    const saved = localStorage.getItem(KEY);
 
-  <script>
-    (function () {
-      const KEY = "ttv-consent";
-      const saved = localStorage.getItem(KEY);
+    if (!saved) {
+      document.getElementById('cookie-banner').style.display = 'block';
+    } else {
+      try {
+        const state = JSON.parse(saved);
+        if (state.analytics === true) {
+          // Grant analytics if previously accepted
+          gtag('consent', 'update', { analytics_storage: 'granted' });
+        }
+      } catch(e){}
+    }
 
-      function loadGA() {
-        const s = document.createElement('script');
-        s.async = true;
-        s.src = "https://www.googletagmanager.com/gtag/js?id=G-GSCWB0WJTL";
-        document.head.appendChild(s);
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){ dataLayer.push(arguments); }
-        window.gtag = gtag;
-        gtag('js', new Date());
-        gtag('config', 'G-GSCWB0WJTL', { anonymize_ip: true });
-      }
-
-      if (!saved) {
-        document.getElementById('cookie-banner').style.display = 'block';
-      } else {
-        try {
-          const state = JSON.parse(saved);
-          if (state.analytics === true) loadGA();
-        } catch(e){}
-      }
-
-      document.getElementById('cookie-accept').addEventListener('click', function(){
-        localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:true, ts: Date.now() }));
-        document.getElementById('cookie-banner').style.display = 'none';
-        loadGA();
-      });
-
-      document.getElementById('cookie-reject').addEventListener('click', function(){
-        localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:false, ts: Date.now() }));
-        document.getElementById('cookie-banner').style.display = 'none';
-      });
-    })();
-  </script>
-  <script>
-  // helper function to send a GA4 event
-  function sendDonate(method, href){
-    gtag('event', 'donate_click', {
-      method: method,
-      destination: href
+    document.getElementById('cookie-accept').addEventListener('click', function(){
+      localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:true, ts: Date.now() }));
+      document.getElementById('cookie-banner').style.display = 'none';
+      gtag('consent', 'update', { analytics_storage: 'granted' });
     });
+
+    document.getElementById('cookie-reject').addEventListener('click', function(){
+      localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:false, ts: Date.now() }));
+      document.getElementById('cookie-banner').style.display = 'none';
+      gtag('consent', 'update', { analytics_storage: 'denied' });
+    });
+  })();
+</script>
+
+ 
+<script>
+  function trackAndGo(method, anchor) {
+    const href = anchor.href;
+    let done = false;
+    const go = () => { if (!done) { done = true; window.location.href = href; } };
+
+    gtag('event','donate_click', {
+      method, destination: href,
+      transport_type: 'beacon',
+      event_callback: go
+    });
+
+    setTimeout(go, 300); // fallback so the click still navigates
   }
 
-  // attach event listeners to each button
-  document.getElementById('btn-cashapp')?.addEventListener('click', e => {
-    sendDonate('cash_app', e.currentTarget.href);
-  });
+  const cash = document.getElementById('btn-cashapp');
+  const ven  = document.getElementById('btn-venmo');
+  const pay  = document.getElementById('btn-paypal');
 
-  document.getElementById('btn-venmo')?.addEventListener('click', e => {
-    sendDonate('venmo', e.currentTarget.href);
-  });
-
-  document.getElementById('btn-paypal')?.addEventListener('click', e => {
-    sendDonate('paypal', e.currentTarget.href);
-  });
+  cash?.addEventListener('click', e => { e.preventDefault(); trackAndGo('cash_app', e.currentTarget); });
+  ven ?.addEventListener('click', e => { e.preventDefault(); trackAndGo('venmo',    e.currentTarget); });
+  pay ?.addEventListener('click', e => { e.preventDefault(); trackAndGo('paypal',   e.currentTarget); });
 </script>
 
 </body>
@@ -251,6 +249,7 @@
 
 
        
+
 
 
 
