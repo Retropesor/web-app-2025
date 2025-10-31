@@ -170,6 +170,30 @@
       }, { passive:true });
     });
   </script>
+  <script>
+  function trackAndGo(method, anchor) {
+    const href = anchor.href;
+    let done = false;
+    const go = () => { if (!done) { done = true; window.location.href = href; } };
+
+    gtag('event','donate_click', {
+      method, destination: href,
+      transport_type: 'beacon',
+      event_callback: go
+    });
+
+    setTimeout(go, 300); // fallback so the click still navigates
+  }
+
+  const cash = document.getElementById('btn-cashapp');
+  const ven  = document.getElementById('btn-venmo');
+  const pay  = document.getElementById('btn-paypal');
+
+  cash?.addEventListener('click', e => { e.preventDefault(); trackAndGo('cash_app', e.currentTarget); });
+  ven ?.addEventListener('click', e => { e.preventDefault(); trackAndGo('venmo',    e.currentTarget); });
+  pay ?.addEventListener('click', e => { e.preventDefault(); trackAndGo('paypal',   e.currentTarget); });
+</script>
+
 </body>
 </html>
 
