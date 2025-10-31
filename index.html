@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
- <!-- Minimal Cookie Banner (no library) -->
+<!-- Minimal Cookie Banner (no library) -->
 <style>
   #cookie-banner{position:fixed;inset:auto 0 0 0;background:rgba(0,0,0,.9);color:#fff;
     padding:14px 16px;display:none;z-index:9999;font:14px/1.4 system-ui,Arial,sans-serif}
@@ -17,7 +17,7 @@
 
 <div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
   <div class="wrap">
-    <p>We use cookies for basic site features and <strong>anonymous analytics</strong>. 
+    <p>We use cookies for basic site features and <strong>anonymous analytics</strong>.
       Read our <a href="/cookie-policy.html" target="_blank" rel="noopener">Cookie Policy</a>.
     </p>
     <button class="btn" id="cookie-reject">Reject non-essential</button>
@@ -27,7 +27,7 @@
 
 <script>
   (function () {
-    const KEY = "ttv-consent"; // tiptheverse consent
+    const KEY = "ttv-consent"; // TipTheVerse consent
     const saved = localStorage.getItem(KEY);
 
     function loadGA() {
@@ -43,8 +43,8 @@
       gtag('config', 'G-GSCWB0WJTL', { anonymize_ip: true });
     }
 
-    // First visit: show banner
     if (!saved) {
+      // First visit → show banner
       document.getElementById('cookie-banner').style.display = 'block';
     } else {
       // If previously accepted, load GA
@@ -54,7 +54,6 @@
       } catch(e){}
     }
 
-    // Buttons
     document.getElementById('cookie-accept').addEventListener('click', function(){
       localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:true, ts: Date.now() }));
       document.getElementById('cookie-banner').style.display = 'none';
@@ -68,6 +67,7 @@
     });
   })();
 </script>
+
 
 </script>
   <!-- Google tag (gtag.js) -->
@@ -614,6 +614,7 @@
 
 
        
+
 
 
 
