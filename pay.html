@@ -131,26 +131,22 @@
 
       <div class="pay-grid" role="list">
         <!-- 🔁 Replace placeholders with your real handles/URLs -->
-        <a class="btn cash" role="listitem" href="https://cash.app/$TipTheVerse/1" target="_blank" rel="noopener">
-          💸 Cash App
-          <small>$TipTheVerse</small>
-        </a>
+        <a class="btn cash"   id="btn-cashapp" href="https://cash.app/$TipTheVerse/1" target="_blank" rel="noopener">
+  💸 Cash App <small>$TipTheVerse</small>
+</a>
 
-        <a class="btn venmo" role="listitem" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">
-          💙 Venmo
-          <small>@TipTheVerse</small>
-        </a>
+<a class="btn venmo"  id="btn-venmo" href="https://venmo.com/u/TipTheVerse" target="_blank" rel="noopener">
+  💙 Venmo <small>@TipTheVerse</small>
+</a>
 
-        <a class="btn paypal" role="listitem" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">
-          🔵 PayPal
-          <small>paypal.me/@tiptheverse</small>
-        </a>
+<a class="btn paypal" id="btn-paypal" href="https://paypal.me/tiptheverse/1" target="_blank" rel="noopener">
+  🔵 PayPal <small>paypal.me/@tiptheverse</small>
+</a>
 
-        <!-- ✅ Bank/Zelle tile (put your real bank/Zelle URL) -->
-        <a class="btn bank" role="listitem" href="https://YOUR_BANK_OR_ZELLE_URL" target="_blank" rel="noopener" title="Opens your bank/Zelle page">
-          🏦 Bank / Zelle
-          <small>ACH • Zelle link</small>
-        </a>
+<a class="btn bank"   id="btn-bank" href="https://YOUR_BANK_OR_ZELLE_URL" target="_blank" rel="noopener" title="Opens your bank/Zelle page">
+  🏦 Bank / Zelle <small>ACH • Zelle link</small>
+</a>
+
       </div>
 
       <p class="note">You don’t need to give to practice manifestation. But if you do, thank you for adding momentum to the wave.</p>
@@ -209,6 +205,9 @@
   const cash = document.getElementById('btn-cashapp');
   const ven  = document.getElementById('btn-venmo');
   const pay  = document.getElementById('btn-paypal');
+  const bank = document.getElementById('btn-bank');
+bank?.addEventListener('click', e => { e.preventDefault(); trackAndGo('bank', e.currentTarget); });
+
 
   cash?.addEventListener('click', e => { e.preventDefault(); trackAndGo('cash_app', e.currentTarget); });
   ven ?.addEventListener('click', e => { e.preventDefault(); trackAndGo('venmo',    e.currentTarget); });
