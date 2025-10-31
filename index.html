@@ -218,11 +218,35 @@
       });
     })();
   </script>
+  <script>
+  // helper function to send a GA4 event
+  function sendDonate(method, href){
+    gtag('event', 'donate_click', {
+      method: method,
+      destination: href
+    });
+  }
+
+  // attach event listeners to each button
+  document.getElementById('btn-cashapp')?.addEventListener('click', e => {
+    sendDonate('cash_app', e.currentTarget.href);
+  });
+
+  document.getElementById('btn-venmo')?.addEventListener('click', e => {
+    sendDonate('venmo', e.currentTarget.href);
+  });
+
+  document.getElementById('btn-paypal')?.addEventListener('click', e => {
+    sendDonate('paypal', e.currentTarget.href);
+  });
+</script>
+
 </body>
 </html>
 
 
        
+
 
 
 
