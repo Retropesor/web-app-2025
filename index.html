@@ -3,66 +3,72 @@
 <html lang="en">
 
 <head>
-  <link rel="stylesheet" id="silktide-consent-manager-css" href="path-to-css/silktide-consent-manager.css">
-<script src="path-to-js/silktide-consent-manager.js"></script>
+ <!-- Minimal Cookie Banner (no library) -->
+<style>
+  #cookie-banner{position:fixed;inset:auto 0 0 0;background:rgba(0,0,0,.9);color:#fff;
+    padding:14px 16px;display:none;z-index:9999;font:14px/1.4 system-ui,Arial,sans-serif}
+  #cookie-banner .wrap{max-width:980px;margin:0 auto;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  #cookie-banner p{margin:0;flex:1 1 520px}
+  #cookie-banner a{color:#9cd1ff;text-decoration:underline}
+  #cookie-banner .btn{border:1px solid rgba(255,255,255,.5);background:transparent;color:#fff;
+    padding:8px 12px;border-radius:999px;cursor:pointer}
+  #cookie-banner .btn.primary{background:#ffffff26}
+</style>
+
+<div id="cookie-banner" role="dialog" aria-live="polite" aria-label="Cookie consent">
+  <div class="wrap">
+    <p>We use cookies for basic site features and <strong>anonymous analytics</strong>. 
+      Read our <a href="/cookie-policy.html" target="_blank" rel="noopener">Cookie Policy</a>.
+    </p>
+    <button class="btn" id="cookie-reject">Reject non-essential</button>
+    <button class="btn primary" id="cookie-accept">Accept</button>
+  </div>
+</div>
+
 <script>
-silktideCookieBannerManager.updateCookieBannerConfig({
-  background: {
-    showBackground: true
-  },
-  cookieIcon: {
-    position: "bottomLeft"
-  },
-  cookieTypes: [
-    {
-      id: "necessary",
-      name: "Necessary",
-      description: "<p>These cookies are necessary for the website to function properly and cannot be switched off. They help with things like logging in and setting your privacy preferences.</p>",
-      required: true,
-      onAccept: function() {
-        console.log('Add logic for the required Necessary here');
-      }
-    },
-    {
-      id: "analytics",
-      name: "Analytics",
-      description: "<p>These cookies help us improve the site by tracking which pages are most popular and how visitors move around the site.</p>",
-      required: true,
-      onAccept: function() {
-        console.log('Add logic for the required Analytics here');
-      }
-    },
-    {
-      id: "advertising",
-      name: "Advertising",
-      description: "<p>These cookies provide extra features and personalization to improve your experience. They may be set by us or by partners whose services we use.</p>",
-      required: true,
-      onAccept: function() {
-        console.log('Add logic for the required Advertising here');
-      }
+  (function () {
+    const KEY = "ttv-consent"; // tiptheverse consent
+    const saved = localStorage.getItem(KEY);
+
+    function loadGA() {
+      // Inject GA only after consent
+      const s = document.createElement('script');
+      s.async = true;
+      s.src = "https://www.googletagmanager.com/gtag/js?id=G-GSCWB0WJTL";
+      document.head.appendChild(s);
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){ dataLayer.push(arguments); }
+      window.gtag = gtag;
+      gtag('js', new Date());
+      gtag('config', 'G-GSCWB0WJTL', { anonymize_ip: true });
     }
-  ],
-  text: {
-    banner: {
-      description: "<p>We use cookies on our site to enhance your user experience, provide personalized content, and analyze our traffic. <a href=\"https://your-website.com/cookie-policy\" target=\"_blank\">Cookie Policy.</a></p>",
-      acceptAllButtonText: "Accept all",
-      acceptAllButtonAccessibleLabel: "Accept all cookies",
-      rejectNonEssentialButtonText: "Reject non-essential",
-      rejectNonEssentialButtonAccessibleLabel: "Reject non-essential",
-      preferencesButtonText: "Preferences",
-      preferencesButtonAccessibleLabel: "Toggle preferences"
-    },
-    preferences: {
-      title: "Customize your cookie preferences",
-      description: "<p>We respect your right to privacy. You can choose not to allow some types of cookies. Your cookie preferences will apply across our website.</p>",
-      creditLinkText: "Get this banner for free",
-      creditLinkAccessibleLabel: "Get this banner for free"
+
+    // First visit: show banner
+    if (!saved) {
+      document.getElementById('cookie-banner').style.display = 'block';
+    } else {
+      // If previously accepted, load GA
+      try {
+        const state = JSON.parse(saved);
+        if (state.analytics === true) loadGA();
+      } catch(e){}
     }
-  },
-  position: {
-    banner: "bottomRight"
-  }
-});
+
+    // Buttons
+    document.getElementById('cookie-accept').addEventListener('click', function(){
+      localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:true, ts: Date.now() }));
+      document.getElementById('cookie-banner').style.display = 'none';
+      loadGA();
+    });
+
+    document.getElementById('cookie-reject').addEventListener('click', function(){
+      localStorage.setItem(KEY, JSON.stringify({ necessary:true, analytics:false, ts: Date.now() }));
+      document.getElementById('cookie-banner').style.display = 'none';
+      // Do NOT load GA
+    });
+  })();
+</script>
+
 </script>
   <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-GSCWB0WJTL"></script>
@@ -608,6 +614,7 @@ silktideCookieBannerManager.updateCookieBannerConfig({
 
 
        
+
 
 
 
